@@ -18,7 +18,7 @@ export function useNotBuilt() {
   return (label) => toast(`${label} isn’t part of this prototype — try Dashboard or Messages.`, { ic: 'info' });
 }
 
-export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'messages'], switchTo, children, onNav }) {
+export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'messages'], switchTo, children, onNav, showBadges = true }) {
   useStore();
   const notBuilt = useNotBuilt();
   const unread = CONVOS.reduce((a, c) => a + c.unread, 0) + GROUPS.reduce((a, g) => a + g.unread, 0);
@@ -30,7 +30,7 @@ export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'messag
     <button key={r} className={`nav-item ${route === r ? 'on' : ''}`} onClick={() => go(r, label)}>
       <Icon name={ic} size={24} />
       <span>{label}</span>
-      {r === 'messages' && unread > 0 && route !== 'messages' && <span className="badge nav-badge">{unread}</span>}
+      {showBadges && r === 'messages' && unread > 0 && route !== 'messages' && <span className="badge nav-badge">{unread}</span>}
     </button>
   );
   return (

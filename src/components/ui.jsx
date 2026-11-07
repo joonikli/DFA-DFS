@@ -1,6 +1,6 @@
 // Shared UI primitives: origin-aware popovers, toasts, tooltips, segmented control,
 // scale-to-fit. Motion follows MOTION.md (tokens live in styles.css).
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon.jsx';
 import { reducedMotion } from '../lib/store.js';
@@ -103,8 +103,9 @@ export function PopProvider({ children }) {
     return () => { document.removeEventListener('pointerdown', down); document.removeEventListener('keydown', key); };
   }, [close]);
 
+  const api = useMemo(() => ({ open, close, toggle, isOpen }), [open, close, toggle, isOpen]);
   return (
-    <PopCtx.Provider value={{ open, close, toggle, isOpen }}>
+    <PopCtx.Provider value={api}>
       {children}
       <PopLayer pops={pops} onRequestClose={close} />
     </PopCtx.Provider>
@@ -220,7 +221,7 @@ export function Segmented({ value, onChange, options, className = '', id, role =
     <div className={`seg ${className}`} ref={ref} id={id} role={role}>
       <span className="seg-thumb" />
       {options.map((o) => (
-        <button key={o.v} type="button" role={role === 'tablist' ? 'tab' : 'radio'} aria-selected={value === o.v} className={value === o.v ? 'on' : ''} onClick={() => onChange(o.v)}>
+        <button key={o.v} type="button" role={role === 'tablist' ? 'tab' : 'radio'} {...(role === 'tablist' ? { 'aria-selected': value === o.v } : { 'aria-checked': value === o.v })} className={value === o.v ? 'on' : ''} onClick={() => onChange(o.v)}>
           {o.label}
         </button>
       ))}
