@@ -1,5 +1,5 @@
 // Icon set: every glyph is the official Lucide icon (lucide-static@0.460.0, ISC). Key → Lucide name:
-// panel-close=panel-right-close, panel-open=panel-right-open, search=search, pen=pen, chev=chevron-down, chev-r=chevron-right, link=link, pin=map-pin, tags=tags, bookmark=bookmark, plus=plus, x=x, check=check, mail=mail, phone=phone, reply=reply, smile=smile, more=ellipsis-vertical, arrow-up=arrow-up, arrow-down=arrow-down, arrow-r=arrow-right, trend=trending-up, sparkles=sparkles, pinned=pin, trash=trash-2, copy=copy, alert=circle-alert, users=users, info=info, eye=eye, clock=clock, nav-house=house, nav-calendar=calendar, nav-file-pen=file-pen, nav-dollar=circle-dollar-sign, nav-messages=messages-square, nav-settings=settings, reset=rotate-ccw, dot=circle-dot, star=star, external=external-link, cal-plus=calendar-plus, grip=grip-vertical, eye-off=eye-off, layout=layout-dashboard, sliders=sliders-horizontal, megaphone=megaphone, download=download, bell=bell
+// lock=lock, panel-close=panel-right-close, panel-open=panel-right-open, search=search, pen=pen, chev=chevron-down, chev-r=chevron-right, link=link, pin=map-pin, tags=tags, bookmark=bookmark, plus=plus, x=x, check=check, mail=mail, phone=phone, reply=reply, smile=smile, more=ellipsis-vertical, arrow-up=arrow-up, arrow-down=arrow-down, arrow-r=arrow-right, trend=trending-up, sparkles=sparkles, pinned=pin, trash=trash-2, copy=copy, alert=circle-alert, users=users, info=info, eye=eye, clock=clock, nav-house=house, nav-calendar=calendar, nav-file-pen=file-pen, nav-dollar=circle-dollar-sign, nav-messages=messages-square, nav-settings=settings, reset=rotate-ccw, dot=circle-dot, star=star, external=external-link, cal-plus=calendar-plus, grip=grip-vertical, eye-off=eye-off, layout=layout-dashboard, sliders=sliders-horizontal, megaphone=megaphone, download=download, bell=bell
 export const ICONS = {
  "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
  "pen": "<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"/>",
@@ -49,5 +49,6 @@ export const ICONS = {
  "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\"/>",
  "bell": "<path d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9\"/><path d=\"M10.3 21a1.94 1.94 0 0 0 3.4 0\"/>",
  "panel-close": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M15 3v18\"/><path d=\"m8 9 3 3-3 3\"/>",
- "panel-open": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M15 3v18\"/><path d=\"m10 15-3-3 3-3\"/>"
+ "panel-open": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M15 3v18\"/><path d=\"m10 15-3-3 3-3\"/>",
+ "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>"
 };

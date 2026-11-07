@@ -77,30 +77,23 @@ function MsgRow({ m, c, prev }) {
   if (m.type === 'shift') {
     return <div className={`msg-col ${fresh}`} data-msg={m.id} style={{ alignItems: 'flex-end' }}><EventCard id={m.shift} /><div className="msg-time"><Status m={m} /></div></div>;
   }
-  if (m.type === 'email') {
-    const toName = c.who.map((w) => VOLS[w].name).join(', ');
-    return (
-      <div className={`msg ${me ? 'me' : ''} ${cont} ${fresh} ${keep}`} data-msg={m.id}>
-        {!me && <Avatar id={sender} />}
-        <div className="msg-col"><MsgTools m={m} />
-          <div className="email-card">
-            <div className="ehead"><Icon name="mail" size={13} /> {me
-              ? (c.who.length > 1 ? <>You <Icon name="arrow-r" size={12} /> {c.who.length} volunteers · each got their own copy</> : <>You <Icon name="arrow-r" size={12} /> {toName}</>)
-              : <>{VOLS[sender].name} <Icon name="arrow-r" size={12} /> You</>} · Email</div>
-            <div className="esubj">{m.subject}</div><div className="ebody">{m.text}</div>
-          </div>{atts}
-          <div className="msg-time"><Status m={m} /></div><MsgExtras m={m} />
-        </div>
-      </div>
-    );
-  }
+  // Email is a route, not a different kind of message: same bubble, a subject line, and a label
+  // saying how it travelled. Replies by email land back in this thread.
+  const email = m.type === 'email';
+  const repliedBefore = !me && c.msgs.slice(0, c.msgs.indexOf(m)).some((x) => x.from === 'me');
+  const via = email && (me
+    ? <span className="via" data-tip={c.who.length > 1 ? `Each of the ${c.who.length} people got their own copy` : `Sent to ${VOLS[c.who[0]].email}`}><Icon name="mail" size={11} /> Sent by email</span>
+    : <span className="via" data-tip={`From ${VOLS[sender].email}`}><Icon name="mail" size={11} /> {repliedBefore ? 'Replied by email' : 'Emailed you'}</span>);
   return (
     <div className={`msg ${me ? 'me' : ''} ${cont} ${fresh} ${keep}`} data-msg={m.id}>
       {!me && <Avatar id={sender} />}
       <div className="msg-col"><MsgTools m={m} />
         {!me && !cont && c.who.length > 1 && <div className="msg-name">{VOLS[sender].name}</div>}
-        {m.text ? <div className="bubble">{m.text}</div> : null}{atts}
-        <div className="msg-time"><Status m={m} /></div><MsgExtras m={m} />
+        {m.reAnn && <div className="msg-re"><Icon name="megaphone" size={12} /> Private reply to your announcement · {m.reAnn}</div>}
+        {email
+          ? <div className="bubble email">{m.subject && <span className="subj">{m.subject}</span>}{m.text}</div>
+          : m.text ? <div className="bubble">{m.text}</div> : null}{atts}
+        <div className="msg-time">{via}<Status m={m} /></div><MsgExtras m={m} />
       </div>
     </div>
   );

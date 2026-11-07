@@ -7,7 +7,7 @@ import { takeIntent } from '../../lib/bridge.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import { Segmented, usePop, useToast } from '../../components/ui.jsx';
 import {
-  M, UI, CH_LABEL, convo, convoName, draft, firstName, group, hasDraft, lastMineChannel, lastPreview,
+  M, UI, CH_LABEL, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel, annRule,
   markCurrentRead, rerender, scrollBehavior, startShiftCompose, unreadIn,
 } from './state.js';
 import { compose, openConvo, openGroup, setTab } from './actions.js';
@@ -20,7 +20,7 @@ function applyIntent(i) {
   if (!i) return false;
   if (i.type === 'open' && convo(i.id)) {
     Object.assign(M, { tab: 'message', composing: false, active: i.id, thread: null, msgThread: null });
-    M.channel = draft().channel || lastMineChannel(convo(i.id));
+    syncChannel();
     M.convSeq += 1;
     return true;
   }
@@ -57,7 +57,7 @@ function ListItems() {
       });
   } else {
     if (M.filter === 'direct') return <li className="empty-list">Announcements always go to a group.<br />Switch to <b>Message</b> for direct conversations.</li>;
-    items = GROUPS.filter((g) => (M.filter !== 'unread' || g.unread || (!M.composing && g.id === M.activeGroup)) && (M.channelFilter !== 'email' || g.anns.some((a) => a.emailed)))
+    items = GROUPS.filter((g) => (M.filter !== 'unread' || g.unread || (!M.composing && g.id === M.activeGroup)) && (M.channelFilter !== 'email' || g.anns.some((a) => annRule(a) !== 'off')))
       .filter((g) => !q || g.name.toLowerCase().includes(q))
       .map((g) => {
         const last = g.anns[g.anns.length - 1];
@@ -90,6 +90,7 @@ function ConvInner() {
 
 export default function Messages() {
   useStore();
+  syncChannel();
   UI.pop = usePop();
   UI.toast = useToast();
 
@@ -131,7 +132,7 @@ export default function Messages() {
           <label className="search"><Icon name="search" size={16} /><input id="q" placeholder="Search" value={M.q} autoComplete="off" onChange={(e) => { M.q = e.target.value; rerender(); }} /></label>
           <div className="filters">
             <div className="chips">{filters.map((f) => <button key={f} className={`chip ${M.filter === f ? 'on' : ''}`} onClick={() => { M.filter = f; rerender(); }}>{f[0].toUpperCase() + f.slice(1)}</button>)}</div>
-            <button className="pill-select" id="channelBtn" onClick={(e) => UI.pop.toggle(e.currentTarget, <ChannelFilterMenu />, { align: 'end' })} aria-expanded="false" aria-haspopup="menu">{CH_LABEL[M.channelFilter]} <Icon name="chev" size={14} /></button>
+            <button className="pill-select" id="channelBtn" onClick={(e) => UI.pop.toggle(e.currentTarget, <ChannelFilterMenu />, { align: 'end' })} aria-expanded="false" aria-haspopup="menu"><span className="muted-label">Sent via:</span> {CH_LABEL[M.channelFilter]} <Icon name="chev" size={14} /></button>
           </div>
         </div>
         <ul className="convos" id="convList"><ListItems /></ul>

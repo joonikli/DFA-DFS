@@ -65,7 +65,7 @@ export function Status({ m }) {
       </span>
     );
   }
-  const st = m.from === 'me' && (m.status === 'seen' ? 'Seen' : m.status === 'delivered' ? 'Delivered' : m.status === 'sent' && m.type === 'email' ? 'Sent' : '');
+  const st = m.from === 'me' && ({ seen: 'Seen', delivered: 'Delivered', sent: 'Sent' }[m.status] || '');
   return <>{m.time}{st && <span className="st"> · {st}</span>}</>;
 }
 

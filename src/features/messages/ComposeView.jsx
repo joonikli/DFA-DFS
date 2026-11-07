@@ -3,7 +3,7 @@ import { useLayoutEffect } from 'react';
 import { CONVOS, GROUPS, SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import {
-  M, UI, addAttach, addRcpt, closePops, convo, draft, firstName, group, lastMineChannel, openRcpts, rcptOptions,
+  M, UI, addAttach, addRcpt, closePops, firstName, group, openRcpts, syncChannel, rcptOptions,
   renderConv, rerender,
 } from './state.js';
 import { Composer } from './Composer.jsx';
@@ -85,7 +85,7 @@ function ComposeEmpty() {
 function discard() {
   M.drafts[`new-${M.tab}`] = { body: '', subject: '' };
   M.composing = false; M.rcptsOpen = false;
-  M.channel = M.tab === 'message' ? draft().channel || lastMineChannel(convo(M.active)) : 'inapp';
+  syncChannel();
   closePops(true);
   renderConv();
   UI.toast('Draft discarded', { ic: 'trash' });

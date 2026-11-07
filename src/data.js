@@ -20,6 +20,11 @@ export const VOLS = {
   dana:    { name: 'Dana Whitfield', role: 'Board liaison', kind: 'Individual', loc: 'Fox Chapel, PA', email: 'dana.whitfield@gmail.com', phone: '412-555-0142', tags: ['board'], notes: 'Board member who volunteers at the Holiday Suit Drive every year.', upcoming: ['hs19'], hours: 12 },
 };
 
+// How each person can be reached. appDays = days since they last opened the volunteer app
+// (null = never joined the app). Drives the composer's suggested channel and its reason line.
+const APP_DAYS = { sarah: 0, sophia: 1, marie: 2, andre: 4, priya: 0, tasha: 1, elena: 0, marcus: null, janice: 23, rosaline: 0, jimmy: 0, maureen: 0, dana: null };
+Object.entries(APP_DAYS).forEach(([id, d]) => { VOLS[id].appDays = d; });
+
 export const SHIFTS = {
   ww9:  { mon: 'Dec', day: 9,  time: '6:00–8:00 PM', addr: '8374 Redmond Rd, Pittsburgh, PA', title: 'Warehouse Wednesday', desc: 'Sort and tag donated suits for the January career fair. Sign up for at least 1 of 5 shifts.', roles: 'Greeter, Room Manager, Suit Sorter', tags: ['any language', 'heavy lifting'], filled: 14, cap: 20, vols: ['marie', 'tasha', 'janice'] },
   ms12: { mon: 'Dec', day: 12, time: '9:00 AM–1:00 PM', addr: 'Downtown Career Center, 900 Penn Ave', title: 'Mobile Services Route', desc: 'Take the styling van to three partner shelters for on-site fittings.', roles: 'Driver, Stylist, Intake', tags: ['driver', 'spanish'], filled: 6, cap: 8, vols: ['sarah', 'andre', 'elena', 'janice', 'rosaline'] },
@@ -87,7 +92,7 @@ export const R = (a, b, c, d) => ({ '😄': a, '💞': b, '👍': c, '😎': d }
 
 // Announcement groups ("Announcements" tab)
 export const GROUPS = [
-  { id: 'g1', name: 'Mobile Services volunteers', members: ['sarah', 'andre', 'elena', 'janice', 'rosaline'], count: 23, unread: 2, time: '2 min ago', anns: [
+  { id: 'g1', name: 'Mobile Services volunteers', members: ['sarah', 'andre', 'elena', 'janice', 'rosaline'], count: 23, reach: { app: 18, email: 4, none: 1 }, unread: 2, time: '2 min ago', anns: [
     { id: 'a1', seen: 21, date: 'Mon, 8:10 AM', title: 'Warehouse Wednesday: January sign-ups', body: 'Hi all — January Warehouse Wednesday shifts are open. We sort and tag donated suits from 6:00 to 8:00 PM at Redmond Rd. Grab a spot while there’s room.', reacts: R(12, 9, 21, 4), more: 41, mine: [], replies: [
       { who: 'rosaline', when: 'Mon at 9:02 AM', text: 'Signed up for the 7th!' },
       { who: 'janice', when: 'Mon at 11:40 AM', text: 'Can I bring a friend who hasn’t registered yet?' },
@@ -98,19 +103,19 @@ export const GROUPS = [
     ]},
     { id: 'a3', seen: 14, date: 'Today, 10:30 AM', title: 'Saturday shift reminder', body: 'Saturday’s Mobile Services route starts at 9am at the Downtown Career Center. Park on Sixth and come in the side entrance — I’ll be there from 8:30 if you need anything.', reacts: R(5, 3, 14, 2), more: 8, mine: [], replies: [] },
   ]},
-  { id: 'g2', name: 'Warehouse Wednesday 2026 crew', members: ['marie', 'tasha', 'janice'], count: 31, unread: 1, time: '1 hr ago', anns: [
+  { id: 'g2', name: 'Warehouse Wednesday 2026 crew', members: ['marie', 'tasha', 'janice'], count: 31, reach: { app: 26, email: 4, none: 1 }, unread: 1, time: '1 hr ago', anns: [
     { id: 'b1', date: 'Tue, 4:00 PM', title: 'New sorting stations', body: 'We’ve moved shoes and accessories to the back room so suits have more space up front. Marie will walk everyone through it at 6.', reacts: R(4, 6, 18, 1), more: 6, mine: [], replies: [{ who: 'marie', when: 'Tue at 4:12 PM', text: 'Bring gloves if you have them!' }] },
   ]},
-  { id: 'g3', name: 'Career coaching group for Q1', members: ['sophia', 'priya'], count: 9, unread: 0, time: 'Yesterday', anns: [
+  { id: 'g3', name: 'Career coaching group for Q1', members: ['sophia', 'priya'], count: 9, reach: { app: 8, email: 1, none: 0 }, unread: 0, time: 'Yesterday', anns: [
     { id: 'c1a', date: 'Yesterday, 9:00 AM', title: 'Q1 coaching calendar is live', body: 'Lunch & Learns are the second Thursday of each month. Please pick at least one slot by Dec 20.', reacts: R(2, 1, 7, 0), more: 0, mine: [], replies: [] },
   ]},
-  { id: 'g4', name: 'Morning volunteers', members: ['elena', 'rosaline'], count: 17, unread: 0, time: 'Mon', anns: [
+  { id: 'g4', name: 'Morning volunteers', members: ['elena', 'rosaline'], count: 17, reach: { app: 13, email: 3, none: 1 }, unread: 0, time: 'Mon', anns: [
     { id: 'd1', date: 'Mon, 7:30 AM', title: 'Early doors on Saturdays', body: 'Doors open at 8:15 starting this week so we can set up before clients arrive.', reacts: R(3, 0, 9, 1), more: 2, mine: [], replies: [] },
   ]},
-  { id: 'g5', name: 'Executives', members: ['dana', 'jimmy'], count: 6, unread: 0, time: 'Dec 1', anns: [
+  { id: 'g5', name: 'Executives', members: ['dana', 'jimmy'], count: 6, reach: { app: 3, email: 3, none: 0 }, unread: 0, time: 'Dec 1', anns: [
     { id: 'e1', date: 'Dec 1, 5:00 PM', title: 'Q4 board packet', body: 'I’ll share the Q4 volunteer report before the January board meeting.', reacts: R(0, 0, 4, 0), more: 0, mine: [], replies: [] },
   ]},
-  { id: 'g6', name: 'On-the-day leaders · Dec 19', members: ['tasha', 'priya', 'marcus'], count: 5, unread: 0, time: 'Nov 30', anns: [
+  { id: 'g6', name: 'On-the-day leaders · Dec 19', members: ['tasha', 'priya', 'marcus'], count: 5, reach: { app: 3, email: 2, none: 0 }, unread: 0, time: 'Nov 30', anns: [
     { id: 'f1', date: 'Nov 30, 12:15 PM', title: 'Leader huddle at 9:30', body: 'Quick 15-minute huddle before doors open. We’ll go over the drop-off line and steaming stations.', reacts: R(1, 2, 4, 0), more: 0, mine: [], replies: [] },
   ]},
 ];

@@ -5,8 +5,8 @@ import { SHIFTS, VOLS } from '../../data.js';
 import { useStore } from '../../lib/store.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import {
-  M, UI, CH_LABEL, addAttach, addRcpt, annById, bump, closePops, deliver, findMsg, group, rcptOptions,
-  registerRcptContent, renderConv, rerender, startShiftCompose,
+  EMAIL_RULES, M, REPLY_MODES, UI, CH_LABEL, addAttach, addRcpt, annById, bump, closePops, deliver, draft, findMsg, group, rcptOptions,
+  registerRcptContent, renderConv, rerender, seenSplit, startShiftCompose,
 } from './state.js';
 
 // ----- To: recipient dropdown -----
@@ -39,15 +39,16 @@ export function RcptList() {
 }
 registerRcptContent(RcptList);
 
-// ----- channel filter (All channels / In-app / Email) -----
+// ----- "Sent via" filter (Any / App / Email). "Channel" stays reserved for announcement groups. -----
 export function ChannelFilterMenu() {
   useStore();
   const pick = (v) => { M.channelFilter = v; closePops(); rerender(); };
   return (
     <div className="menu" role="menu" style={{ width: 170 }}>
+      <div className="menu-label">Sent via</div>
       {Object.entries(CH_LABEL).map(([v, l]) => (
         <button key={v} className={`menu-item ${M.channelFilter === v ? 'on' : ''}`} onClick={() => pick(v)}>
-          <Icon name={v === 'email' ? 'mail' : v === 'inapp' ? 'nav-messages' : 'users'} size={14} /> {l}
+          <Icon name={v === 'email' ? 'mail' : v === 'inapp' ? 'nav-messages' : 'layout'} size={14} /> {l}
         </button>
       ))}
     </div>
@@ -71,32 +72,68 @@ export function RosterPop({ id }) {
   );
 }
 
-// ----- announcement "Seen by N of M" + Nudge -----
+// ----- announcement "Seen by N of M": split by channel, only claiming what we can measure -----
 export function SeenPop({ id }) {
   useStore();
   const g = group(M.activeGroup);
   const a = g?.anns.find((x) => x.id === id);
   if (!a) return null;
-  const seen = Math.min(a.seen ?? g.count, g.count), left = g.count - seen;
-  const pool = Object.keys(VOLS).filter((w) => !a.replies.some((r) => r.who === w) && w !== 'jimmy');
+  const sp = seenSplit(a, g);
+  const left = sp.appUnseen + sp.notOpened;
+  const rows = [
+    ['Seen in app', sp.appSeen, 'app'],
+    ['In app, not seen yet', sp.appUnseen, 'app-soft'],
+    ...(sp.rule === 'off'
+      ? [['Email only · not emailed', sp.notSent, 'warn']]
+      : [['Emailed · opened', sp.opened, 'good'], ['Emailed · not opened', sp.notOpened, 'warn']]),
+    ['Couldn’t reach', sp.none, 'bad'],
+  ];
   const nudge = () => {
     a.nudged = true; closePops();
     rerender();
-    UI.toast(`Reminder sent to ${g.count - Math.min(a.seen ?? g.count, g.count)} volunteers who haven’t opened it`, { ic: 'check' });
+    UI.toast(`Reminder sent to the ${left} people who haven’t seen it: in the app, or by email if that’s how they got it`, { ic: 'check' });
   };
   return (
-    <div className="roster">
-      <div className="menu-label">Seen by {seen} of {g.count}</div>
-      {left ? (
-        <>
-          <div className="muted" style={{ fontSize: 12, padding: '0 10px 6px' }}>Not seen yet</div>
-          {pool.slice(0, Math.min(left, 4)).map((w) => <div className="roster-row" key={w}><Avatar id={w} className="sm" /> <span>{VOLS[w].name}</span></div>)}
-          {left > 4 && <div className="muted" style={{ fontSize: 12, padding: '4px 10px' }}>and {left - 4} more</div>}
-          <div className="roster-foot"><span /><button className="btn btn-dark btn-xs" onClick={nudge} disabled={!!a.nudged}>{a.nudged ? 'Nudged' : `Nudge ${left}`}</button></div>
-        </>
-      ) : <div style={{ padding: '4px 10px 8px', fontSize: 13 }}>Everyone has seen this.</div>}
+    <div className="roster seen-split">
+      <div className="menu-label">Seen by {sp.total} of {sp.of}</div>
+      {rows.map(([label, n, tone]) => (
+        <div className="ss-row" key={label}>
+          <span>{label}</span>
+          <span className="ss-track"><span className={tone} style={{ width: `${sp.of ? (n / sp.of) * 100 : 0}%` }} /></span>
+          <span className="ss-n">{n}</span>
+        </div>
+      ))}
+      {sp.rule !== 'off' && <div className="ss-note">Email opens are an estimate: many mail apps block the signal.</div>}
+      <div className="roster-foot">
+        <span>{sp.rule === 'unseen' ? 'Emails anyone in the app who hasn’t seen it after 24h' : sp.rule === 'now' ? 'Emailed to everyone' : 'Not emailed'}</span>
+        {left > 0 && <button className="btn btn-dark btn-xs" onClick={nudge} disabled={!!a.nudged}>{a.nudged ? 'Nudged' : `Nudge ${left}`}</button>}
+      </div>
     </div>
   );
+}
+
+// ----- announcement composer: email rule + reply mode -----
+function OptionMenu({ options, value, onPick, label }) {
+  useStore();
+  return (
+    <div className="menu opt-menu" role="menu" aria-label={label}>
+      <div className="menu-label">{label}</div>
+      {Object.entries(options).map(([v, [title, help]]) => (
+        <button key={v} role="menuitemradio" aria-checked={value === v} className={`menu-item ${value === v ? 'on' : ''}`} onClick={() => onPick(v)}>
+          <span className="opt-check">{value === v && <Icon name="check" size={14} />}</span>
+          <span><b>{title}</b><small>{help}</small></span>
+        </button>
+      ))}
+    </div>
+  );
+}
+export function EmailRuleMenu() {
+  const pick = (v) => { draft().emailRule = v; closePops(); rerender(); };
+  return <OptionMenu label="Email" options={EMAIL_RULES} value={draft().emailRule || 'unseen'} onPick={pick} />;
+}
+export function RepliesMenu() {
+  const pick = (v) => { draft().replies = v; closePops(); rerender(); };
+  return <OptionMenu label="Replies" options={REPLY_MODES} value={draft().replies || 'thread'} onPick={pick} />;
 }
 
 // ----- bounced email: fix the address and resend -----

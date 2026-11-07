@@ -2,18 +2,21 @@
 import { useLayoutEffect, useRef } from 'react';
 import { SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
-import { M, UI, closePops, convo, draft, renderConv, rerender, send } from './state.js';
-import { LinkForm, ShiftPicker } from './pops.jsx';
+import { EMAIL_RULES, M, REPLY_MODES, UI, audience, channelAdvice, closePops, convo, currentRecipients, draft, renderConv, rerender, send } from './state.js';
+import { EmailRuleMenu, LinkForm, RepliesMenu, ShiftPicker } from './pops.jsx';
 
 // Message box grows with its text up to ~7 lines, then scrolls
 export function growBody(t = document.getElementById('body')) { if (!t) return; t.style.height = 'auto'; t.style.height = `${Math.min(t.scrollHeight, 168)}px`; }
 
 export function setChannel(v) {
   const d = draft();
+  const adv = channelAdvice(currentRecipients());
+  if ((v === 'inapp' && adv?.inappOff) || (v === 'email' && adv?.emailOff)) return;
   const body = document.getElementById('body');
   if (body) { d.body = body.value; d.subject = document.getElementById('subject')?.value ?? d.subject; }
   if (M.channel === v) return;
-  M.channel = v; d.channel = M.channel;
+  d.channel = v;
+  M.channel = v;
   closePops();
   // In compose mode the whole pane rebuilds (keeping whatever was typed in To:)
   if (M.composing) renderConv({ keepQ: true }); else rerender();
@@ -26,6 +29,12 @@ export function Composer() {
   const c = !M.composing && M.tab === 'message' ? convo(M.active) : null;
   const toList = M.composing ? M.rcpts.filter((r) => r.kind === 'vol').map((r) => r.id) : c ? c.who : [];
   const hasLoc = M.attach.some((a) => a.type === 'loc');
+  const adv = ann ? null : channelAdvice(currentRecipients());
+  const au = ann ? audience() : null;
+  const rule = d.emailRule || 'unseen', replies = d.replies || 'thread';
+  const people = (n) => `${n} ${n === 1 ? 'person' : 'people'}`;
+  const sendLabel = ann ? (au.total ? `Post to ${people(au.total)}` : 'Post') : email ? 'Send email' : 'Send';
+  const optPop = (e, C) => UI.pop.toggle(e.currentTarget, <C />, { side: 'top', align: 'end' });
   const bodyRef = useRef(null);
   useLayoutEffect(() => { growBody(bodyRef.current); }, []);
 
@@ -69,14 +78,35 @@ export function Composer() {
         onInput={(e) => { draft().body = e.currentTarget.value; growBody(e.currentTarget); }}
         onKeyDown={onKeyDown}
       />
+      {ann && (
+        <div className="ann-opts">
+          {au.total ? (
+            <span className="reach">
+              <Icon name="users" size={13} /> {people(au.total)}
+              <span className="reach-pill app" data-tip="Have the app and will see it there">{au.app} in app</span>
+              {au.email > 0 && <span className="reach-pill email" data-tip="Haven’t joined the app, so they’re reached by email">{au.email} email only</span>}
+              {au.none > 0 && <span className="reach-pill none" data-tip="No app and no working email address">{au.none} can’t be reached</span>}
+            </span>
+          ) : <span className="reach muted">Add a group to see who this reaches</span>}
+          <span className="sp" />
+          <button className="opt-btn" onClick={(e) => optPop(e, EmailRuleMenu)} aria-haspopup="menu" aria-expanded="false" data-tip={EMAIL_RULES[rule][1]}>
+            <Icon name="mail" size={12} /> Email: <b>{EMAIL_RULES[rule][0]}</b> <Icon name="chev" size={12} />
+          </button>
+          <button className="opt-btn" onClick={(e) => optPop(e, RepliesMenu)} aria-haspopup="menu" aria-expanded="false" data-tip={REPLY_MODES[replies][1]}>
+            <Icon name="reply" size={12} /> Replies: <b>{REPLY_MODES[replies][0]}</b> <Icon name="chev" size={12} />
+          </button>
+        </div>
+      )}
       <div className="comp-bar">
         <button className="icon-btn" onClick={(e) => UI.pop.toggle(e.currentTarget, <ShiftPicker />, { side: 'top' })} data-tip="Attach a shift" aria-label="Attach a shift"><Icon name="nav-calendar" size={18} /></button>
         <button className="icon-btn" onClick={(e) => UI.pop.toggle(e.currentTarget, <LinkForm />, { side: 'top' })} data-tip="Add a link" aria-label="Add a link"><Icon name="link" size={18} /></button>
-        <span className="comp-sep" aria-hidden="true" />
-        <div className="ch-toggle" role="radiogroup" aria-label="Send as">
-          <button role="radio" aria-checked={!email} className={email ? '' : 'on'} onClick={() => setChannel('inapp')} data-tip="Send in the app"><Icon name="nav-messages" size={13} /> In-app</button>
-          <button role="radio" aria-checked={email} className={email ? 'on' : ''} onClick={() => setChannel('email')} data-tip={ann ? 'Also send by email' : 'Send as an email'}><Icon name="mail" size={13} /> {ann ? '+ Email' : 'Email'}</button>
-        </div>
+        {!ann && <span className="comp-sep" aria-hidden="true" />}
+        {!ann && (
+          <div className="ch-toggle" role="radiogroup" aria-label="Send as">
+            <button role="radio" aria-checked={!email} aria-disabled={!!adv?.inappOff} className={email ? '' : 'on'} onClick={() => setChannel('inapp')} data-tip={adv?.inappOff || 'Send in the app'}><Icon name="nav-messages" size={13} /> In-app</button>
+            <button role="radio" aria-checked={email} aria-disabled={!!adv?.emailOff} className={email ? 'on' : ''} onClick={() => setChannel('email')} data-tip={adv?.emailOff || 'Send as an email'}><Icon name="mail" size={13} /> Email</button>
+          </div>
+        )}
         <div className="grow" id="attachList">
           {M.attach.map((a, i) => (
             <span className="attach" key={`${a.type}-${a.id || a.url || a.text}`}>
@@ -88,8 +118,16 @@ export function Composer() {
           ))}
         </div>
         {ann && <button className={`icon-btn round ${hasLoc ? 'on' : ''}`} style={{ width: 30, height: 30 }} onClick={toggleLoc} data-tip={hasLoc ? 'Remove location' : 'Add meeting location'} aria-label="Location"><Icon name="pin" size={15} /></button>}
-        <button className="btn btn-dark btn-sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>Send</button>
+        <button className="btn btn-dark btn-sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>{sendLabel}</button>
       </div>
+      {adv && (
+        <div className={`ch-why ${adv.ch === 'email' ? 'warn' : ''}`}>
+          <span className="dot" aria-hidden="true" />
+          {M.channel === adv.ch
+            ? <span>{adv.reason}</span>
+            : <><span>Suggested: {adv.ch === 'email' ? 'Email' : 'In-app'} · {adv.reason}</span><button className="link" onClick={() => setChannel(adv.ch)}>Switch</button></>}
+        </div>
+      )}
     </div>
   );
 }

@@ -1590,3 +1590,50 @@ a { color: inherit; }
 @keyframes surveyPing { 0% { box-shadow: 0 0 0 0 rgba(210,44,127,.35); } 100% { box-shadow: 0 0 0 14px rgba(210,44,127,0); } }
 
 @media (prefers-reduced-motion: reduce) { .vp-thanks-cta:active, .vp-thanks-x:active, .vp-thanks-cta:hover .ic { transform: none; } }
+
+/* ---------- Channels: suggested route, announcement delivery, honest status (email/in-app research) ---------- */
+/* Composer: a channel that can't reach the person is shown but disabled; the line under the bar says why */
+.ch-toggle button[aria-disabled="true"] { opacity: .4; cursor: not-allowed; }
+.ch-toggle button[aria-disabled="true"]:active { transform: none; }
+.ch-why { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--darker-gray); padding: 0 2px; min-height: 18px; }
+.ch-why .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-dark); flex: none; }
+.ch-why.warn .dot { background: #d9a400; }
+.ch-why .link { font-size: 12px; font-weight: 600; margin-left: 2px; }
+/* Announcement composer: who it reaches + delivery rules */
+.ann-opts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 0 8px; border-bottom: 1px solid var(--gray); font-size: 12px; color: var(--darker-gray); }
+.ann-opts .sp { flex: 1; }
+.reach { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.reach-pill { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600; cursor: default; }
+.reach-pill.app { background: var(--purple-lightest); color: var(--purple-dark); }
+.reach-pill.email { background: #fff4dc; color: #8a5a00; }
+.reach-pill.none { background: #fbebf3; color: var(--pink-dark); }
+.opt-btn { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px; border-radius: var(--r-pill); border: 1px solid var(--gray); background: var(--white); font-size: 12px; color: var(--darker-gray); transition: border-color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
+.opt-btn b { color: var(--black); font-weight: 600; }
+.opt-btn:active { transform: scale(.97); }
+.opt-btn > .ic:last-child { transition: transform var(--dur-pop) var(--ease-out); }
+.opt-btn[aria-expanded="true"] > .ic:last-child { transform: rotate(180deg); }
+@media (hover: hover) and (pointer: fine) { .opt-btn:hover { border-color: var(--purple-light); } }
+.opt-menu { width: 300px; }
+.opt-menu .menu-item { align-items: flex-start; gap: 10px; padding-top: 9px; padding-bottom: 9px; white-space: normal; text-align: left; }
+.opt-menu .menu-item b { display: block; font-weight: 600; font-size: 13px; color: var(--black); }
+.opt-menu .menu-item small { display: block; font-size: 12px; line-height: 1.4; color: var(--darker-gray); margin-top: 2px; }
+.opt-check { width: 14px; flex: none; color: var(--purple-dark); padding-top: 1px; }
+/* Thread: email is a route on the message, not a separate card */
+.bubble.email .subj { display: block; font-weight: 600; margin-bottom: 3px; }
+.via { display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; margin-right: 6px; border: 1px solid var(--gray); border-radius: var(--r-pill); font-size: 11px; font-weight: 600; color: var(--darker-gray); vertical-align: middle; cursor: default; }
+.msg:has(+ .msg.cont) .msg-time:has(.via) { display: block; }
+.msg-re { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--darker-gray); margin-bottom: 4px; }
+/* "Sent via" filter label */
+.pill-select .muted-label { color: var(--darker-gray); font-weight: 400; }
+/* Seen-by split */
+.seen-split { width: 320px; }
+.ss-row { display: grid; grid-template-columns: 1fr 72px 22px; gap: 10px; align-items: center; padding: 5px 10px; font-size: 13px; }
+.ss-track { height: 6px; border-radius: var(--r-pill); background: var(--light-gray); overflow: hidden; }
+.ss-track span { display: block; height: 100%; border-radius: inherit; transform-origin: left; animation: barGrowX 400ms var(--ease-out) both; }
+.ss-track .app { background: var(--purple); }
+.ss-track .app-soft { background: var(--purple-light); }
+.ss-track .good { background: var(--green-dark); }
+.ss-track .warn { background: #e0a91b; }
+.ss-track .bad { background: var(--pink-dark); }
+.ss-n { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ss-note { font-size: 11px; color: var(--darker-gray); padding: 2px 10px 4px; }

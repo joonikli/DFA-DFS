@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ME } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
-import { M, UI, renderConv, rerender, splitDate } from './state.js';
+import { M, UI, annRule, groupReach, renderConv, rerender, seenSplit, splitDate } from './state.js';
 import { AnnReacts, AttachInline, NewDiv, ThreadPanel, toggleKeep } from './parts.jsx';
 import { AnnMoreMenu, AnnReactPicker, SeenPop } from './pops.jsx';
 import { Composer } from './Composer.jsx';
@@ -19,7 +19,9 @@ function Post({ a, g }) {
   const faces = [...new Set(a.replies.map((r) => r.who))].slice(0, 3);
   const last = a.replies[a.replies.length - 1];
   const pinned = M.pinned[g.id] === a.id;
-  const seen = Math.min(a.seen ?? g.count, g.count);
+  const sp = seenSplit(a, g);
+  const rule = annRule(a);
+  const emailOnly = (a.reach || groupReach(g)).email;
   const leaving = M.leavingAnn?.ann === a;
   const keep = M.keep === a.id ? 'keep' : '';
   const on = (k) => (M.keepBtn === `${k}:${a.id}` ? 'on' : '');
@@ -29,7 +31,10 @@ function Post({ a, g }) {
       <div className="post-main">
         <header className="post-head"><b>{ME.name}</b><time>{time}</time>
           {pinned && <span className="post-chip pin"><Icon name="pinned" size={12} /> Pinned</span>}
-          {a.emailed && <span className="post-chip" data-tip={`Also sent by email to ${g.count} volunteers, with an unsubscribe link`}><Icon name="mail" size={12} /> Also emailed</span>}
+          {rule === 'now' && <span className="post-chip" data-tip={`Emailed to all ${g.count}, as well as posted in the app`}><Icon name="mail" size={12} /> Emailed to everyone</span>}
+          {rule === 'unseen' && <span className="post-chip" data-tip={`${emailOnly} people without the app got it by email. Anyone else who hasn’t seen it after 24 hours gets an email too.`}><Icon name="mail" size={12} /> Email if unseen · 24h</span>}
+          {rule === 'off' && emailOnly > 0 && <span className="post-chip" data-tip={`Not emailed, so ${emailOnly} people without the app didn’t get it`}><Icon name="nav-messages" size={12} /> App only</span>}
+          {a.replyMode === 'private' && <span className="post-chip" data-tip="Replies come to you as direct messages in Message"><Icon name="lock" size={12} /> Private replies</span>}
         </header>
         <div className="post-card">
           <h3 className="ann-title">{a.title}</h3><div className="ann-body">{a.body}</div>
@@ -45,7 +50,7 @@ function Post({ a, g }) {
             </button>
           )}
           <button className="seen-btn" onClick={(e) => UI.pop.toggle(e.currentTarget, <SeenPop id={a.id} />, { align: 'end' })} aria-haspopup="dialog" aria-expanded="false">
-            <Icon name="eye" size={13} /> Seen by {seen} of {g.count}{a.nudged ? ' · nudged' : ''}
+            <Icon name="eye" size={13} /> Seen by {sp.total} of {g.count}{a.nudged ? ' · nudged' : ''}
           </button>
         </div>
       </div>
@@ -104,7 +109,7 @@ export function GroupView({ g }) {
     <>
       <header className="conv-head">
         <span className="av-stack lg">{g.members.slice(0, 2).map((w) => <Avatar key={w} id={w} />)}</span>
-        <div><div className="h3">{g.name}</div><div className="sub">{g.count} members · {M.channel === 'email' ? 'Email' : 'In-app'} announcements</div></div>
+        <div><div className="h3">{g.name}</div><div className="sub">{g.count} members</div></div>
       </header>
       {pinnedAnn && (
         <div className="pin-banner"><Icon name="pinned" size={14} /><span>Pinned · <b>{pinnedAnn.title}</b></span><span style={{ flex: 1 }} />

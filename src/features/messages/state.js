@@ -52,7 +52,81 @@ export function ensureIds(c) { c.msgs.forEach((m) => { m.id ||= nextMsgId(); });
 CONVOS.forEach(ensureIds);
 
 export const hasDraft = (d) => !!(d && ((d.body || '').trim() || d.rcpts?.length || d.attach?.length));
-export const lastMineChannel = (c) => ([...c.msgs].reverse().find((m) => m.from === 'me')?.type === 'email' ? 'email' : 'inapp');
+// ----- channels: which route will actually reach people -----
+// A volunteer who never joined the app can only get email; one who hasn't opened it in two weeks
+// probably won't see an in-app message soon, so email is suggested (the manager can still switch).
+const APP_STALE_DAYS = 14;
+const joinNames = (ids) => (ids.length === 1 ? firstName(ids[0]) : ids.length === 2 ? `${firstName(ids[0])} and ${firstName(ids[1])}` : `${ids.length} people`);
+const ago = (d) => (d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`);
+const span = (d) => (d >= 14 ? `${Math.floor(d / 7)} weeks` : `${d} days`);
+export function channelAdvice(ids) {
+  if (!ids.length) return null;
+  const noApp = ids.filter((w) => VOLS[w].appDays == null);
+  const stale = ids.filter((w) => VOLS[w].appDays != null && VOLS[w].appDays >= APP_STALE_DAYS);
+  const noEmail = ids.filter((w) => !VOLS[w].email);
+  const one = ids.length === 1;
+  const has = (list) => (list.length === 1 ? 'hasn’t' : 'haven’t');
+  const inappOff = noApp.length ? `${joinNames(noApp)} ${has(noApp)} joined the app yet, so in-app messages won’t reach ${noApp.length === 1 ? 'them' : 'everyone'}` : null;
+  const emailOff = noEmail.length ? `No email address on file for ${joinNames(noEmail)}` : null;
+  let ch = 'inapp', reason;
+  if (noApp.length) { ch = 'email'; reason = `${joinNames(noApp)} ${has(noApp)} joined the app, so this goes by email`; }
+  else if (stale.length) { ch = 'email'; reason = one ? `${firstName(ids[0])} hasn’t opened the app in ${span(VOLS[ids[0]].appDays)}` : `${joinNames(stale)} ${has(stale)} opened the app in a while`; }
+  else reason = one ? `${firstName(ids[0])} was active in the app ${ago(VOLS[ids[0]].appDays)}` : 'Everyone here has used the app this week';
+  if (ch === 'email' && emailOff) ch = 'inapp';
+  return { ch, reason, inappOff, emailOff };
+}
+export const currentRecipients = () => (M.composing
+  ? [...new Set(M.rcpts.flatMap((r) => (r.kind === 'group' ? group(r.id).members : [r.id])))]
+  : convo(M.active)?.who || []);
+// The composer's channel: what the manager picked for this draft, else the suggestion; never a route that can't work
+export function syncChannel() {
+  if (M.tab !== 'message') { M.channel = 'inapp'; return; }
+  const adv = channelAdvice(currentRecipients());
+  let ch = draft().channel || adv?.ch || 'inapp';
+  if (ch === 'inapp' && adv?.inappOff) ch = 'email';
+  if (ch === 'email' && adv?.emailOff) ch = 'inapp';
+  M.channel = ch;
+}
+
+// ----- announcements: audience split, email rule, reply mode -----
+export const EMAIL_RULES = {
+  unseen: ['If unseen after 24h', 'People without the app get it by email now. Everyone else gets an email only if they haven’t seen it in 24 hours.'],
+  now: ['Everyone now', 'Emails everyone right away, on top of the app. Keep this for important, time-sensitive news.'],
+  off: ['Don’t email', 'Only people with the app get it.'],
+};
+export const REPLY_MODES = {
+  thread: ['In the thread', 'Replies are visible to the whole group.'],
+  private: ['Privately to me', 'Replies come to you as direct messages in Message.'],
+};
+export const annRule = (a) => a.emailRule || (a.emailed ? 'now' : 'unseen');
+export function reachOfPeople(ids) {
+  const r = { app: 0, email: 0, none: 0 };
+  ids.forEach((w) => { const v = VOLS[w]; if (v.appDays != null) r.app += 1; else if (v.email && !v.emailBad) r.email += 1; else r.none += 1; });
+  return r;
+}
+export const groupReach = (g) => g.reach || reachOfPeople(g.members);
+// Who the announcement being written will reach: { app, email, none, total }
+export function audience() {
+  const r = { app: 0, email: 0, none: 0 };
+  const add = (x) => { r.app += x.app; r.email += x.email; r.none += x.none; };
+  if (!M.composing) { const g = group(M.activeGroup); if (g) add(groupReach(g)); }
+  else {
+    const inGroups = new Set(M.rcpts.filter((x) => x.kind === 'group').flatMap((x) => group(x.id).members));
+    M.rcpts.filter((x) => x.kind === 'group').forEach((x) => add(groupReach(group(x.id))));
+    add(reachOfPeople(M.rcpts.filter((x) => x.kind === 'vol' && !inGroups.has(x.id)).map((x) => x.id)));
+  }
+  return { ...r, total: r.app + r.email + r.none };
+}
+// What we actually know about who has an announcement. App users see it first; email opens are an estimate.
+export function seenSplit(a, g) {
+  const r = a.reach || groupReach(g);
+  const rule = annRule(a);
+  const seen = Math.min(a.seen ?? g.count, g.count);
+  const emailed = rule === 'off' ? 0 : r.email;
+  const appSeen = Math.min(seen, r.app);
+  const opened = Math.min(emailed, seen - appSeen);
+  return { rule, appSeen, appUnseen: r.app - appSeen, opened, notOpened: emailed - opened, notSent: rule === 'off' ? r.email : 0, none: r.none, total: appSeen + opened, of: g.count };
+}
 const DAY_NAMES = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
 export function splitDate(d) {
   if (!d || d === 'Just now') return { day: 'Today', time: d === 'Just now' ? nowTime() : '' };
@@ -61,11 +135,11 @@ export function splitDate(d) {
   const day = d.slice(0, i);
   return { day: DAY_NAMES[day] || day, time: d.slice(i + 2) };
 }
-export const CH_LABEL = { all: 'All channels', inapp: 'In-app', email: 'Email' };
+export const CH_LABEL = { all: 'Any', inapp: 'App', email: 'Email' };
 export const unreadIn = (tab) => (tab === 'message' ? CONVOS : GROUPS).reduce((a, x) => a + x.unread, 0);
 
 // Browser tab title "(N) …" — vanilla syncBadge()
-const BASE_TITLE = typeof document !== 'undefined' ? document.title : '';
+const BASE_TITLE = typeof document !== 'undefined' ? document.title.replace(/^\(\d+\) /, '') : '';
 export function syncTitle() {
   const n = unreadIn('message') + unreadIn('announcement');
   document.title = n ? `(${n}) ${BASE_TITLE}` : BASE_TITLE;
@@ -73,7 +147,7 @@ export function syncTitle() {
 syncTitle();
 
 // Re-render everything subscribed (list, conversation, sidebar badge, popovers)
-export function rerender() { syncTitle(); emit(); }
+export function rerender() { syncChannel(); syncTitle(); emit(); }
 // vanilla Msg.renderConv(): the conversation pane is rebuilt (scroll to bottom / New divider, side panel reset)
 export function renderConv({ keepQ = false } = {}) {
   M.convSeq += 1;
@@ -220,24 +294,34 @@ export function deliver(m, c) {
     else Object.assign(m, { status: email ? 'sent' : 'delivered', time: nowTime(), fail: null, fixEmail: null });
     rerender();
     if (m.status === 'failed') { UI.toast(`Message not delivered: ${m.fail}`, { ic: 'alert' }); live(`Message not delivered: ${m.fail}`); return; }
-    if (email) UI.toast(c.who.length > 1 ? `Email sent to ${c.who.length} volunteers, each as their own copy` : `Email sent to ${convoName(c)}`, { ic: 'mail' });
-    else if (c.who.length === 1 && !m.replied) { m.replied = true; fakeReply(c, m); }
+    if (email) {
+      UI.toast(c.who.length > 1 ? `Email sent to ${c.who.length} volunteers, each as their own copy` : `Email sent to ${convoName(c)}`, { ic: 'mail' });
+      // Email is honest about what it knows: Sent, then Delivered once the mail server accepts it. Never "Seen".
+      setTimeout(() => { if (m.status === 'sent') { m.status = 'delivered'; rerender(); } }, 1100);
+    }
+    if (c.who.length === 1 && !m.replied) { m.replied = true; fakeReply(c, m, email); }
   }, 900);
 }
 
 const onMessages = () => location.hash.startsWith('#messages');
 
-function fakeReply(c, sent) {
-  const replies = ['Sounds good — thank you!', 'Perfect, see you then 🙌', 'Got it, thanks Bridget!', 'Thank you! Added it to my calendar.'];
+function fakeReply(c, sent, email = false) {
+  const replies = email
+    ? ['Thanks Bridget, that works for us. See you there.', 'Got it, thank you! I’ll pass it on to the team.']
+    : ['Sounds good — thank you!', 'Perfect, see you then 🙌', 'Got it, thanks Bridget!', 'Thank you! Added it to my calendar.'];
   const viewingNow = () => onMessages() && M.tab === 'message' && !M.composing && M.active === c.id;
   setTimeout(() => {
-    if (!sent) return;
+    if (!sent || email) return;
     (sent.reacts ||= {})['👍'] = [c.who[0]];
     if (viewingNow()) { sent.status = 'seen'; bump(sent.id, '👍'); rerender(); }
   }, 1400);
   setTimeout(() => {
-    if (sent) sent.status = 'seen';
-    const m = { id: nextMsgId(), from: 'them', text: replies[Math.floor(Math.random() * replies.length)], time: nowTime() };
+    if (sent && !email) sent.status = 'seen';
+    const text = replies[Math.floor(Math.random() * replies.length)];
+    // An email reply threads back into the same conversation, labelled "Replied by email"
+    const m = email
+      ? { id: nextMsgId(), from: 'them', type: 'email', subject: `Re: ${sent.subject.replace(/^Re: /, '')}`, text, time: nowTime() }
+      : { id: nextMsgId(), from: 'them', text, time: nowTime() };
     c.msgs.push(m); c.time = 'Just now';
     const name = VOLS[c.who[0]].name;
     if (viewingNow()) {
@@ -248,11 +332,11 @@ function fakeReply(c, sent) {
       else M.newPill = true;
     } else {
       c.unread += 1;
-      UI.toast(`${name} replied: “${m.text}”`, { ic: 'nav-messages', action: 'Open', onAction: () => openFromAnywhere(c.id) });
+      UI.toast(`${name} replied${email ? ' by email' : ''}: “${m.text}”`, { ic: 'nav-messages', action: 'Open', onAction: () => openFromAnywhere(c.id) });
     }
     live(`New message from ${name}: ${m.text}`);
     rerender();
-  }, 2600);
+  }, email ? 3400 : 2600);
 }
 
 // vanilla render(): a full rebuild of the messaging screen
@@ -263,7 +347,7 @@ export function fullRender() {
 
 export function openFromAnywhere(id) {
   Object.assign(M, { tab: 'message', composing: false, active: id, thread: null });
-  M.channel = draft().channel || lastMineChannel(convo(id));
+  syncChannel();
   if (onMessages()) fullRender(); else { markCurrentRead(); M.convSeq += 1; navigate('messages'); }
 }
 
@@ -271,13 +355,15 @@ export function openFromAnywhere(id) {
 export function startShiftCompose(id) {
   const s = SHIFTS[id];
   if (!s) return;
-  Object.assign(M, { tab: 'message', composing: true, channel: 'inapp', thread: null, rcpts: s.vols.map((v) => ({ kind: 'vol', id: v })), attach: [{ type: 'shift', id }] });
-  Object.assign(draft(), { channel: 'inapp', subject: '', body: `Hi all — thanks for signing up for ${s.title} on ${s.mon} ${s.day}. We still have ${s.cap - s.filled} open spots; if you know anyone who’d like to join, send them the link below!` });
+  Object.assign(M, { tab: 'message', composing: true, thread: null, rcpts: s.vols.map((v) => ({ kind: 'vol', id: v })), attach: [{ type: 'shift', id }] });
+  Object.assign(draft(), { channel: undefined, subject: '', body: `Hi all — thanks for signing up for ${s.title} on ${s.mon} ${s.day}. We still have ${s.cap - s.filled} open spots; if you know anyone who’d like to join, send them the link below!` });
   closePops(true);
   if (onMessages()) fullRender(); else { M.convSeq += 1; navigate('messages'); }
 }
 
 function sendAnn({ body, subject, attach, key }) {
+  const d = draft();
+  const emailRule = d.emailRule || 'unseen', replies = d.replies || 'thread';
   let g;
   if (M.composing) {
     const grp = M.rcpts.find((r) => r.kind === 'group');
@@ -288,7 +374,8 @@ function sendAnn({ body, subject, attach, key }) {
       GROUPS.unshift(g); M.fresh.convo = g.id;
     }
   } else g = group(M.activeGroup);
-  const a = { id: `na${Date.now()}`, date: 'Just now', title: subject || 'Announcement', body, attach, reacts: {}, more: 0, mine: [], replies: [], seen: 0, emailed: M.channel === 'email' };
+  const reach = groupReach(g);
+  const a = { id: `na${Date.now()}`, date: 'Just now', title: subject || 'Announcement', body, attach, reacts: {}, more: 0, mine: [], replies: [], seen: 0, emailRule, replyMode: replies, reach };
   g.anns.push(a); g.time = 'Just now';
   GROUPS.splice(GROUPS.indexOf(g), 1); GROUPS.unshift(g);
   M.fresh.ann = a.id;
@@ -296,7 +383,11 @@ function sendAnn({ body, subject, attach, key }) {
   M.attach = []; M.composing = false; M.rcpts = [];
   M.activeGroup = g.id;
   renderConv();
-  UI.toast(`Announcement sent to ${g.count} ${g.count === 1 ? 'person' : 'people'}${a.emailed ? ' in-app and by email' : ''}`, { ic: 'check' });
+  const ppl = (n) => `${n} ${n === 1 ? 'person' : 'people'}`;
+  UI.toast(emailRule === 'now' ? `Posted to ${ppl(g.count)} and emailed to everyone`
+    : emailRule === 'off' ? `Posted to ${ppl(g.count)} in the app${reach.email ? ` · ${ppl(reach.email)} without the app won’t get it` : ''}`
+    : `Posted to ${ppl(g.count)}${reach.email ? ` · ${ppl(reach.email)} without the app ${reach.email === 1 ? 'gets' : 'get'} it by email` : ''}`, { ic: 'check' });
+  annReply(g, a, replies);
   [700, 1500, 2400, 3300, 4600].forEach((t, i) => setTimeout(() => {
     a.seen = Math.min(g.count, Math.ceil((g.count * (i + 1)) / 7));
     rerender();
@@ -310,3 +401,31 @@ function sendAnn({ body, subject, attach, key }) {
 }
 
 export const scrollBehavior = () => (reducedMotion() ? 'auto' : 'smooth');
+
+// A volunteer answers a new announcement: in its thread, or privately as a direct message
+// (an email-only volunteer's reply arrives by email). Private replies never land in the group.
+function annReply(g, a, mode) {
+  setTimeout(() => {
+    if (mode === 'thread') {
+      const who = g.members[1] || g.members[0];
+      a.replies.push({ who, when: 'Just now', text: 'Thanks for sharing this!' });
+      rerender();
+      return;
+    }
+    const who = g.members.find((w) => VOLS[w].appDays == null) || g.members[0];
+    const byEmail = VOLS[who].appDays == null;
+    let c = CONVOS.find((x) => x.who.length === 1 && x.who[0] === who);
+    if (!c) { c = { id: `n${Date.now()}`, who: [who], unread: 0, time: 'Just now', msgs: [] }; CONVOS.unshift(c); }
+    const text = 'Thanks for the heads-up. Is there anything we should bring?';
+    const m = byEmail
+      ? { id: nextMsgId(), from: 'them', type: 'email', subject: `Re: ${a.title}`, text, time: nowTime(), reAnn: a.title }
+      : { id: nextMsgId(), from: 'them', text, time: nowTime(), reAnn: a.title };
+    c.msgs.push(m); c.time = 'Just now';
+    CONVOS.splice(CONVOS.indexOf(c), 1); CONVOS.unshift(c);
+    const viewing = onMessages() && M.tab === 'message' && !M.composing && M.active === c.id;
+    if (viewing) { M.fresh.msg = m; M.scroll = 'smooth'; } else c.unread += 1;
+    UI.toast(`${VOLS[who].name} replied privately${byEmail ? ' by email' : ''} to “${a.title}”`, { ic: 'nav-messages', action: 'Open', onAction: () => openFromAnywhere(c.id) });
+    live(`${VOLS[who].name} replied privately to ${a.title}`);
+    rerender();
+  }, 5200);
+}
