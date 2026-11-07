@@ -1,0 +1,40 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.btn--primary {
+  background: var(--neutral-black);
+  color: var(--neutral-white);
+}
+.btn--primary:hover {
+  background: #252425;
+}
+/* "State=Pressed" */
+.btn--primary:active {
+  background: var(--primary-darkest-purple);
+}
+
+.btn--secondary {
+  background: var(--neutral-white);
+  border-color: var(--primary-dark-purple);
+  color: var(--primary-dark-purple);
+}
+.btn--secondary:hover {
+  background: var(--primary-lightest-purple);
+}
+
+.btn--tertiary {
+  background: rgb(96 120 241 / 0.2);
+  color: var(--primary-darkest-purple);
+}
+.btn--tertiary:hover {
+  background: rgb(96 120 241 / 0.3);
+}

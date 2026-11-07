@@ -1,0 +1,17 @@
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.status-pill__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-pill--open { background: var(--green-light-green); color: var(--green-dark-green); }
+.status-pill--closed { background: var(--red-light-red); color: var(--red-dark-red); }
+.status-pill--draft { background: var(--neutral-light-gray); color: var(--neutral-darker-gray); }

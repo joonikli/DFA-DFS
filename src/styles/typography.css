@@ -1,0 +1,66 @@
+/* Figma text styles → utility classes. Names match the Figma style names. */
+
+.text-heading-1 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: normal;
+}
+
+.text-heading-2 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: normal;
+}
+
+.text-subheading {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: normal;
+}
+
+.text-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: normal;
+}
+
+.text-body-2 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: normal;
+}
+
+.text-label-1 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.text-label-2 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.text-label-large {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: normal;
+}
+
+/* "Title3/Regular" (SF Pro) — falls back to the system UI font off Apple devices */
+.text-title-3 {
+  font-family: -apple-system, 'SF Pro Text', 'SF Pro', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 25px;
+  letter-spacing: -0.45px;
+}

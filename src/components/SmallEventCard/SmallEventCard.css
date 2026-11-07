@@ -1,0 +1,75 @@
+.small-event-card {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 12px;
+  text-align: left;
+  color: var(--neutral-black);
+}
+
+button.small-event-card:hover {
+  border-color: var(--primary-light-purple);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.small-event-card__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
+  padding-right: 20px;
+  border-right: 1px solid var(--neutral-gray);
+  box-sizing: content-box;
+}
+
+.small-event-card__day {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 1;
+}
+
+.small-event-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  padding-left: 4px;
+}
+
+.small-event-card__title {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.small-event-card__subtitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.small-event-card__actions {
+  display: flex;
+  align-items: center;
+}
+
+.logistics-molecule {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0.7;
+}
+
+.logistics-molecule__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

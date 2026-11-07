@@ -1,0 +1,123 @@
+.field-label {
+  display: block;
+  color: var(--neutral-black);
+}
+.field-label__req {
+  color: var(--red-red);
+  margin-left: 1px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--neutral-very-light-gray);
+  color: var(--neutral-black);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+.field:hover {
+  background: var(--neutral-light-gray);
+}
+.field:focus-within,
+.field:focus {
+  outline: none;
+  border-color: var(--primary-light-purple);
+  background: var(--neutral-white);
+}
+
+.field--text::placeholder,
+.field input::placeholder {
+  color: var(--neutral-dark-gray);
+}
+.field--text:read-only {
+  color: var(--neutral-darker-gray);
+}
+.field--multiline {
+  min-height: 86px;
+  resize: vertical;
+}
+
+.field--select {
+  position: relative;
+  padding: 0;
+}
+.field--select select {
+  flex: 1;
+  appearance: none;
+  min-height: 41px;
+  padding: 8px 40px 8px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--neutral-darker-gray);
+  cursor: pointer;
+  outline: none;
+}
+.field--select svg {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  color: var(--neutral-darker-gray);
+}
+
+.field--time {
+  width: auto;
+  color: var(--neutral-darker-gray);
+}
+.field--time input {
+  border: 0;
+  background: transparent;
+  color: var(--neutral-darker-gray);
+  outline: none;
+}
+
+/* Checkbox */
+.check,
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--neutral-darker-gray);
+  cursor: pointer;
+}
+.check input,
+.radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.check__box {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--neutral-darker-gray);
+  border-radius: 4px;
+}
+.check input:checked + .check__box {
+  background: var(--primary-dark-purple) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 10px no-repeat;
+  border-color: var(--primary-dark-purple);
+}
+.check input:focus-visible + .check__box,
+.radio input:focus-visible + .radio__dot {
+  outline: 2px solid var(--primary-purple);
+  outline-offset: 2px;
+}
+
+/* Radio Button */
+.radio {
+  color: var(--neutral-black);
+}
+.radio__dot {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--neutral-light-gray);
+  flex-shrink: 0;
+}
+.radio input:checked + .radio__dot {
+  background: var(--neutral-white);
+  border: 6px solid var(--primary-dark-purple);
+}

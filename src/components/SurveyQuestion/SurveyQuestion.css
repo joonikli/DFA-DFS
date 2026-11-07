@@ -1,0 +1,68 @@
+.survey-q {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.survey-q__prompt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 4px;
+  color: var(--neutral-black);
+}
+
+.survey-q__num {
+  color: var(--neutral-dark-gray);
+  white-space: nowrap;
+}
+
+.survey-q__req {
+  margin-left: 1px;
+  color: var(--red-red);
+}
+
+.survey-q__options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 6px 10px 2px;
+}
+
+/* "Answer question" boxed style (Fill-A-Bag survey) */
+.survey-q--boxed {
+  gap: 10px;
+  padding: 16px 16px 20px;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 8px;
+}
+.survey-q--boxed .survey-q__prompt {
+  padding: 0;
+}
+.survey-q--boxed .field {
+  border-radius: 18px;
+  padding: 12px 18px;
+}
+
+/* Rating star row */
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 0;
+  border-radius: 12px;
+  background: var(--neutral-very-light-gray);
+}
+
+.rating-stars__star {
+  display: inline-flex;
+  border-radius: 50%;
+  transition: transform 100ms ease;
+}
+.rating-stars__star:hover {
+  transform: scale(1.06);
+}

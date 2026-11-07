@@ -1,0 +1,41 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Figma frames: content starts 53px right of the sidebar, 41px below the top nav */
+.app-shell__content {
+  flex: 1;
+  padding: 41px 56px 64px 53px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--neutral-black);
+}
+
+.page-header__subtitle {
+  color: var(--neutral-darker-gray);
+}
+
+.page-header__actions {
+  display: flex;
+  gap: 8px;
+}

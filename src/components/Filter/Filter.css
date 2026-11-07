@@ -1,0 +1,24 @@
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 4px 12px 4px 8px;
+  border-radius: 18px;
+  background: var(--neutral-light-gray);
+  color: var(--neutral-black);
+}
+
+.filter:hover {
+  background: var(--neutral-gray);
+}
+
+.filter__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border-radius: 8px;
+}

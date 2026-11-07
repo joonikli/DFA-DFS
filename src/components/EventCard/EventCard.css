@@ -1,0 +1,193 @@
+.event-card {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  width: 100%;
+  padding: 16px 18px 16px 26px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 150ms ease;
+}
+
+/* "Color=Hover" */
+.event-card:not(.event-card--empty):hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.event-card--clickable {
+  cursor: pointer;
+}
+
+.event-card__time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 85px;
+  flex-shrink: 0;
+  padding: 12px 0;
+  text-align: center;
+}
+.event-card__month,
+.event-card__day {
+  color: var(--neutral-black);
+}
+.event-card__hours {
+  color: var(--neutral-darker-gray);
+  white-space: nowrap;
+}
+
+.event-card__divider {
+  align-self: stretch;
+  width: 1px;
+  flex-shrink: 0;
+  background: var(--neutral-gray);
+}
+
+.event-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0 8px;
+}
+
+.event-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-card__top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 27px;
+}
+
+.event-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.event-card__title h3 {
+  color: var(--neutral-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  /* Figma pins the CTA to the top of the card body */
+  align-self: flex-start;
+}
+
+.event-card__registered {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 37px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--neutral-light-gray);
+  border: 1px solid var(--neutral-gray);
+  color: var(--neutral-darker-gray);
+}
+
+.event-card__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.event-card__desc {
+  max-width: 471px;
+  color: var(--neutral-darker-gray);
+}
+
+.event-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ---- Grid layout (Toggle = Grid) ---- */
+.event-card--grid {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 18px 18px 16px;
+}
+.event-card--grid .event-card__time {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  width: auto;
+  padding: 0;
+}
+.event-card--grid .event-card__day {
+  font-size: 20px;
+  font-weight: 500;
+  order: 0;
+}
+.event-card--grid .event-card__month {
+  order: -1;
+}
+.event-card--grid .event-card__hours {
+  margin-left: 6px;
+}
+.event-card--grid .event-card__divider {
+  width: auto;
+  height: 1px;
+}
+.event-card--grid .event-card__content {
+  padding: 0;
+}
+.event-card--grid .event-card__top {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.event-card--grid .event-card__title h3 {
+  white-space: normal;
+}
+.event-card--grid .event-card__actions {
+  align-self: flex-start;
+}
+.event-card--grid .event-card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---- Empty (Color=empty) ---- */
+.event-card--empty {
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 18px 32px 26px;
+}
+.event-card__empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: var(--primary-lightest-purple);
+  color: var(--primary-dark-purple);
+}
+.event-card__empty-text {
+  max-width: 223px;
+  text-align: center;
+  color: var(--neutral-darker-gray);
+}

@@ -1,0 +1,88 @@
+.banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  min-height: 150px;
+  padding: 30px 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  color: var(--neutral-white);
+}
+
+/* Decorative art approximates the Figma banner graphics with CSS shapes. */
+.banner--pink {
+  background: linear-gradient(90deg, #ff79bc 0%, #d22c7f 100%);
+}
+.banner--pink .banner__art {
+  background:
+    linear-gradient(135deg, transparent 0 40%, rgb(255 255 255 / 0.16) 40% 52%, transparent 52%) 70% 0 / 260px 100% no-repeat,
+    linear-gradient(135deg, transparent 0 30%, rgb(210 44 127 / 0.55) 30% 60%, transparent 60%) 88% 0 / 300px 100% no-repeat,
+    linear-gradient(135deg, transparent 0 45%, rgb(255 121 188 / 0.6) 45% 70%, transparent 70%) 100% 0 / 260px 100% no-repeat;
+}
+
+.banner--blue {
+  background: linear-gradient(90deg, #2f6bc4 0%, #4b50e0 100%);
+}
+.banner--blue .banner__art {
+  background:
+    radial-gradient(circle at 82% 10%, rgb(146 190 255 / 0.75) 0 40px, transparent 41px),
+    radial-gradient(circle at 72% 105%, rgb(146 190 255 / 0.55) 0 46px, transparent 47px),
+    radial-gradient(circle at 96% 95%, rgb(146 190 255 / 0.55) 0 50px, transparent 51px);
+}
+
+.banner--green {
+  background: #2b7b64;
+}
+.banner--green .banner__art {
+  background:
+    radial-gradient(circle at 150% 50%, transparent 0 240px, rgb(178 224 131 / 0.85) 241px 300px, transparent 301px),
+    radial-gradient(circle at 130% 50%, transparent 0 180px, rgb(146 232 178 / 0.5) 181px 240px, transparent 241px),
+    linear-gradient(90deg, transparent 70%, rgb(178 224 131 / 0.8) 100%);
+}
+
+.banner__art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.banner__title {
+  position: relative;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.1;
+  max-width: 80%;
+}
+
+.banner__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--neutral-black);
+  color: var(--neutral-white);
+}
+.banner__cta:hover {
+  background: #252425;
+}
+
+.banner__close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  display: inline-flex;
+  color: var(--neutral-white);
+}
+
+@media (max-width: 800px) {
+  .banner__title {
+    font-size: 24px;
+    max-width: 100%;
+  }
+}

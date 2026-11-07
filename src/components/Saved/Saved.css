@@ -1,0 +1,25 @@
+.saved {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--neutral-light-gray);
+  color: var(--neutral-dark-gray);
+  background: var(--neutral-white);
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.saved:hover {
+  border-color: var(--neutral-gray);
+  color: var(--neutral-darker-gray);
+}
+
+.saved--selected,
+.saved--selected:hover {
+  background: var(--neutral-black);
+  border-color: var(--neutral-gray);
+  color: var(--neutral-white);
+}

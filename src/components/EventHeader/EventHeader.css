@@ -1,0 +1,32 @@
+.event-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.event-subcategories {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 23px;
+  padding: 2px 8px;
+  color: var(--neutral-darker-gray);
+}
+
+.event-header__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-header__cards--grid {
+  display: grid;
+  /* 2 columns on a ~640px main column, 3 at the full 849px Figma width */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+/* empty-state card spans the full row in grid mode */
+.event-header__cards--grid > .event-card--empty {
+  grid-column: 1 / -1;
+}

@@ -1,0 +1,111 @@
+.event-calendar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 14px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 4px var(--neutral-drop-shadow);
+}
+
+.event-calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  color: var(--neutral-black);
+}
+
+.event-calendar__nav {
+  display: inline-flex;
+  border-radius: 6px;
+  color: var(--neutral-darker-gray);
+}
+.event-calendar__nav:hover {
+  color: var(--neutral-black);
+  background: var(--neutral-very-light-gray);
+}
+
+.event-calendar__legend {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 8px;
+}
+
+/* Calendar Tags */
+.calendar-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: var(--neutral-very-light-gray);
+  color: var(--neutral-darker-gray);
+}
+
+.calendar-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.calendar-dot--event { background: var(--primary-light-purple); }
+.calendar-dot--registered { background: var(--primary-dark-purple); }
+.calendar-dot--none { visibility: hidden; }
+
+.event-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 3px;
+  padding: 8px 8px 0;
+}
+
+.event-calendar__weekday {
+  height: 20px;
+  text-align: center;
+  font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
+  font-weight: 590;
+  font-size: 13px;
+  color: var(--neutral-dark-gray);
+}
+
+.event-calendar__day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  height: 44px;
+  color: var(--neutral-black);
+}
+
+.event-calendar__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-top: 6px; /* leaves room for the event dot above */
+  border-radius: 50%;
+}
+
+.event-calendar__day:hover .event-calendar__num {
+  background: var(--neutral-very-light-gray);
+}
+
+.event-calendar__day--selected .event-calendar__num,
+.event-calendar__day--selected:hover .event-calendar__num {
+  background: var(--neutral-black);
+  color: var(--neutral-white);
+}
+
+/* overlay the dot above the number so it doesn't shift the circle */
+.event-calendar__day .calendar-dot {
+  position: absolute;
+  top: 0;
+}

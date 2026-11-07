@@ -1,0 +1,118 @@
+/* The page fills the viewport below the 73px top nav (minus the shell's
+   41px top / 64px bottom padding) so only the event list scrolls. */
+.volunteer-events {
+  display: flex;
+  flex-direction: column;
+  max-width: 1380px;
+  height: calc(100vh - 73px - 41px - 64px);
+  min-height: 480px;
+}
+
+.volunteer-events__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* room so card shadows aren't clipped by the scroll box */
+  margin: -4px -8px -8px;
+  padding: 4px 8px 8px;
+  scrollbar-width: none;
+}
+.volunteer-events__list::-webkit-scrollbar {
+  display: none;
+}
+.volunteer-events__list {
+  position: relative; /* offsetParent for the FLIP measurements */
+}
+
+/* Card wrapper: lets the card stretch to the row height in grid view */
+.volunteer-events__item {
+  display: flex;
+  min-width: 0;
+}
+.volunteer-events__item--full {
+  grid-column: 1 / -1;
+}
+
+/* A card that just moved to another tab shrinks and fades out in place;
+   the cards after it then slide up (FLIP in VolunteerEvents.jsx). */
+.volunteer-events__item--leaving > .event-card {
+  animation: event-card-leave 320ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+@keyframes event-card-leave {
+  to {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .volunteer-events__item--leaving > .event-card {
+    animation-duration: 1ms;
+  }
+}
+
+.volunteer-events > .tab-nav {
+  margin-top: 41px;
+}
+
+.volunteer-events__body {
+  display: grid;
+  grid-template-columns: minmax(0, 849px) 400px;
+  justify-content: space-between;
+  column-gap: 48px;
+  margin-top: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.volunteer-events__main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.volunteer-events__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volunteer-events__active-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  color: var(--neutral-darker-gray);
+}
+
+/* Figma: the right column lines up with the search bar row */
+.volunteer-events__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Stacked layout: the right column moves under the list, so fall back to
+   normal page scrolling. */
+@media (max-width: 1300px) {
+  .volunteer-events {
+    height: auto;
+  }
+  .volunteer-events__list {
+    overflow: visible;
+  }
+  .volunteer-events__body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+  .volunteer-events__aside {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
+    align-items: start;
+  }
+}
