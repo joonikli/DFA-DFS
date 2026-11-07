@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messaging Flow Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff; --surface: #f8f9fa; --line: #dde4e9; --soft: #eff2f5;
+  --text: #3a393a; --muted: #7a7f84; --faint: #a1a6aa;
+  --purple: #6078f1; --purple-dark: #4b50e0; --purple-soft: #edefff; --purple-line: #cdd2fd;
+  --red: #c4245f; --red-soft: #fbebf1; --amber: #9a6200; --amber-soft: #fbf1dc; --green: #2b7b64; --green-soft: #e5f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #18181a; --surface: #202023; --line: #34343a; --soft: #26262a;
+    --text: #ececee; --muted: #a3a6ab; --faint: #7d8086;
+    --purple: #8a9bff; --purple-dark: #a5b0ff; --purple-soft: #262a48; --purple-line: #3d4370;
+    --red: #ff8db3; --red-soft: #3a1f29; --amber: #f2c46b; --amber-soft: #352a15; --green: #7ed3b5; --green-soft: #18302a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #18181a; --surface: #202023; --line: #34343a; --soft: #26262a;
+  --text: #ececee; --muted: #a3a6ab; --faint: #7d8086;
+  --purple: #8a9bff; --purple-dark: #a5b0ff; --purple-soft: #262a48; --purple-line: #3d4370;
+  --red: #ff8db3; --red-soft: #3a1f29; --amber: #f2c46b; --amber-soft: #352a15; --green: #7ed3b5; --green-soft: #18302a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+main { max-width: 1040px; margin: 0 auto; padding: 56px 24px 96px; }
+h1, h2 { font-family: 'Crimson Pro', Georgia, serif; font-weight: 600; letter-spacing: -.005em; }
+h1 { font-size: 40px; line-height: 1.05; margin: 0 0 8px; }
+h2 { font-size: 28px; margin: 56px 0 8px; }
+h3 { font-size: 16px; margin: 32px 0 10px; font-weight: 600; }
+p { margin: 0 0 12px; max-width: 72ch; }
+.byline { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.lead { font-size: 17px; max-width: 70ch; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 28px 0 0; }
+.kpi { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; background: var(--bg); }
+.kpi b { font-family: 'Crimson Pro', serif; font-size: 34px; line-height: 1; display: block; }
+.kpi span { font-size: 13px; color: var(--muted); }
+.toc { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+.toc a { font-size: 13px; color: var(--purple-dark); text-decoration: none; padding: 4px 10px; border-radius: 999px; background: var(--purple-soft); }
+.wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; margin: 12px 0 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); background: var(--surface); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 11px 14px; border-bottom: 1px solid var(--soft); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+.tag { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.t-bug { background: var(--red-soft); color: var(--red); }
+.t-gap { background: var(--amber-soft); color: var(--amber); }
+.t-ok { background: var(--green-soft); color: var(--green); }
+.t-p0 { background: var(--red-soft); color: var(--red); }
+.t-p1 { background: var(--amber-soft); color: var(--amber); }
+.t-p2 { background: var(--soft); color: var(--muted); }
+.t-fix { background: var(--purple-soft); color: var(--purple-dark); }
+.t-feat { background: var(--soft); color: var(--text); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.diagram { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); margin: 12px 0; }
+.diagram svg { width: 100%; height: auto; display: block; }
+.diagram .node { fill: var(--bg); stroke: var(--text); stroke-width: 1.5; }
+.diagram .node.new { stroke: var(--purple); stroke-dasharray: 5 4; fill: var(--purple-soft); }
+.diagram .node.fail { stroke: var(--red); stroke-dasharray: 5 4; fill: var(--red-soft); }
+.diagram text { fill: var(--text); font: 600 13px Inter, sans-serif; }
+.diagram .lbl { font: 500 11px Inter, sans-serif; fill: var(--muted); }
+.diagram .edge { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.diagram .edge.new { stroke: var(--purple); stroke-dasharray: 5 4; }
+.diagram .edge.fail { stroke: var(--red); stroke-dasharray: 5 4; }
+ol.decisions { padding-left: 20px; max-width: 76ch; }
+ol.decisions li { margin-bottom: 14px; }
+ol.decisions b { display: block; }
+.rec { color: var(--muted); font-size: 14px; }
+.note { font-size: 13px; color: var(--muted); }
+@media (max-width: 720px) {
+  main { padding: 32px 16px 64px; }
+  h1 { font-size: 32px; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Messaging flow audit</h1>
+  <div class="byline">Dress for Success volunteer manager prototype · Nov 1, 2026 · Covers direct messages, compose, email, announcements, threads and unread state</div>
+
+  <p class="lead">Messaging handles the happy path, but I reproduced 13 bugs in the prototype and found 39 edge cases with no designed state. Three should be fixed before anything else. Group emails put every volunteer's address in To:. A failed send has no state at all. The volunteer profile panel disappears on any screen 1440px wide or narrower, which includes most 13–14" laptops.</p>
+
+  <p style="border:1px solid var(--line);background:var(--green-soft);border-radius:12px;padding:12px 16px;max-width:none"><b>Update, prototype v2:</b> all 13 bugs are fixed. Also shipped from the plan: the failed-send state with Retry and "Update email", Delivered and Seen receipts, private group email, per-conversation drafts with Discard, the channel picker moved into the composer with a channel filter in the list, a "New message" pill, toasts for replies that arrive on other pages, "Seen by N of M" with a Nudge button on announcements, email announcements, roster cards and the profile drawer. Still open: scheduling and reminders, templates, SMS, editing announcements, and group management.</p>
+  <div class="kpis">
+    <div class="kpi"><b>13</b><span>bugs reproduced</span></div>
+    <div class="kpi"><b>39</b><span>edge cases with no designed state</span></div>
+    <div class="kpi"><b>7</b><span>open product decisions</span></div>
+    <div class="kpi"><b>31</b><span>proposed fixes and features</span></div>
+  </div>
+  <nav class="toc" aria-label="Sections">
+    <a href="#bugs">Confirmed bugs</a><a href="#lifecycle">Message lifecycle</a><a href="#cases">Edge cases by flow</a><a href="#decisions">Open decisions</a><a href="#plan">Fixes and features</a>
+  </nav>
+
+  <!-- ===================================================== -->
+  <h2 id="bugs">Confirmed bugs</h2>
+  <p>I reproduced each of these in the running prototype using scripted interactions at a 1440×900 viewport. B1–B8 affect every user every day. B9–B13 are smaller but visible.</p>
+  <div class="wrap"><table>
+    <thead><tr><th>#</th><th>Bug</th><th>How to reproduce</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>B1</td><td><b>Profile panel disappears at ≤1440px</b>. 13" and 14" MacBooks lose volunteer context entirely.</td><td>Open any conversation at 1440 wide. <code>.side</code> is <code>display:none</code>.</td><td>Below 1280px, collapse the panel into a drawer opened from a "Profile" button in the conversation header. From 1280 to 1440px, narrow it to 260px.</td></tr>
+      <tr><td>B2</td><td><b>Enter sends half-typed CJK text</b>. Japanese, Chinese and Korean input methods use Enter to confirm a word.</td><td>Type with an IME and press Enter mid-composition. The message sends.</td><td>Ignore Enter when <code>e.isComposing</code> is true or <code>keyCode === 229</code>.</td></tr>
+      <tr><td>B3</td><td><b>Long links overflow message bubbles</b> and push past the stream edge.</td><td>Send a long unhyphenated URL, e.g. a Google Forms link.</td><td>Add <code>overflow-wrap: anywhere</code> to bubbles, announcement bodies, thread text and email bodies.</td></tr>
+      <tr><td>B4</td><td><b>Line breaks are lost</b> in in-app bubbles, so Shift+Enter paragraphs render as one line.</td><td>Type two lines and send.</td><td>Add <code>white-space: pre-wrap</code> to <code>.bubble</code>. Email and announcement bodies already have it.</td></tr>
+      <tr><td>B5</td><td><b>A typed recipient isn't used</b>. Typing "marie" then pressing Send gives "Add at least one recipient".</td><td>Compose, type a name, don't pick from the list, then press Send.</td><td>On Send or blur, add the recipient automatically when there's exactly one match. With several matches, keep the list open and highlight the field.</td></tr>
+      <tr><td>B6</td><td><b>An abandoned draft comes back without its recipients</b>. The text returns but the To: field is empty.</td><td>Compose, pick people, type, open another conversation, then press Compose again.</td><td>Store body, subject, recipients and attachments as one draft. Show a "Draft" row at the top of the list, and add a Discard action.</td></tr>
+      <tr><td>B7</td><td><b>Attachments are silently dropped</b> when you switch conversations.</td><td>Attach a shift, open another conversation, then come back.</td><td>Move attachments into the per-conversation draft (same fix as B6).</td></tr>
+      <tr><td>B8</td><td><b>The To: field clips with many recipients</b>. 12 chips overflow the fixed 118px header.</td><td>Use "Message volunteers" on a busy shift, or pick more than 8 people.</td><td>Let the field grow to 3 rows, then collapse into a summary chip like "Marie, Andre +10" that expands on click. Show a count.</td></tr>
+      <tr><td>B9</td><td><b>Sidebar unread badge goes stale</b>. It showed 7 while the real count was 8.</td><td>Send to Sarah, go to the Dashboard, and wait for her reply.</td><td>Keep unread counts in one shared store that both the badge and the list read from.</td></tr>
+      <tr><td>B10</td><td><b>The open conversation vanishes from the Unread filter</b> the moment you open it.</td><td>Filter by Unread and open the top row. The list drops from [c1, c2, c4] to [c2, c4].</td><td>Keep the open conversation in the filtered list until you leave it.</td></tr>
+      <tr><td>B11</td><td><b>The Email channel does nothing on Announcements</b>. The post still goes out in-app.</td><td>In Announcements, switch the channel to Email and send.</td><td>Send it as an email with an email preview and an unsubscribe footer (see the email cases below), or hide the Email option on this tab.</td></tr>
+      <tr><td>B12</td><td><b>The "+41 others" reaction tooltip names the wrong people</b>. It lists people who replied, not people who reacted.</td><td>Hover "+41" on any announcement.</td><td>Track who reacted and list them in a popover ("Who reacted").</td></tr>
+      <tr><td>B13</td><td><b>Managers see the volunteer's "Register" button</b> on shift cards they shared.</td><td>Open Sarah's thread and look at the shared Mobile Services card.</td><td>Make the card depend on who's viewing. Managers see "6 of 8 filled · View roster"; volunteers see Register.</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- ===================================================== -->
+  <h2 id="lifecycle">Message lifecycle</h2>
+  <p>The prototype models three states: Draft, Sending and Sent. A real build needs the dashed states. The failure branches (red) matter most, because volunteers act on shift logistics.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 960 330" role="img" aria-label="Message state diagram: Draft to Sending to Sent to Delivered to Read, with Scheduled, Failed, Bounced and Edited or Removed branches">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="currentColor" style="color:var(--muted)"/></marker>
+      </defs>
+      <!-- main row -->
+      <rect class="node" x="20" y="130" width="120" height="48" rx="10"/><text x="80" y="159" text-anchor="middle">Draft</text>
+      <rect class="node" x="220" y="130" width="120" height="48" rx="10"/><text x="280" y="159" text-anchor="middle">Sending</text>
+      <rect class="node" x="420" y="130" width="120" height="48" rx="10"/><text x="480" y="159" text-anchor="middle">Sent</text>
+      <rect class="node new" x="620" y="130" width="120" height="48" rx="10"/><text x="680" y="159" text-anchor="middle">Delivered</text>
+      <rect class="node new" x="820" y="130" width="120" height="48" rx="10"/><text x="880" y="159" text-anchor="middle">Read / Seen</text>
+      <path class="edge" d="M140 154H214" marker-end="url(#a)"/><text class="lbl" x="177" y="146" text-anchor="middle">Send</text>
+      <path class="edge" d="M340 154H414" marker-end="url(#a)"/>
+      <path class="edge new" d="M540 154H614" marker-end="url(#a)"/>
+      <path class="edge new" d="M740 154H814" marker-end="url(#a)"/>
+      <!-- scheduled -->
+      <rect class="node new" x="120" y="22" width="120" height="44" rx="10"/><text x="180" y="49" text-anchor="middle">Scheduled</text>
+      <path class="edge new" d="M80 130V44H114" marker-end="url(#a)"/><text class="lbl" x="86" y="88">Send later</text>
+      <path class="edge new" d="M240 44H280V124" marker-end="url(#a)"/><text class="lbl" x="288" y="88">At send time</text>
+      <!-- failed -->
+      <rect class="node fail" x="220" y="250" width="120" height="48" rx="10"/><text x="280" y="279" text-anchor="middle">Failed</text>
+      <path class="edge fail" d="M262 178V244" marker-end="url(#a)"/><text class="lbl" x="254" y="216" text-anchor="end">Offline / error</text>
+      <path class="edge fail" d="M298 250V184" marker-end="url(#a)"/><text class="lbl" x="306" y="216">Retry</text>
+      <path class="edge fail" d="M220 274H80V184" marker-end="url(#a)"/><text class="lbl" x="96" y="266">Edit</text>
+      <!-- bounced -->
+      <rect class="node fail" x="620" y="250" width="140" height="48" rx="10"/><text x="690" y="270" text-anchor="middle">Bounced</text><text class="lbl" x="690" y="288" text-anchor="middle">email / opted out</text>
+      <path class="edge fail" d="M500 178V274H614" marker-end="url(#a)"/><text class="lbl" x="508" y="230">Provider rejects</text>
+      <!-- edited / removed -->
+      <rect class="node new" x="420" y="22" width="160" height="44" rx="10"/><text x="500" y="49" text-anchor="middle">Edited / Removed</text>
+      <path class="edge new" d="M480 130V72" marker-end="url(#a)"/><text class="lbl" x="488" y="104">Within edit window</text>
+    </svg>
+    <div class="legend"><span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>In prototype</span><span style="color:var(--purple)"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-dasharray="3 2" stroke-width="1.5"/></svg>Proposed</span><span style="color:var(--red)"><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-dasharray="3 2" stroke-width="1.5"/></svg>Failure state, proposed</span></div>
+  </div>
+  <p class="note">Each state needs a visible treatment in the bubble's footer. For example: a spinner with "Sending…", a red "Not sent · Retry" link, and a "Seen by 18 of 23" line on announcements.</p>
+
+  <!-- ===================================================== -->
+  <h2 id="cases">Edge cases by flow</h2>
+  <div class="legend" style="margin-bottom:4px"><span><span class="tag t-bug">Bug</span> broken today</span><span><span class="tag t-gap">Gap</span> no designed state</span><span><span class="tag t-ok">Handled</span> works in the prototype</span></div>
+
+  <h3>Direct messages</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Empty inbox</b> for a new chapter: shows "Nothing here."</td><td>Empty state with a "Message volunteers on an upcoming shift" button that opens the dashboard's shift list.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Volunteer deactivated or left</b>: you can still message them.</td><td>Read-only thread with a banner ("Sarah is no longer active") and the composer disabled.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Volunteer opted out</b> of in-app, email or texts.</td><td>Disable that channel with the reason and suggest another one the volunteer allows.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>No email on file</b> but the Email channel is selected.</td><td>Inline warning on that person's To: row, with a link to add the address.</td></tr>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>A reply arrives while you're reading older messages</b>: the view is forced down to the bottom.</td><td>Don't scroll. Show a "1 new message ↓" pill instead.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Very long thread</b>: every message loads at once.</td><td>Load older messages as you scroll up, with a "Jump to first unread" button.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Mixed-channel thread</b>: one email turns the whole conversation into an email thread.</td><td>Keep one thread per person and tag each message with its channel icon.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Group message management</b>: groups are auto-named "Marie, Andre" and can't change.</td><td>Rename, add or remove people, and leave the group.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Volunteer under 18</b>.</td><td>A policy flag that copies a guardian or staff member on every message (see Open decisions).</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Focus after sending</b>: the composer re-renders and loses keyboard focus.</td><td>Put focus back in the composer after each send.</td></tr>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Same people messaged twice</b> reuses the existing thread rather than creating a duplicate.</td><td>Keep this.</td></tr>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Attachment-only, whitespace-only and double-click sends</b>. The first sends; the other two are blocked.</td><td>Keep this.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Compose and recipients</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Typed name never picked</b> (B5).</td><td>Add it automatically on Send when there's exactly one match.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Unknown address</b>: shows "No matches".</td><td>"Invite name@… by email" with address validation, saved as a contact.</td></tr>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Large audience</b> (a whole shift, 24+ people): the field clips (B8).</td><td>Summary chip, plus a confirmation step when sending to more than 25 people: "Send to 31 volunteers?"</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>A person who is also in a picked group</b>, on announcements.</td><td>Dedupe and say so: "3 people are already in Mobile Services volunteers."</td></tr>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Leaving compose with unsent text</b> (B6).</td><td>Save it as a draft automatically. Ask before discarding only if there's no draft list.</td></tr>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Dashboard prefill, then pressing Compose again</b>: the message still mentions the shift but the recipients are gone.</td><td>Covered by the single draft object (B6).</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Recipient list empties out</b> after you remove every chip.</td><td>Show the placeholder again and disable Send until a recipient is added.</td></tr>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Keyboard</b>: arrow keys, Enter and Backspace work in the recipient list, and picked people are hidden from it.</td><td>Keep this. Add Escape to close the list without losing typed text.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Email</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Group email exposes every address</b>: all recipients go in To:.</td><td>Send each person their own copy by default, and say so: "Each volunteer gets their own email." Offer BCC as an option.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Empty subject</b> silently becomes "(no subject)".</td><td>A one-time inline prompt, plus a suggested subject based on the attached shift.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Bounce or invalid address</b>: no state at all.</td><td>Show it as Failed with "Update Sarah's email", and flag the address on her profile.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Volunteer replies by email</b>: it's unclear where the reply goes.</td><td>Use a reply-to address that brings replies back into the same conversation.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Shift card attached to an email</b>.</td><td>An email-safe card with a "Add to calendar" (.ics) link and a Register link.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Bulk email to a group</b> has no unsubscribe link.</td><td>Footer with an unsubscribe link and email preferences. Respect opt-outs per volunteer.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Announcements and reactions</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Email channel ignored</b> (B11).</td><td>Real email delivery, or hide the option on this tab.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Announcement to individual people</b> quietly creates a group named "Marie, Andre".</td><td>Only allow announcements to groups. Turn individual recipients into a group message, with a note explaining why.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Editing a sent announcement</b>: not possible.</td><td>Edit with an "Edited" label and an optional "Notify everyone of the change". This matters most for time or location changes.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Removing an announcement</b>: Undo lasts 3.6s, then it's gone.</td><td>Confirm "Remove for all 23 volunteers?", then keep it in a "Removed" view for 30 days.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Removing a pinned announcement</b> keeps a stale pin, and Undo pins it again silently.</td><td>Unpin when it's removed, and ask whether to pin again on Undo.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Scheduled posts and reminders</b>: the composer copy promises reminders, but there's no scheduling.</td><td>"Send later", plus automatic reminders 24 hours and 2 hours before a shift.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Reach</b>: no way to tell who has seen an announcement.</td><td>"Seen by 18 of 23" with the list, and a "Nudge the 5 who haven't seen it" action.</td></tr>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Who reacted</b> tooltip names repliers (B12).</td><td>A popover listing who reacted, grouped by emoji.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Group membership changes</b> after a post.</td><td>Decide whether new members see earlier announcements (see Open decisions).</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Touch devices</b> (tablets at events): the hover toolbar is never reachable.</td><td>Show a "⋯" button on touch devices, and open the same actions on long-press.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Threads</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Reply count</b> updates on the card when you post in the thread.</td><td>Keep this.</td></tr>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Announcement removed while its thread is open</b>: the thread closes.</td><td>Keep this, and add a toast "This announcement was removed".</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>New replies in a thread</b>: no notification.</td><td>Follow threads you post in automatically, and show unread replies on the "2 replies" row.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Reacting to or removing a reply</b>: not available.</td><td>Same hover tools as announcements, in a smaller size.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>A volunteer reply that needs action</b> ("I'll be late").</td><td>"Mark as handled" on a reply, plus a filter for unhandled replies.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Unread state and notifications</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Stale sidebar badge</b> (B9) and <b>row disappearing under the Unread filter</b> (B10).</td><td>One shared unread store, and keep the open row in the list.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Reply arrives while you're on another page</b>: nothing tells you.</td><td>Toast "Sarah replied · Open", and a dot on the Messages nav item.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Mark as unread, mute a group</b>.</td><td>Both in a right-click or "⋯" menu on each row.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Timestamps never update</b>: "Just now" stays forever.</td><td>Update relative times every minute and switch to dates after 7 days.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>First message of a new day</b> gets no "Today" divider.</td><td>Insert day dividers automatically.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Input and content</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>IME Enter</b> (B2), <b>long tokens</b> (B3), <b>line breaks</b> (B4).</td><td>See the fixes in the bugs table.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Link validation</b>: "foo" becomes https://foo.</td><td>Validate URLs, and show a link preview (title and site) for known sites.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Length limits</b>: none.</td><td>No limit in-app. If texting is added, show an SMS segment counter.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Pasted rich text or images</b>.</td><td>Paste as plain text. Pasted images become attachments, if attachments are in scope.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Repeated messages</b> (reminders, parking directions).</td><td>Saved replies and templates, with fields like {first name}, {shift} and {time}.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Privacy, layout and accessibility</h3>
+  <div class="wrap"><table>
+    <thead><tr><th>Case</th><th>Today</th><th>Proposed</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-bug">Bug</span></td><td><b>Profile panel hidden at ≤1440px</b> (B1).</td><td>Drawer with a header toggle.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Phone numbers and notes</b> are visible to anyone who can open Messages.</td><td>Hide them for roles without permission, e.g. on-the-day leaders.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Screen readers</b> aren't told about new messages.</td><td>A polite live region for incoming messages, and labelled send states.</td></tr>
+      <tr><td><span class="tag t-gap">Gap</span></td><td><b>Announcement tools are invisible until hovered</b>, so keyboard users can't find them.</td><td>Show them on focus (works today), and add a visible "⋯" button for discoverability.</td></tr>
+      <tr><td><span class="tag t-ok">Handled</span></td><td><b>Reduced motion</b>: movement is removed and fades remain.</td><td>Keep this.</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- ===================================================== -->
+  <h2 id="decisions">Open decisions</h2>
+  <p>These are product calls the design has to make before the edge cases above can be specced. Each has my recommendation.</p>
+  <ol class="decisions">
+    <li><b>Is "In-app / Email" a filter or the send channel?</b>It sits in the filter row but only changes the composer. <span class="rec">Recommendation: move the channel picker into the composer, and turn the filter-row control into "All channels / In-app / Email".</span></li>
+    <li><b>One thread per person, or one per channel?</b><span class="rec">Recommendation: one thread per person, with a channel icon on each message. Bridget thinks in people, not channels.</span></li>
+    <li><b>Can announcements go to individuals?</b><span class="rec">Recommendation: no. Individual recipients become a group message, which keeps announcements tied to a group that has a member list.</span></li>
+    <li><b>Do we add texting (SMS)?</b>The draft copy "Text me if you need anymore help" implies it, and volunteers check texts before they check email. <span class="rec">Recommendation: yes, as a third channel with opt-in consent. Plan it for P2.</span></li>
+    <li><b>Group email: separate copies or BCC?</b><span class="rec">Recommendation: separate copies, because they personalize better and replies go back to one thread.</span></li>
+    <li><b>Do volunteers see read receipts?</b><span class="rec">Recommendation: managers see "Seen by" on announcements, and volunteers never see receipts on direct messages.</span></li>
+    <li><b>Edit, delete and retention rules, including volunteers under 18.</b><span class="rec">Recommendation: a 15-minute edit window for messages, editable announcements with an "Edited" label, a 30-day soft delete, and staff copied on any thread with a volunteer under 18.</span></li>
+  </ol>
+
+  <!-- ===================================================== -->
+  <h2 id="plan">Proposed fixes and features</h2>
+  <p>P0 is the fix list for the next prototype pass. P1 completes the messaging model. P2 is product expansion. Effort is relative: S is under a day of prototype work, M is 1–3 days, and L is a larger project.</p>
+  <div class="wrap"><table>
+    <thead><tr><th>Priority</th><th>Item</th><th>Type</th><th>Effort</th><th>Covers</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag t-p0">P0</span></td><td>Profile drawer below 1280px, narrower panel from 1280 to 1440px</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B1</td></tr>
+      <tr><td><span class="tag t-p0">P0</span></td><td>Group email as separate copies, with a disclosure line</td><td><span class="tag t-fix">Fix</span></td><td>M</td><td>Privacy</td></tr>
+      <tr><td><span class="tag t-p0">P0</span></td><td>Failed state with Retry and Edit, plus offline handling</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Lifecycle</td></tr>
+      <tr><td><span class="tag t-p0">P0</span></td><td>IME-safe Enter, text wrapping, preserved line breaks</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B2–B4</td></tr>
+      <tr><td><span class="tag t-p0">P0</span></td><td>Add a typed recipient automatically on Send</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B5</td></tr>
+      <tr><td><span class="tag t-p0">P0</span></td><td>Per-conversation drafts (body, subject, recipients, attachments), a Draft row, and Discard</td><td><span class="tag t-fix">Fix</span></td><td>M</td><td>B6, B7</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Recipient summary chip, plus confirmation for sends to more than 25 people</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B8</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>One shared unread store, and keep the open row under filters</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B9, B10</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Email announcements with an unsubscribe footer, or hide the Email option</td><td><span class="tag t-fix">Fix</span></td><td>M</td><td>B11</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Shift cards that change by role (manager roster view, volunteer Register)</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B13</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Move the channel picker into the composer; make the filter row filter by channel</td><td><span class="tag t-feat">Feature</span></td><td>S</td><td>Decision 1</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>One thread per person, with a channel icon on each message</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Decision 2</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>"New message ↓" pill instead of forced scrolling</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>Direct messages</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>"⋯" button on touch devices, and the same actions on long-press</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>Touch, accessibility</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Live region for incoming messages, focus back in the composer after sending</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>Accessibility</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Relative timestamps that update, automatic day dividers</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>Unread state</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Send later, plus automatic shift reminders 24 hours and 2 hours before</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Announcements</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>"Seen by N of M" on announcements, with a nudge for people who haven't seen it</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Announcements</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Opt-out, deactivated and missing-email states on the composer</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Direct messages, email</td></tr>
+      <tr><td><span class="tag t-p1">P1</span></td><td>Toast for replies that arrive while you're on another page</td><td><span class="tag t-feat">Feature</span></td><td>S</td><td>Notifications</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Edit announcements (with "Edited" label and optional re-notify); remove with confirmation and a 30-day Removed view</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Announcements</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Saved replies and templates with fields ({first name}, {shift})</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Input</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Who-reacted popover</td><td><span class="tag t-fix">Fix</span></td><td>S</td><td>B12</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Mark as unread, mute a group</td><td><span class="tag t-feat">Feature</span></td><td>S</td><td>Notifications</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Group management: rename, add or remove people, leave</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Direct messages</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Follow threads, unread replies, "Mark as handled" on replies</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Threads</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Invite by email for unknown addresses</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Compose</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Email replies threaded back in, and .ics "Add to calendar" links on shift cards</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Email</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Search inside a conversation, and load older messages as you scroll</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Direct messages</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Permission rules for phone numbers and notes; staff copied on threads with volunteers under 18</td><td><span class="tag t-feat">Feature</span></td><td>M</td><td>Privacy</td></tr>
+      <tr><td><span class="tag t-p2">P2</span></td><td>Texting (SMS) as a third channel, with consent and a segment counter</td><td><span class="tag t-feat">Feature</span></td><td>L</td><td>Decision 4</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">P0 adds up to about 4–6 days of prototype work. I can implement P0 and P1 in the prototype next. I'd treat the decisions in section 4 as inputs, and use the recommended defaults unless you choose otherwise.</p>
+</main>
+</body>
+</html>
