@@ -218,7 +218,8 @@ export default function Dashboard() {
     const sib = dir < 0 ? g.previousElementSibling : g.nextElementSibling;
     if (!sib) return;
     const beforeEl = dir < 0 ? sib : sib.nextElementSibling;
-    flip(() => commit(moved(g.dataset.w, beforeEl?.dataset.w ?? null)));
+    // Keyboard moves are instant (no FLIP): they repeat fast and should never feel laggy
+    commit(moved(g.dataset.w, beforeEl?.dataset.w ?? null));
     g.focus();
     announcePos(g.dataset.w);
   };

@@ -167,7 +167,7 @@ function PartInner({ hot, tip }) {
         {row({ event: open ? 'Show less' : `+ ${PARTICIPATION_MORE.length} more`, vols: open ? 0 : restV, hours: open ? '' : Math.floor(restH / 100) * 100 }, rows.length, true)}
       </div>
       <div className="p-axis"><span /><span className="p-ticks">{[0, 25, 50, 75, 100].map((x) => <i key={x}>{x}</i>)}</span><span /></div>
-      <div className={`p-tip ${tip.on ? 'on' : ''}`} id="pTip" style={{ left: tip.left, top: tip.top }}>
+      <div className={`p-tip ${tip.on ? 'on' : ''}`} id="pTip" style={{ translate: `${tip.left}px ${tip.top}px` }}>
         {t && <><div className="m">{t.event}</div><b>{t.vols}</b> volunteers<div className="trend" style={{ fontSize: 12, display: 'flex' }}>{t.hours} hours · {(t.hours / t.vols).toFixed(1)} per volunteer</div></>}
       </div>
     </>
@@ -246,7 +246,7 @@ function GrantsCard() {
           <button className="g-more" onClick={() => { D.grantsOpen = !D.grantsOpen; bump(); }}>{D.grantsOpen ? 'Show less' : `+${GRANTS_MORE.length} more`}</button>
         </div>
       </div>
-      <div className={`g-tip ${tip.on ? "on" : ""}`} id="gTip" aria-hidden="true" style={{ top: tip.top }}>
+      <div className={`g-tip ${tip.on ? "on" : ""}`} id="gTip" aria-hidden="true" style={{ translate: `0 ${tip.top}px` }}>
         {g && <>
           <div className="m">{g.name}</div><b>{Math.min(g.pct, 100)}%</b> of commitment
           <div className="g-tip-row">

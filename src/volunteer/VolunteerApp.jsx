@@ -42,7 +42,14 @@ function Dashboard() {
 
   // ---------- Banner ----------
   const dismissBanner = () => {
-    toast('Announcement dismissed', { ic: 'check', action: 'Undo', onAction: () => setDismissed(false) });
+    toast('Banner dismissed', { ic: 'check', action: 'Undo', onAction: () => setDismissed(false) });
+  };
+  // "Take our survey": bring the survey card into view, ping it, focus the first star
+  const goSurvey = () => {
+    const card = document.getElementById('vpSurvey'); if (!card) return;
+    card.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
+    card.classList.remove('is-target'); void card.offsetWidth; card.classList.add('is-target');
+    setTimeout(() => card.querySelector('[role="radio"], button, textarea')?.focus({ preventScroll: true }), reducedMotion() ? 0 : 400);
   };
 
   // ---------- Modals ----------
@@ -105,7 +112,7 @@ function Dashboard() {
   return (
     <div className="dash vp" id="vp" ref={vpRef}>
       <header className="dash-head"><h1 className="h1">Hi {firstName(vol.name)}, let’s see what’s going on…</h1></header>
-      {!dismissed && <Banner onRead={() => openModal({ kind: 'ann' })} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
+      {!dismissed && <Banner leave={survey.done} onSurvey={goSurvey} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
           cal={cal} registered={registered} recommended={recommended} flash={flash}
