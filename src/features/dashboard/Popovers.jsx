@@ -70,7 +70,7 @@ export function AccountMenu({ onSettings }) {
   const close = usePopClose();
   return (
     <div className="menu" role="menu" style={{ width: 220 }}>
-      <div className="me-head"><Avatar id="me" /><div><b>{ME.name}</b><small>Volunteer manager</small></div></div>
+      <button className="me-head menu-item" type="button" role="menuitem" onClick={() => { close(true); navigate('profile?type=admin'); }}><Avatar id="me" /><span><b>{ME.name}</b><small>Volunteer manager</small></span></button>
       <div className="menu-sep" />
       <a className="menu-item" role="menuitem" href={VOLUNTEER_URL} style={{ textDecoration: 'none' }}><Icon name="external" size={14} /> Volunteer view</a>
       <button className="menu-item" role="menuitem" onClick={() => { close(); onSettings(); }}><Icon name="nav-settings" size={14} /> Settings</button>

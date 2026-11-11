@@ -1,10 +1,11 @@
 // Icon set: every glyph is the official Lucide icon (lucide-static@0.460.0, ISC). Key → Lucide name:
-// lock=lock, panel-close=panel-right-close, panel-open=panel-right-open, search=search, pen=pen, chev=chevron-down, chev-r=chevron-right, link=link, pin=map-pin, tags=tags, bookmark=bookmark, plus=plus, x=x, check=check, mail=mail, phone=phone, reply=reply, smile=smile, more=ellipsis-vertical, arrow-up=arrow-up, arrow-down=arrow-down, arrow-r=arrow-right, trend=trending-up, sparkles=sparkles, pinned=pin, trash=trash-2, copy=copy, alert=circle-alert, users=users, info=info, eye=eye, clock=clock, nav-house=house, nav-calendar=calendar, nav-file-pen=file-pen, nav-dollar=circle-dollar-sign, nav-messages=messages-square, nav-settings=settings, reset=rotate-ccw, dot=circle-dot, star=star, external=external-link, cal-plus=calendar-plus, grip=grip-vertical, eye-off=eye-off, layout=layout-dashboard, sliders=sliders-horizontal, megaphone=megaphone, download=download, bell=bell
+// lock=lock, panel-close=panel-right-close, panel-open=panel-right-open, search=search, pen=pen, chev=chevron-down, chev-r=chevron-right, chev-l=chevron-left, link=link, pin=map-pin, tags=tags, bookmark=bookmark, plus=plus, x=x, check=check, mail=mail, phone=phone, reply=reply, smile=smile, more=ellipsis-vertical, list=list, grid=layout-grid, arrow-up=arrow-up, arrow-down=arrow-down, arrow-r=arrow-right, trend=trending-up, sparkles=sparkles, pinned=pin, trash=trash-2, copy=copy, alert=circle-alert, users=users, info=info, eye=eye, clock=clock, nav-house=house, nav-calendar=calendar, nav-file-pen=file-pen, nav-dollar=circle-dollar-sign, nav-messages=messages-square, nav-settings=settings, reset=rotate-ccw, dot=circle-dot, star=star, external=external-link, cal-plus=calendar-plus, grip=grip-vertical, eye-off=eye-off, layout=layout-dashboard, sliders=sliders-horizontal, megaphone=megaphone, download=download, bell=bell
 export const ICONS = {
  "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
  "pen": "<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"/>",
  "chev": "<path d=\"m6 9 6 6 6-6\"/>",
  "chev-r": "<path d=\"m9 18 6-6-6-6\"/>",
+ "chev-l": "<path d=\"m15 18-6-6 6-6\"/>",
  "link": "<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"/><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"/>",
  "pin": "<path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/>",
  "tags": "<path d=\"m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19\"/><path d=\"M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z\"/><circle cx=\"6.5\" cy=\"9.5\" r=\".5\" fill=\"currentColor\"/>",
@@ -17,6 +18,8 @@ export const ICONS = {
  "reply": "<polyline points=\"9 17 4 12 9 7\"/><path d=\"M20 18v-2a4 4 0 0 0-4-4H4\"/>",
  "smile": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 14s1.5 2 4 2 4-2 4-2\"/><line x1=\"9\" x2=\"9.01\" y1=\"9\" y2=\"9\"/><line x1=\"15\" x2=\"15.01\" y1=\"9\" y2=\"9\"/>",
  "more": "<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"12\" cy=\"5\" r=\"1\"/><circle cx=\"12\" cy=\"19\" r=\"1\"/>",
+ "list": "<line x1=\"8\" x2=\"21\" y1=\"6\" y2=\"6\"/><line x1=\"8\" x2=\"21\" y1=\"12\" y2=\"12\"/><line x1=\"8\" x2=\"21\" y1=\"18\" y2=\"18\"/><line x1=\"3\" x2=\"3.01\" y1=\"6\" y2=\"6\"/><line x1=\"3\" x2=\"3.01\" y1=\"12\" y2=\"12\"/><line x1=\"3\" x2=\"3.01\" y1=\"18\" y2=\"18\"/>",
+ "grid": "<rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/>",
  "arrow-up": "<path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/>",
  "arrow-down": "<path d=\"M12 5v14\"/><path d=\"m19 12-7 7-7-7\"/>",
  "arrow-r": "<path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/>",

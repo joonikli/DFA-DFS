@@ -24,12 +24,13 @@ export function Icon({ name, size = 16, sw = 2, className = '', style }) {
 
 // Person avatar: Unsplash photo when the person has one, initials otherwise.
 // id is a key of VOLS, or 'me' for the signed-in manager (Bridget).
-export function Avatar({ id, className = '' }) {
+export function Avatar({ id, className = '', photo }) {
   const p = id === 'me' ? ME : VOLS[id];
   if (!p) return <span className={`av ${className}`} aria-hidden="true" />;
+  const source = photo ?? p.photo;
   return (
     <span className={`av ${className}`} aria-hidden="true">
-      {p.photo ? <img src={p.photo} alt="" loading="lazy" /> : initials(p.name)}
+      {source ? <img src={source} alt="" loading="lazy" /> : initials(p.name)}
     </span>
   );
 }

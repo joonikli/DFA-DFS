@@ -5,11 +5,15 @@ import { useRoute } from './lib/router.js';
 import Dashboard from './features/dashboard/Dashboard.jsx';
 import Messages from './features/messages/Messages.jsx';
 import Report from './features/report/Report.jsx';
+import Events from './features/events/Events.jsx';
+import Profiles from './features/profiles/Profiles.jsx';
 
 function Routes() {
   useGlobalTooltips();
   const { route, params } = useRoute();
   if (route === 'report') return <div className="route-enter" key="report"><Report params={params} /></div>;
+  if (route === 'events') return <div className="route-enter" key="events"><Shell route="events" routes={['dashboard', 'events', 'messages']}><Events /></Shell></div>;
+  if (route === 'profile') return <div className="route-enter" key="profile"><Shell route="profile"><Profiles key={`${params.get('type')}/${params.get('id')}`} params={params} /></Shell></div>;
   return (
     <div className="route-enter" key={route}>
       <Shell route={route === 'messages' ? 'messages' : 'dashboard'}>

@@ -2,6 +2,8 @@
 import { useLayoutEffect, useState } from 'react';
 import { ME, PAST_SHIFTS, SHIFTS, VOLS } from '../../data.js';
 import { nowTime } from '../../lib/store.js';
+import { navigate } from '../../lib/router.js';
+import { profileRoute } from '../profiles/profileData.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import { hideTip } from '../../components/ui.jsx';
 import { M, UI, addAttach, convoName, ensureIds, findMsg, newIndex, renderConv, rerender } from './state.js';
@@ -136,7 +138,7 @@ function Profile({ id }) {
   return (
     <div className="side-card">
       <div className="prof-top"><Avatar id={id} className="xl" /><div className="prof-name">{v.name}</div><div className="prof-sub">{v.kind} | {v.loc}</div>
-        <button className="btn btn-purple-outline btn-sm" style={{ width: '100%', marginTop: 6 }} onClick={() => UI.toast('Full volunteer profiles aren’t part of this prototype.', { ic: 'info' })}>View profile</button></div>
+        <button className="btn btn-purple-outline btn-sm" style={{ width: '100%', marginTop: 6 }} onClick={() => navigate(profileRoute(id))}>View profile</button></div>
       <div className="prof-sec"><h4>Contact</h4>
         <div className="prof-line"><Icon name="mail" size={14} /> {v.email}</div>
         <div className="prof-line"><Icon name="phone" size={14} /> {v.phone}</div>

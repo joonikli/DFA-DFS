@@ -18,7 +18,7 @@ export function useNotBuilt() {
   return (label) => toast(`${label} isn’t part of this prototype — try Dashboard or Messages.`, { ic: 'info' });
 }
 
-export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'messages'], switchTo, children, onNav, showBadges = true }) {
+export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'events', 'messages'], switchTo, children, onNav, showBadges = true }) {
   useStore();
   const notBuilt = useNotBuilt();
   const unread = CONVOS.reduce((a, c) => a + c.unread, 0) + GROUPS.reduce((a, g) => a + g.unread, 0);
