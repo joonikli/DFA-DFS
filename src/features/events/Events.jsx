@@ -75,7 +75,7 @@ export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationC
 }
 
 function Tasks({ onOpen, tasks }) {
-  return <section className="ae-tasks"><h2>To do</h2>{tasks.filter((t) => !t.done).map((task) => <button key={task.id} className="ae-task" onClick={() => onOpen(task)}><span className={`ae-task-type type-${task.id}`}>{task.type}</span><span>{task.title}</span><EventAsset name="list-arrow-right" /></button>)}<button className="ae-view-all" onClick={() => onOpen({ id: 'all', title: 'To do' })}>View all</button></section>;
+  return <section className="ae-tasks"><h2>To do</h2>{tasks.filter((t) => !t.done).map((task) => <button key={task.id} className="ae-task" onClick={() => onOpen(task)}><span className={`ae-task-type type-${task.id}`}>{task.type}</span><span>{task.title}</span><EventAsset name="list-arrow-right" /></button>)}<button className="link ae-view-all" onClick={() => onOpen({ id: 'all', title: 'To do' })}>View all <Icon name="arrow-r" size={14} /></button></section>;
 }
 
 function EmptyEvents({ tab, filtered, onClear }) {

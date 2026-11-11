@@ -89,7 +89,7 @@
 .ae-task-type { flex: 0 0 auto; display: inline-flex; padding: 4px 8px; border-radius: 8px; line-height: 19px; }
 .ae-task-type.type-survey { background: #e5f6d4; }
 .ae-task-type.type-grant { background: var(--purple-lightest); }
-.ae-view-all { display: block; margin: 8px 0 0 auto; color: #3a3ea9; font-size: 14px; }
+.ae-view-all.link { display: flex; width: max-content; margin: 8px 0 0 auto; font-size: 14px; }
 .ae-active-filter { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 6px 10px; background: var(--purple-lightest); color: var(--purple-dark); border-radius: 18px; }
 .ae-active-filter + .ae-groups { padding-top: 16px; }
 /* Empty event container shared visually with Final / Volunteer Events Registered. */
