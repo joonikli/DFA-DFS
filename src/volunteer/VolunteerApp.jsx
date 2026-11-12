@@ -8,6 +8,7 @@ import { emit, reducedMotion, useStore } from '../lib/store.js';
 import { MANAGER_URL, navigate, useRoute } from '../lib/router.js';
 import VolunteerEvents from './Events.jsx';
 import VolunteerProfile from './Profile.jsx';
+import VolunteerTopNav from './TopNav.jsx';
 import { RegistrationProvider, useRegistration } from './Registration.jsx';
 import { PAST_SURVEYS, RECOMMENDED, SURVEY_EVENT, VOL_NAV, firstName, vol } from './shared.js';
 import { Banner } from './Banner.jsx';
@@ -108,6 +109,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
 
   return (
     <div className="dash vp" id="vp" ref={vpRef}>
+      <VolunteerTopNav className="vp-top-nav" onAnnouncement={() => openModal({ kind: 'ann' })} />
       <header className="dash-head"><h1 className="h1">Hi {firstName(vol.name)}, let’s see what’s going on…</h1></header>
       {!dismissed && <Banner leave={survey.done} onSurvey={goSurvey} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
