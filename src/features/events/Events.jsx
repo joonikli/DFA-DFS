@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import SlidingTabs from '../../components/SlidingTabs.jsx';
 import { Icon } from '../../components/Icon.jsx';
 import { hideTip, useFitZoom, usePop, usePopClose, useToast } from '../../components/ui.jsx';
 import { AccountMenu, Notifications } from '../dashboard/Popovers.jsx';
@@ -8,6 +9,7 @@ import { openConversation } from '../../lib/bridge.js';
 import { M, draft, rerender } from '../messages/state.js';
 import EventEditor, { EventAsset, EventDialog } from './EventEditor.jsx';
 import EventDetail from './EventDetail.jsx';
+import EventGridCard from './EventGridCard.jsx';
 import { EVENT_TODAY, dateLabel, parseDate, timeLabel } from './eventData.js';
 import { useEventState } from './eventState.js';
 import './events.css';
@@ -16,28 +18,7 @@ const TABS = ['Upcoming', 'Drafts', 'Saved', 'Completed', 'Cancelled'];
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export function EventTabs({ value, onChange, items = TABS, label = 'Event status', panelId = 'admin-events-panel', className = '' }) {
-  const ref = useRef(null);
-  const positionIndicator = (instant = false) => {
-    const tabs = ref.current, selected = tabs?.querySelector('[aria-selected="true"]'), line = tabs?.querySelector('.ae-tab-line');
-    if (!selected || !line) return;
-    // Match the shared Segmented control's layout-based sliding thumb.
-    if (instant) line.style.transition = 'none';
-    line.style.width = `${selected.offsetWidth}px`;
-    line.style.transform = `translateX(${selected.offsetLeft}px)`;
-    if (instant) { void line.offsetWidth; line.style.transition = ''; }
-  };
-  useLayoutEffect(() => {
-    positionIndicator(true);
-    const observer = new ResizeObserver(() => positionIndicator(true));
-    observer.observe(ref.current);
-    ref.current.querySelectorAll('[role="tab"]').forEach((button) => observer.observe(button));
-    return () => observer.disconnect();
-  }, []);
-  useLayoutEffect(() => { positionIndicator(); }, [value]);
-  return <div className={`ae-tabs ${className}`} role="tablist" aria-label={label} ref={ref}>
-    {items.map((item) => <button key={item} role="tab" aria-selected={value === item} aria-controls={panelId} className={value === item ? 'on' : ''} onClick={() => onChange(item)}>{item}</button>)}
-    <span className="ae-tab-line" aria-hidden="true" />
-  </div>;
+  return <SlidingTabs value={value} onChange={onChange} items={items} label={label} panelId={panelId} className={`ae-tabs ${className}`} lineClassName="ae-tab-line" />;
 }
 
 function DateFilter({ date, onApply }) {
@@ -62,7 +43,8 @@ function Calendar({ month, onMonth, selected, onSelect, events, saved }) {
   </section>;
 }
 
-export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationCount = true }) {
+export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationCount = true, layout = 'list' }) {
+  if (layout === 'grid') return <EventGridCard event={event} saved={saved} onSave={onSave} onEditDraft={onEditDraft} />;
   const isDraft = Boolean(onEditDraft);
   const date = event.date ? parseDate(event.date) : null;
   return <article className={`ae-event-card ${event.id === 'reference-1' ? 'ae-card-tall' : ''}`}>
@@ -159,7 +141,7 @@ export default function Events() {
       <div className="ae-layout"><section className="ae-list" id="admin-events-panel" role="tabpanel" aria-label={`${tab} events`} ref={list}>
         <div className="ae-toolbar"><label className="search ae-search"><EventAsset name="list-vector" /><input aria-label="Search events" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} /></label><button className={`ae-filter ${selected ? 'on' : ''}`} aria-haspopup="dialog" aria-label="Filter events by date" onClick={(e) => pop.toggle(e.currentTarget, <DateFilter date={selected} onApply={selectDate} />, { align: 'end' })}><EventAsset name="list-list-filter" />Date</button><div className="ae-views" role="group" aria-label="Event layout"><button aria-label="Grid view" aria-pressed={view === 'grid'} className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}><EventAsset name="list-grip" /></button><button aria-label="List view" aria-pressed={view === 'list'} className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}><EventAsset name="list-layout-list" /></button></div><button className="btn btn-dark ae-create" onClick={() => setEditor({})}>Create event<EventAsset name="list-plus" /></button></div>
         {selected && <button className="ae-active-filter" onClick={() => selectDate('')}>{dateLabel(selected)}<Icon name="x" size={14} /><span className="sr">Clear date filter</span></button>}
-        <div className="ae-groups">{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(selected || query.trim())} onClear={() => { setSelected(''); setQuery(''); }} />}</div>
+        <div className="ae-groups">{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} layout={view} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(selected || query.trim())} onClear={() => { setSelected(''); setQuery(''); }} />}</div>
       </section><aside className="ae-rail"><Calendar month={month} onMonth={(direction) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + direction, 1))} selected={selected} onSelect={selectDate} events={events} saved={saved} /><Tasks tasks={tasks} onOpen={setTask} /></aside></div>
     </div>}
     {editor && <EventEditor event={editor.event} draft={editor.form} defaultDate={selected || EVENT_TODAY} onSave={saveEvent} onClosed={() => setEditor(null)} startSurvey={editor.startSurvey} />}

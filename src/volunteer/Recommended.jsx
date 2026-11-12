@@ -33,7 +33,7 @@ function RecCard({ r, reg, saved, onSave, onRegister }) {
         <p>{s.desc}</p>
         <div className="vp-tags">
           {s.tags.map((t) => <span key={t} className="vp-tag pink">{t}</span>)}
-          <span className="vp-spots">{s.cap - s.filled - (reg ? 1 : 0)} spots left</span>
+          <span className="vp-spots">{Math.max(0, s.cap - s.filled)} spots left</span>
         </div>
       </div>
     </article>

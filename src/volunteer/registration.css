@@ -1,0 +1,43 @@
+/* Mid-fi / event-registration-popup 1366:19389. Fonts and tokens match Events. */
+.vr-dialog { --sans: 'DFS Volunteer Events Sans', system-ui, sans-serif; --serif: 'DFS Volunteer Events Serif', Georgia, serif; display: flex; flex-direction: column; gap: 34px; width: min(750px, calc(100vw - 32px)); min-height: 609px; max-height: inherit; overflow-y: auto; padding: 24px 28px 32px; border: 1px solid var(--gray); border-radius: 16px; background: var(--white); font: 400 16px/19px var(--sans); }
+.modal-panel:has(.vr-dialog) { width: auto; max-width: none; max-height: calc(100dvh - 32px); padding: 0; border-radius: 16px; }
+.vr-header > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.vr-header h2 { margin: 0; font: 600 28px/31px var(--serif); overflow-wrap: anywhere; }
+.vr-header button { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; }
+.vr-dialog .ae-asset { display: block; flex-shrink: 0; }
+.vr-header p { margin: 16px 0 0; color: var(--darker-gray); }
+.vr-header strong { font-weight: 700; color: var(--purple-dark); }
+.vr-fields { display: flex; flex-direction: column; gap: 24px; }
+.vr-pair { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 330px); justify-content: space-between; gap: 24px; }
+.vr-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.vr-input, .vr-select select { display: block; width: 100%; min-height: 43px; padding: 12px 10px; border: 0; border-radius: 12px; background: var(--vlight); color: var(--darker-gray); font: inherit; }
+.vr-select { position: relative; display: block; }
+.vr-select select { appearance: none; padding-right: 40px; cursor: pointer; }
+.vr-select > img { position: absolute; right: 8px; top: calc(50% - 12px); pointer-events: none; }
+.vr-dialog fieldset { border: 0; min-width: 0; padding: 0; margin: 0; }
+.vr-dialog legend { width: 100%; padding: 8px 4px; line-height: 19px; }
+.vr-required { color: #f46565; }
+.vr-times { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.vr-time-pair { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.vr-time { display: flex; align-items: center; gap: 8px; height: 43px; padding: 8px; border-radius: 12px; background: var(--vlight); }
+.vr-time input { width: 96px; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--darker-gray); font: inherit; }
+.vr-time input::-webkit-calendar-picker-indicator { display: none; }
+.vr-question { display: flex; flex-direction: column; gap: 2px; }
+.vr-question > span { padding: 8px 4px; }
+.vr-question textarea { width: 100%; min-height: 43px; padding: 12px 10px; resize: vertical; border: 0; border-radius: 12px; background: var(--vlight); font: inherit; }
+.vr-notify label { display: flex; align-items: center; gap: 6px; min-height: 35px; padding: 8px 10px; color: var(--darker-gray); }
+.vr-notify input { appearance: none; margin: 0; width: 16px; height: 16px; flex: 0 0 16px; border: 2px solid var(--darker-gray); border-radius: 4px; cursor: pointer; }
+.vr-notify input:checked { background: var(--purple-dark); border-color: var(--purple-dark); box-shadow: inset 0 0 0 2px var(--white); }
+.vr-dialog > footer { display: flex; justify-content: space-between; gap: 16px; margin-top: auto; }
+.vr-dialog > footer .btn { height: 39px; padding: 10px 14px; border-radius: 48px; font: 400 16px/19px var(--sans); }
+.vr-dialog > footer .vr-cancel { background: rgba(96,120,241,.2); color: #3a3ea9; }
+.vr-error { margin: -14px 0; color: #c2191c; font-size: 14px; line-height: 20px; }
+.vr-dialog :is(button, input, select, textarea):focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
+@media (max-width: 600px) {
+  .vr-dialog { min-height: 0; padding: 24px 20px; gap: 24px; }
+  .vr-pair { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .vr-time { gap: 4px; padding: 8px 6px; }
+  .vr-time input { width: 88px; font-size: 14px; }
+  .vr-times, .vr-time-pair { gap: 6px; }
+  .vr-header h2 { font-size: 26px; line-height: 29px; }
+}

@@ -76,7 +76,7 @@
 .ap-award-grid figcaption { margin-top: 17px; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
 .ap-award-titles figcaption { margin-top: 24px; }
 .ap-empty p { max-width: 300px; }
-.ap-content > [role="tabpanel"] > .ap-empty { margin-top: 27px; }
+.ap-content > [role="tabpanel"] > .ap-empty { width: 849px; max-width: 100%; margin-top: 27px; }
 .ap-not-found { padding: 50px; }
 .ap-not-found h1 { font: 600 36px/40px var(--serif); }
 .ae-dialog.ap-profile-dialog { width: min(720px, calc(100vw - 32px)); max-height: inherit; overflow-y: auto; }
@@ -107,6 +107,7 @@
 .ap-page.fluid .ap-identity-row { flex-wrap: wrap; }
 .ap-page.fluid .ap-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .ap-page.fluid .ap-stat { padding: 18px; }
+.ap-page.fluid .ap-content > [role="tabpanel"] > .ap-empty { width: 100%; }
 .ap-page.fluid .ap-award-titles { grid-template-columns: repeat(2, minmax(0, 357px)); }
 .ap-page.fluid[data-awards-active="true"] .ap-content { display: flex; flex-direction: column; gap: 32px; }
 .ap-page.fluid[data-awards-active="true"] .ap-columns { display: contents; }

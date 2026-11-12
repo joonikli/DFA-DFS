@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { Icon } from '../components/Icon.jsx';
 import { usePopClose } from '../components/ui.jsx';
 import { SHIFTS, SHIFT_DATES, TODAY } from '../data.js';
+import { registrationTime, useRegistration } from './Registration.jsx';
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthKey = (iso) => new Date(`${iso}T12:00`).toLocaleString('en-US', { month: 'long', year: 'numeric' });
@@ -29,12 +30,13 @@ export function CancelConfirm({ id, onConfirm }) {
 
 function EvItem({ id, flash, onAddCal, onCancel }) {
   const s = SHIFTS[id];
+  const { records } = useRegistration();
   return (
     <div className={`ev-item ${flash ? 'is-new-msg' : ''}`} data-ev={id}>
       <div className="ev-date"><small>{s.mon}</small><b>{s.day}</b></div>
       <div className="ev-main">
         <div className="ev-title">{s.title}</div>
-        <div className="ev-time">{s.time}</div>
+        <div className="ev-time">{registrationTime(records[id], s.time)}</div>
         <div className="ev-meta">
           <span><Icon name="check" size={14} /> You’re registered · {s.roles.split(',')[0]}</span>
           <span><Icon name="pin" size={14} /> {s.addr}</span>

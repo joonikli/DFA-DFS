@@ -27,7 +27,7 @@ export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'events
     if (routes.includes(r)) navigate(r); else notBuilt(label);
   };
   const item = (r, label, ic) => (
-    <button key={r} className={`nav-item ${route === r ? 'on' : ''}`} onClick={() => go(r, label)}>
+    <button key={r} className={`nav-item ${route === r ? 'on' : ''}`} aria-label={label} onClick={() => go(r, label)}>
       <Icon name={ic} size={24} />
       <span>{label}</span>
       {showBadges && r === 'messages' && unread > 0 && route !== 'messages' && <span className="badge nav-badge">{unread}</span>}

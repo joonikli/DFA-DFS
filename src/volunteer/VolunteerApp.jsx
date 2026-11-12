@@ -1,11 +1,14 @@
 // Volunteer portal (Maureen Kelly) — Figma 1085:4706. Port of the vanilla volunteer.js.
 // Shares data.js with the manager app, so the same shifts, announcements and people appear in both.
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LiveRegion, PopProvider, ToastProvider, hideTip, useFitZoom, useGlobalTooltips, usePop, useToast } from '../components/ui.jsx';
 import { Shell } from '../components/Shell.jsx';
 import { SHIFTS } from '../data.js';
 import { emit, reducedMotion, useStore } from '../lib/store.js';
-import { MANAGER_URL } from '../lib/router.js';
+import { MANAGER_URL, navigate, useRoute } from '../lib/router.js';
+import VolunteerEvents from './Events.jsx';
+import VolunteerProfile from './Profile.jsx';
+import { RegistrationProvider, useRegistration } from './Registration.jsx';
 import { PAST_SURVEYS, RECOMMENDED, SURVEY_EVENT, VOL_NAV, firstName, vol } from './shared.js';
 import { Banner } from './Banner.jsx';
 import { CalendarCard, CancelConfirm } from './Calendar.jsx';
@@ -19,8 +22,9 @@ const withKey = (p) => ({ ...p, key: ++pastSeq });
 const add = (set, id) => new Set(set).add(id);
 const del = (set, id) => { const n = new Set(set); n.delete(id); return n; };
 
-function Dashboard() {
+function Dashboard({ registered, setRegistered, saved, setSaved }) {
   useStore();
+  const { openRegistration } = useRegistration();
   const toast = useToast();
   const pop = usePop();
   const vpRef = useRef(null);
@@ -28,8 +32,6 @@ function Dashboard() {
   useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000 });
 
   // ---------- Volunteer-side state (resets on reload) ----------
-  const [registered, setRegistered] = useState(() => new Set(vol.upcoming)); // shifts Maureen signed up for
-  const [saved, setSaved] = useState(() => new Set());
   const recommended = RECOMMENDED;
   const [dismissed, setDismissed] = useState(false);
   const [cal, setCal] = useState({ y: 2026, m: 11, sel: null });
@@ -82,13 +84,8 @@ function Dashboard() {
   // ---------- Recommended events ----------
   const save = (id) => { hideTip(); setSaved((s) => (s.has(id) ? del(s, id) : add(s, id))); };
   const register = (anchor, id) => {
-    const s = SHIFTS[id];
     if (registered.has(id)) { cancelShift(anchor, id); return; }
-    setRegistered((r) => add(r, id)); s.filled += 1; setFlash(id); emit();
-    toast(`You’re registered for ${s.title} on ${s.mon} ${s.day}`, {
-      ic: 'check', action: 'Undo',
-      onAction: () => { setRegistered((r) => del(r, id)); s.filled -= 1; emit(); },
-    });
+    openRegistration(id, anchor);
   };
 
   // ---------- Survey ----------
@@ -151,16 +148,30 @@ function Dashboard() {
 function Portal() {
   useGlobalTooltips();
   const toast = useToast();
-  // Vanilla: non-dashboard items show a "not part of the prototype" toast
+  const { route, params } = useRoute();
+  const active = ['events', 'profile', 'logged-out'].includes(route) ? route : 'dashboard';
+  const [registered, setRegistered] = useState(() => new Set(vol.upcoming));
+  const [saved, setSaved] = useState(() => new Set());
+  useEffect(() => {
+    document.getElementById('main')?.scrollTo(0, 0);
+    // The dashboard remains mounted to preserve survey/banner state. Refit it
+    // when made visible, including direct links into the Events page.
+    const frame = requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+    return () => cancelAnimationFrame(frame);
+  }, [active]);
   const onNav = (r, label) => {
-    if (r === 'dashboard') return;
+    if (r === 'dashboard' || r === 'events') { navigate(r); return; }
     toast(`${label} isn’t part of the volunteer prototype yet.`, { ic: 'info' });
   };
   return (
     <div className="route-enter">
-      <Shell route="dashboard" nav={VOL_NAV} routes={['dashboard']} switchTo={{ href: MANAGER_URL, label: 'Manager view' }} onNav={onNav} showBadges={false}>
-        <Dashboard />
-      </Shell>
+      <RegistrationProvider {...{ registered, setRegistered }}>
+      {active === 'logged-out' ? <div className="vop-exit"><section aria-labelledby="prototype-exit-title"><h1 id="prototype-exit-title">You’ve left the volunteer prototype</h1><p>This is a prototype-only exit. No authentication service is connected, so this does not sign out a real account. Changes are local to this preview and aren’t saved to an account.</p><button className="btn btn-dark" onClick={() => navigate('dashboard')}>Return to volunteer prototype</button></section></div> : <Shell route={active} nav={VOL_NAV} routes={['dashboard', 'events']} switchTo={{ href: MANAGER_URL, label: 'Manager view' }} onNav={onNav} showBadges={false}>
+        <div hidden={active !== 'dashboard'}><Dashboard {...{ registered, setRegistered, saved, setSaved }} /></div>
+        {active === 'events' && <VolunteerEvents {...{ registered, setRegistered, saved, setSaved }} eventId={params.get('id')} />}
+        {active === 'profile' && <VolunteerProfile {...{ registered, setRegistered, saved, setSaved }} />}
+      </Shell>}
+      </RegistrationProvider>
     </div>
   );
 }

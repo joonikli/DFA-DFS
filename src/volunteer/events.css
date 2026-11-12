@@ -1,0 +1,158 @@
+/* Final / Volunteer Events: existing volunteer identities/shifts, Figma geometry. */
+@font-face { font-family: 'DFS Volunteer Events Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('/assets/events/fonts/inter-400.ttf') format('truetype'); }
+@font-face { font-family: 'DFS Volunteer Events Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/assets/events/fonts/inter-500.ttf') format('truetype'); }
+@font-face { font-family: 'DFS Volunteer Events Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/assets/events/fonts/inter-600.ttf') format('truetype'); }
+@font-face { font-family: 'DFS Volunteer Events Serif'; font-style: normal; font-weight: 600; font-display: swap; src: url('/assets/events/fonts/crimson-pro-600.ttf') format('truetype'); }
+.ve-page, .ve-dialog { --sans: 'DFS Volunteer Events Sans', system-ui, sans-serif; --serif: 'DFS Volunteer Events Serif', Georgia, serif; font-family: var(--sans); color: var(--black); }
+.ve-page { width: 1488px; min-height: 100vh; background: var(--white); }
+.ve-page.fluid { width: 100%; }
+.ve-page .ae-asset { display: block; object-fit: contain; flex-shrink: 0; }
+.ve-top-nav.top-nav { margin: 0; height: 73px; padding: 16px 56px; gap: 24px; }
+.ve-avatar { display: block; width: 36px; height: 36px; }
+.ve-workspace { padding: 41px 58px 70px 53px; }
+.ve-heading { margin: 0 0 44px 5px; }
+.ve-heading h1 { margin: 0; font: 600 28px/31px var(--serif); }
+.ve-heading p { margin: 4px 0 0; font: 400 16px/19px var(--sans); color: var(--darker-gray); }
+.ve-tabs { position: relative; display: flex; height: 29px; box-shadow: inset 0 -2px var(--gray); }
+.ve-tabs > button { flex: 0 0 auto; height: 28px; padding: 0 24px 10px; font: 600 16px/19px var(--sans); color: var(--darker-gray); transition: color var(--dur-micro) var(--ease-out); }
+.ve-tabs > button.on { color: var(--purple-dark); }
+.ve-tab-line { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--purple-dark); pointer-events: none; transition: transform var(--dur-pop) var(--ease-out), width var(--dur-pop) var(--ease-out); }
+.ve-layout { display: grid; grid-template-columns: 849px 400px; gap: 128px; margin-top: 20px; align-items: start; }
+.ve-list { min-width: 0; }
+.ve-toolbar { display: flex; align-items: center; gap: 8px; min-height: 43px; }
+.ve-search { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 43px; padding: 12px 18px; background: var(--vlight); border-radius: 32px; }
+.ve-search input { flex: 1; width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 16px/19px var(--sans); }
+.ve-search input::placeholder { color: var(--dark-gray); }
+.ve-search:focus-within { outline: 2px solid var(--purple-dark); outline-offset: 2px; }
+.ve-filter { display: flex; align-items: center; gap: 10px; height: 38px; padding: 4px 12px 4px 14px; border-radius: 18px; background: var(--light-gray); font: 600 16px/19px var(--sans); }
+.ve-filter.on { box-shadow: inset 0 0 0 1px var(--purple-dark); }
+.ve-views { display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 18px; background: var(--light-gray); }
+.ve-views > button { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 18px; }
+.ve-views > button.on { width: 36px; background: var(--white); }
+.ve-active-filter { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 6px 10px; border-radius: 18px; color: var(--purple-dark); background: var(--purple-lightest); }
+.ve-groups { display: flex; flex-direction: column; gap: 20px; padding-top: 20px; }
+.ve-group > header { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 23px; padding: 2px 8px; margin-bottom: 10px; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
+.ve-group > header h2 { margin: 0; font: inherit; }
+.ve-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.ve-event-card { position: relative; display: flex; align-items: stretch; gap: 26px; min-width: 0; min-height: 189px; padding: 16px 18px 16px 26px; border: 1px solid var(--gray); border-radius: 18px; background: var(--white); box-shadow: 0 2px 3px rgba(239,242,245,.8); transition: border-color var(--dur-micro) ease; }
+.ve-card-open { position: absolute; z-index: 1; inset: 0; border-radius: inherit; }
+.ve-card-date { display: flex; flex: 0 0 111px; flex-direction: column; align-items: center; justify-content: center; padding: 12px 26px 12px 0; border-right: 1px solid var(--gray); }
+.ve-card-date > span { font: 500 20px/24px var(--sans); }
+.ve-card-date > b { font: 400 64px/1.15 var(--sans); }
+.ve-card-date small { color: var(--darker-gray); font: 500 14px/17px var(--sans); text-align: center; }
+.ve-card-body { flex: 1; min-width: 0; padding: 12px 0 8px; }
+.ve-card-body > header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.ve-card-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.ve-card-title h2 { margin: 0; font: 600 28px/31px var(--serif); overflow-wrap: anywhere; }
+.ve-recommend { padding: 4px 8px; border-radius: 8px; background: var(--purple-lightest); color: var(--purple-dark); font: 500 14px/17px var(--sans); }
+.ve-actions { position: relative; z-index: 2; display: flex; align-items: center; flex: 0 0 auto; gap: 8px; }
+.ve-event-card .ve-actions { pointer-events: none; }
+.ve-event-card .ve-actions > button { pointer-events: auto; }
+.ve-bookmark { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border: 1px solid var(--light-gray); border-radius: 48px; background: var(--white); transition: transform var(--dur-press), background-color var(--dur-micro); }
+.ve-bookmark.on { border-color: var(--gray); background: var(--black); }
+.ve-bookmark:active { transform: scale(.97); }
+.ve-register.btn, .ve-attended { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 37px; padding: 10px 14px; border-radius: 48px; font: 600 14px/17px var(--sans); }
+.ve-attended { color: var(--white); background: var(--black); }
+.ve-card-location { display: flex; flex-wrap: wrap; align-items: center; margin-top: 4px; color: var(--darker-gray); font: 400 16px/19px var(--sans); overflow-wrap: anywhere; }
+.ve-card-location > span { min-width: 0; }
+.ve-card-body > p { max-width: 471px; margin: 12px 0 10px; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
+.ve-card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.ve-card-tags > span { padding: 4px 8px; border-radius: 8px; color: var(--pink); background: #ffddeE; font: 500 14px/17px var(--sans); }
+.ve-empty { display: flex; min-height: 176px; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px 18px 32px 26px; border: 1px solid var(--gray); border-radius: 18px; background: var(--white); box-shadow: 0 2px 3px rgba(239,242,245,.8); }
+.ve-empty-icon { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 12px; background: var(--purple-lightest); }
+.ve-empty p { max-width: 223px; margin: 0; color: var(--darker-gray); font: 400 16px/19px var(--sans); text-align: center; }
+.ve-rail { display: flex; flex-direction: column; gap: 20px; margin-top: -2px; }
+.ve-calendar { width: 400px; height: 402px; padding: 16px 14px; border: 1px solid var(--gray); border-radius: 18px; box-shadow: 0 2px 8px rgba(60,57,64,.04); background: var(--white); }
+.ve-month { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px; }
+.ve-month h2 { margin: 0; font: 500 20px/24px var(--sans); text-align: center; }
+.ve-month > button { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; }
+.ve-left { transform: scaleX(-1); }
+.ve-legend { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+.ve-legend > span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 12px; background: var(--vlight); color: var(--darker-gray); font: 500 14px/17px var(--sans); }
+.ve-legend i, .ve-days i { display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--purple-light); }
+.ve-legend > span:last-child i, .ve-days i.registered { background: var(--purple-dark); }
+.ve-weekdays, .ve-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); justify-items: center; }
+.ve-weekdays { margin: 16px 0 8px; color: var(--dark-gray); text-transform: uppercase; font: 500 12px/20px var(--sans); }
+.ve-days { row-gap: 7px; grid-auto-rows: calc((249px - (var(--weeks) - 1) * 7px) / var(--weeks)); }
+.ve-days > button { position: relative; width: 40px; height: 100%; border-radius: 50%; font: 400 20px/1 var(--sans); }
+.ve-days > button.today, .ve-days > button.selected { background: var(--black); color: var(--white); }
+.ve-days i { position: absolute; top: -1px; left: calc(50% - 5px); }
+.ve-activity { padding: 16px 15px; border: 1px solid var(--gray); border-radius: 18px; background: var(--white); box-shadow: 0 2px 8px rgba(60,57,64,.04); }
+.ve-chart { display: flex; align-items: flex-start; gap: 8px; height: 162px; max-width: 329px; margin: 26px auto 0; }
+.ve-axis-title { align-self: center; color: var(--dark-gray); font: 500 12px/15px var(--sans); writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; }
+.ve-y-axis { display: flex; height: 116px; flex-direction: column; justify-content: space-between; color: var(--darker-gray); font: 500 14px/17px var(--sans); }
+.ve-chart-main { flex: 1; min-width: 0; }
+.ve-bars { display: flex; height: 116px; align-items: flex-end; justify-content: space-around; gap: 16px; padding: 0 4px; border-radius: 4px; background: var(--vlight); }
+.ve-bars > div { width: 29px; border-radius: 4px; background: var(--purple); transform-origin: bottom; animation: barGrow 500ms var(--ease-out) both; transition: background-color var(--dur-micro) ease; }
+.ve-x-axis { display: flex; justify-content: space-around; gap: 4px; margin-top: 10px; color: var(--darker-gray); font: 500 14px/17px var(--sans); }
+.ve-day-label { display: block; margin-top: 4px; text-align: center; text-transform: uppercase; color: var(--dark-gray); font: 500 12px/15px var(--sans); }
+.ve-chart-note { margin: 8px 0 10px; font: 400 12px/17px var(--sans); color: var(--darker-gray); text-align: center; }
+.ve-dashboard-link.link { display: flex; justify-content: flex-end; gap: 4px; margin-left: auto; font-size: 14px; }
+.ve-cards.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.ve-cards.grid .ve-event-card { flex-direction: column; padding: 24px; border-radius: 24px; gap: 16px; }
+.ve-grid-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 12px; }
+.ve-page .ve-cards.grid .ve-card-date { flex-basis: auto; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 0; padding: 0; border: 0; }
+.ve-cards.grid .ve-card-date small { max-width: 100%; margin-left: 0; text-align: left; }
+.ve-cards.grid .ve-card-date > b { font: 600 36px/40px var(--serif); }
+.ve-cards.grid .ve-card-body { padding: 0; }
+.ve-cards.grid .ve-card-body > header { flex-direction: column; gap: 12px; }
+.ve-cards.grid .ve-actions { width: auto; justify-content: flex-end; }
+.ve-cards.grid .ve-register, .ve-cards.grid .ve-attended { margin-left: 0; }
+.ve-filter-form { display: flex; flex-direction: column; gap: 16px; width: 280px; padding: 18px; }
+.ve-filter-form label { display: flex; flex-direction: column; gap: 8px; }
+.ve-filter-form > div { display: flex; justify-content: flex-end; gap: 8px; }
+.ve-notifications { width: 300px; padding: 16px; }
+.ve-dialog { max-height: inherit; overflow-y: auto; width: min(740px, calc(100vw - 32px)); padding: 28px; }
+.modal-panel:has(.ve-dialog) { padding: 0; width: auto; max-width: none; max-height: calc(100vh - 32px); overflow: hidden; border-radius: 16px; }
+.ve-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.ve-dialog-head h2 { margin: 0; font: 600 28px/31px var(--serif); overflow-wrap: anywhere; }
+.ve-dialog > p { display: flex; align-items: flex-start; gap: 8px; margin: 20px 0; font: 400 16px/23px var(--sans); overflow-wrap: anywhere; }
+.ve-dialog > .ve-actions { margin-top: 24px; }
+.ve-dialog > .btn { margin-top: 20px; }
+.ve-dialog .ae-asset { display: block; flex-shrink: 0; }
+.ve-page button:focus-visible, .ve-page a:focus-visible, .ve-dialog button:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
+.ve-page.fluid .ve-workspace { padding: 32px 24px 60px; }
+.ve-page.fluid .ve-heading { margin-left: 0; }
+.ve-page.fluid .ve-layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
+.ve-page.fluid .ve-calendar { width: 100%; }
+.ve-page.fluid .ve-legend { gap: 4px; }
+.ve-page.fluid .ve-legend > span { font-size: 11px; gap: 4px; padding: 4px; }
+.ve-page.fluid .ve-days > button { width: 32px; font-size: 16px; }
+.ve-page.fluid .ve-month h2 { font-size: 16px; }
+.ve-page.fluid .ve-card-body > header { flex-wrap: wrap; }
+.ve-page.fluid .ve-card-date { flex-basis: 80px; padding-right: 16px; }
+.ve-page.fluid .ve-card-date > b { font-size: 48px; }
+.ve-page.fluid .ve-card-title h2 { font-size: 25px; line-height: 28px; }
+.ve-page.fluid .ve-event-card { gap: 16px; padding: 16px; }
+.ve-page.fluid .ve-card-location { font-size: 14px; }
+.ve-page.fluid .ve-cards.grid { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 850px) {
+  .ve-page.fluid .ve-layout { grid-template-columns: minmax(0, 1fr); }
+  .ve-page.fluid .ve-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 600px) {
+  .ve-page.fluid .ve-workspace { padding: 24px 16px 50px; }
+  .ve-top-nav.top-nav { padding: 16px 24px; }
+  .ve-tabs { overflow-x: auto; }
+  .ve-tabs > button { padding-inline: 16px; font-size: 13px; }
+  .ve-toolbar { flex-wrap: wrap; }
+  .ve-search { flex-basis: 100%; }
+  .ve-event-card { flex-direction: column; }
+  .ve-page.fluid .ve-card-date { flex: 0 0 auto; width: auto; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; padding: 0 0 12px; border-right: 0; border-bottom: 1px solid var(--gray); }
+  .ve-card-date small { margin-left: auto; }
+  .ve-card-body > header { flex-direction: column; }
+  .ve-card-body > header > .ve-actions { width: 100%; }
+  .ve-actions .ve-register, .ve-actions .ve-attended { margin-left: auto; }
+  .ve-page.fluid .ve-rail { grid-template-columns: minmax(0, 1fr); }
+  .ve-card-location { gap: 4px; }
+  .ve-x-axis { font-size: 12px; }
+  .ve-filter-form { max-width: calc(100vw - 32px); }
+  .ve-dialog { padding: 20px; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .ve-bars > div:hover { background: var(--purple-dark); }
+  .ve-event-card:hover { border-color: var(--purple-light); }
+  .ve-tabs > button:hover { color: var(--purple-dark); }
+  .ve-days > button:not(.selected):not(.today):hover { background: var(--light-gray); }
+}
+@media (prefers-reduced-motion: reduce) { .ve-tab-line, .ve-tabs > button { transition: none; } .ve-bars > div { animation: none; transition: none; } }

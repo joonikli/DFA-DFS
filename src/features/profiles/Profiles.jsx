@@ -14,11 +14,11 @@ import { getProfile, PROFILE_AWARDS, PROFILE_YEAR, saveAdminNotes, saveAdminProf
 import ProfileEditor from './ProfileEditor.jsx';
 import './profiles.css';
 
-function ProfileAsset({ name, ...props }) {
+export function ProfileAsset({ name, ...props }) {
   return <img className="ap-asset" src={`/assets/profiles/${name}.svg`} alt="" aria-hidden="true" {...props} />;
 }
 
-function Portrait({ person }) {
+export function Portrait({ person }) {
   const [failed, setFailed] = useState(false);
   return <div className="ap-portrait" aria-label={`${person.name} profile photo`}>
     <span>{initials(person.name)}</span>{person.photo && !failed && <img src={person.photo} alt="" onError={() => setFailed(true)} />}
@@ -48,7 +48,7 @@ function Notes({ person }) {
   </section>;
 }
 
-function Statistics({ person, year, onYear }) {
+export function Statistics({ person, year, onYear }) {
   const pop = usePop();
   const current = year === PROFILE_YEAR;
   const values = [current ? person.hours : null, current ? person.attended : null, current ? person.attendance : null];
@@ -62,9 +62,9 @@ function Statistics({ person, year, onYear }) {
   </section>;
 }
 
-function Awards({ person }) {
+export function Awards({ person, emptyMessage = 'No awards are recorded for this volunteer in the prototype.' }) {
   const awards = PROFILE_AWARDS.filter((award) => person.awards.includes(award.id));
-  if (!awards.length) return <div className="ae-empty ap-empty"><div className="ae-empty-content"><div className="ae-empty-icon"><EventAsset name="detail-handshake" /></div><p>No awards are recorded for this volunteer in the prototype.</p></div></div>;
+  if (!awards.length) return <div className="ae-empty ap-empty"><div className="ae-empty-content"><div className="ae-empty-icon"><EventAsset name="detail-handshake" /></div><p>{emptyMessage}</p></div></div>;
   return <section className="ap-awards" aria-label="Volunteer awards">
     {['badge', 'title'].map((kind) => <section key={kind} aria-label={kind === 'badge' ? 'Badges' : 'Titles'}><h3>{kind === 'badge' ? 'Badges' : 'Titles'}</h3><div className={`ap-award-grid ${kind === 'badge' ? 'ap-award-badges' : 'ap-award-titles'}`}>
       {awards.filter((award) => award.kind === kind).map((award) => <figure key={award.id}><div className={kind === 'badge' ? 'ap-badge-art' : 'ap-title-art'}><img src={`/assets/profiles/${award.id}.png`} alt={`${award.name} award artwork`} /></div><figcaption>{award.name}</figcaption></figure>)}
