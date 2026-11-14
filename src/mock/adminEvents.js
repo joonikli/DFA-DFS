@@ -42,6 +42,7 @@ export const initialAdminState = {
   saved: ['e13', 'e16', 'e21'],
   cancelled: ['e18'],
   createdEvents: [], // events made with "Create event"
+  eventEdits: {}, // eventId → fields changed with "Edit" on the admin Events screen
 }
 
 // Right-rail "To do" list (Figma: Events - admin, 2324:46460)

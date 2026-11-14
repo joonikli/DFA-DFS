@@ -1,0 +1,25 @@
+/* Screens from the former manager app / volunteer portal, rendered in the main frame
+   (see src/lib/appScope.js). Global stylesheet — see CSS_SCOPES in vite.config.js. */
+
+/* They draw edge to edge like before: no content padding from the main frame */
+.app-shell__content:has(> .app-embed) {
+  padding: 0;
+}
+
+/* Main-app component islands inside the volunteer dashboard keep its section spacing
+   (.vp > div { margin-bottom: 20px } in styles.css skips islands) */
+.app-embed .vp > .app-a {
+  margin-bottom: 20px;
+}
+
+/* The main frame's top nav (notifications, account, role switch) replaces each screen's
+   own top nav. Collapse it but keep its bottom margin so the content sits where it did. */
+.app-embed .top-nav {
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}

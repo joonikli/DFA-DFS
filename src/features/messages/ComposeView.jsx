@@ -48,7 +48,7 @@ function ComposeEmpty() {
   if (!rc.length) {
     const sugg = ann
       ? GROUPS.slice(0, 3).map((g) => ({ kind: 'group', id: g.id, label: g.name, sub: `${g.count} members`, avs: g.members.slice(0, 3) }))
-      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
+      : ['e12', 'e15', 'e17'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
     return (
       <div className="cmp-empty">
         <div className="cmp-icon"><Icon name={ann ? 'users' : 'pen'} size={22} /></div>

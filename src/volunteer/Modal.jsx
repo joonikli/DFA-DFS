@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { reducedMotion } from '../lib/store.js';
+import { portalRoot } from '../lib/appScope.js';
 
 const FOCUS_SEL = 'input, textarea, button:not([data-act="close-modal"])';
 
@@ -48,6 +49,6 @@ export function Modal({ label, onClosed, children }) {
         {typeof children === 'function' ? children(close) : children}
       </div>
     </div>,
-    document.body,
+    portalRoot(),
   );
 }

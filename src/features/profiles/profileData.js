@@ -1,5 +1,7 @@
 import { ME, PHOTOS, VOLS } from '../../data.js';
 import { emit } from '../../lib/store.js';
+// Bridget's photo as on the main app's profile (src/pages/Profile.jsx)
+import bridgetPhoto from '../../assets/people/sarah-doe.png';
 
 export const PROFILE_YEAR = '2026';
 export const PROFILE_AWARDS = [
@@ -14,8 +16,8 @@ export const PROFILE_AWARDS = [
 // Supplement the existing mock identities with profile-only demo fields from
 // Final / Profiles. No production account, permissions or server data is changed.
 const admin = {
-  jobTitle: 'Volunteer Manager', location: 'Pittsburgh, PA', joined: 'August 12, 2023',
-  email: 'bridget.okafor@dfspgh.org', phone: '412-555-0101',
+  jobTitle: 'Volunteer Manager', location: 'Pittsburgh, PA', joined: 'March 3, 2021', photo: bridgetPhoto,
+  email: 'bridget.moore@dressforsuccess.org', phone: '412-555-0142',
   bio: `Hi my name is ${ME.first}! I am the Volunteer Manager at Dress for Success Pittsburgh, where I help coordinate volunteer-supported events and make sure each opportunity runs smoothly. I work with volunteers to answer event questions, share updates, support scheduling changes, and verify service hours.`,
 };
 const volunteerDemo = {
@@ -27,7 +29,7 @@ const cachedPortraits = {
 };
 
 export function getProfile(type, id) {
-  if (type === 'admin') return { ...admin, name: ME.name, photo: cachedPortraits[ME.photo] || ME.photo, id: 'me', type: 'admin', verified: true };
+  if (type === 'admin') return { ...admin, name: ME.name, id: 'me', type: 'admin', verified: true };
   const volunteer = VOLS[id];
   if (!volunteer) return null;
   const demo = volunteerDemo[id] || {};
@@ -41,7 +43,7 @@ export function getProfile(type, id) {
 }
 
 export function saveAdminProfile(form) {
-  Object.assign(admin, { jobTitle: form.jobTitle.trim(), location: form.location.trim(), email: form.email.trim(), phone: form.phone.trim(), bio: form.bio.trim() });
+  Object.assign(admin, { photo: form.photo, jobTitle: form.jobTitle.trim(), location: form.location.trim(), email: form.email.trim(), phone: form.phone.trim(), bio: form.bio.trim() });
   Object.assign(ME, { name: form.name.trim(), first: form.name.trim().split(' ')[0], photo: form.photo });
   emit();
 }

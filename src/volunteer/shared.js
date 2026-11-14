@@ -1,5 +1,6 @@
 // Volunteer-portal constants and helpers (vanilla volunteer.js top of file)
 import { GROUPS, VOLS } from '../data.js';
+import { events, eventsById, initialSurveyResponses } from '../mock/events.js';
 
 export const VOL = 'maureen';
 export const vol = VOLS[VOL];
@@ -18,20 +19,24 @@ export const announcement = () => {
   return { g, a: g.anns.find((x) => x.id === ANNOUNCEMENT.id) };
 };
 
-export const RECOMMENDED = [
-  { id: 'hs19', dist: '0.8 mi', why: 'You enjoyed Mobile Services' },
-  { id: 'b22', dist: '1.4 mi', why: 'Matches your styling skills' },
-];
+// Recommended for Maureen: the events flagged `recommended` in src/mock/events.js
+// (the same ones the volunteer Events page tags "Recommend").
+const WHY = { e11: 'Matches your resume review experience', e14: 'Matches your styling skills', e23: 'You enjoyed Interview Practice' };
+export const RECOMMENDED = events
+  .filter((e) => e.recommended)
+  .map((e) => ({ id: e.id, dist: e.distance.replace(/ from you$/, ''), why: WHY[e.id] || 'Based on your profile' }));
 
-export const SURVEY_EVENT = { event: 'Boutique Fittings', date: 'Tuesday, Dec 1' };
+// 'Tuesday, May 12'
+export const surveyDate = (e) => e.start.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
-export const PAST_SURVEYS = [
-  { event: 'Mobile Services Route', date: 'Saturday, Nov 21', rating: 5, comment: 'The new intake form made check-in so much faster.' },
-  { event: 'Warehouse Wednesday', date: 'Wednesday, Nov 18', rating: 4, comment: 'More gloves at the sorting station would help.' },
-  { event: 'MHCI Lunch & Learn', date: 'Saturday, Nov 7', rating: 5, comment: '' },
-  { event: 'Fall Suit Drive', date: 'Saturday, Oct 24', rating: 4, comment: 'Long line at drop-off around noon.' },
-  { event: 'Warehouse Wednesday', date: 'Wednesday, Oct 14', rating: 5, comment: '' },
-];
+// A survey answer in the main app's store ({ rating: { answer }, feedback: { answer } }) as a past-survey row
+export const surveyRow = (e, answers) => ({ id: e.id, event: e.title, date: surveyDate(e), rating: answers.rating?.answer || 0, comment: answers.feedback?.answer || '' });
+
+export const SURVEY_EVENT = { event: eventsById.e08.title, date: surveyDate(eventsById.e08) };
+
+export const PAST_SURVEYS = Object.entries(initialSurveyResponses)
+  .map(([id, answers]) => surveyRow(eventsById[id], answers))
+  .reverse();
 
 export const shortTime = (t) => t.replace(/:00/g, '').replace(/\s?(AM|PM)/g, (m, p) => ` ${p.toLowerCase()}`).replace(/ (am|pm)–/, '–');
 export const firstName = (n) => n.split(' ')[0];
