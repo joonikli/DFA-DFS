@@ -1857,3 +1857,25 @@ a { color: inherit; }
 .grp-add-row b { font-weight: 500; font-size: 14px; }
 .grp-add-row small { font-size: 12px; color: var(--darker-gray); }
 .convo-muted { display: inline-flex; margin-left: 6px; color: var(--dark-gray); vertical-align: -1px; }
+
+/* Compose suggestions for shifts: design-system Small events card (2044:26625, SmallEventCard.css) */
+.sec-card { display: flex; align-items: stretch; gap: 8px; width: 100%; padding: 12px 16px; background: var(--white); border: 1px solid var(--gray); border-radius: 12px; text-align: left; color: var(--black); transition: border-color var(--dur-micro) ease, box-shadow var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
+.sec-card:active { transform: scale(.99); }
+@media (hover: hover) and (pointer: fine) { .sec-card:hover { border-color: var(--purple-light); box-shadow: 0 4px 4px #e6ebef; } .sec-card:hover .sec-card__actions > .ic { color: var(--purple-dark); } }
+.sec-card__date { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 44px; padding-right: 20px; border-right: 1px solid var(--gray); box-sizing: content-box; }
+.sec-card__mon { font: 600 14px/normal var(--sans); }
+.sec-card__day { font: 600 36px/1 var(--serif); }
+.sec-card__body { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; padding-left: 4px; }
+.sec-card__title { font: 500 20px/28px var(--sans); }
+.sec-card__subtitle { font: 500 16px/24px var(--sans); }
+.sec-card__logistics { display: flex; flex-direction: column; gap: 4px; opacity: .7; font: 500 14px/normal var(--sans); }
+.sec-card__logistics > span { display: inline-flex; align-items: center; gap: 4px; }
+.sec-card__actions { display: flex; align-items: center; gap: 16px; }
+.sec-card__actions > .ic { color: var(--darker-gray); }
+/* A bit more room between a bubble and the tag row under it (Sent by email / Replied by email) */
+.msg-time:has(.via) { margin-top: 8px; }
+/* Compose shift suggestions: room for the event card's logistics on one line */
+.cmp-wrap:has(.sec-card) { max-width: 600px; }
+.sec-card__logistics > span { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.sec-card__logistics > span > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sec-card__logistics .ic { flex: none; }

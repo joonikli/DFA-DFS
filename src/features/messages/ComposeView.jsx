@@ -54,12 +54,23 @@ function ComposeEmpty() {
         <h3>{ann ? 'New announcement' : 'New message'}</h3>
         <p>{ann ? 'Type a group or name above, or pick one of your groups.' : 'Type a name above, or pick a shift to message everyone signed up for it.'}</p>
         <div className="cmp-sugg">
-          {sugg.map((x) => (
+          {sugg.map((x) => (x.kind === 'shift' ? (
+            // Design system: Components › Small events cards (2044:26625), same anatomy as SmallEventCard
+            <button key={x.id} className="sec-card" onClick={() => pick(x.kind, x.id)} aria-label={`Message everyone on ${SHIFTS[x.id].title}, ${SHIFTS[x.id].mon} ${SHIFTS[x.id].day}`}>
+              <span className="sec-card__date"><span className="sec-card__mon">{SHIFTS[x.id].mon}</span><span className="sec-card__day">{SHIFTS[x.id].day}</span></span>
+              <span className="sec-card__body">
+                <span className="sec-card__title">{SHIFTS[x.id].title}</span>
+                <span className="sec-card__subtitle">{x.sub}</span>
+                <span className="sec-card__logistics"><span><Icon name="clock" size={14} /><span>{SHIFTS[x.id].time}</span></span><span><Icon name="pin" size={14} /><span>{SHIFTS[x.id].addr}</span></span></span>
+              </span>
+              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span><Icon name="plus" size={16} /></span>
+            </button>
+          ) : (
             <button key={x.id} className="cmp-opt" onClick={() => pick(x.kind, x.id)}>
               <span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span>
               <span className="cmp-txt"><b>{x.label}</b><small>{x.sub}</small></span><Icon name="plus" size={16} />
             </button>
-          ))}
+          )))}
         </div>
       </div>
     );
