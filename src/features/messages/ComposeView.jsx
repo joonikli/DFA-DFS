@@ -64,7 +64,7 @@ function ComposeEmpty() {
                 <span className="sec-card__subtitle">{x.sub}</span>
                 <span className="sec-card__logistics"><span><Icon name="clock" size={14} /><span>{SHIFTS[x.id].time}</span></span><span><Icon name="pin" size={14} /><span>{SHIFTS[x.id].addr}</span></span></span>
               </span>
-              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span><Icon name="plus" size={16} /></span>
+              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span></span>
             </button>
           ) : (
             <button key={x.id} className="cmp-opt" onClick={() => pick(x.kind, x.id)}>
