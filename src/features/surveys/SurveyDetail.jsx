@@ -26,7 +26,7 @@ function QuestionField({ n, title, onEdit }) {
   return <div className="sd-question"><h2><span>Q #{n}</span>{title}</h2><button className="sd-icon-plain" aria-label={`Edit question ${n}`} onClick={onEdit}><Asset name="detail-pencil.svg" /></button></div>;
 }
 
-function Bars({ options, total }) {
+export function Bars({ options, total }) {
   const top = Math.max(...options.map((o) => o.count));
   const topCount = options.filter((o) => o.count === top).length;
   return <div className="sd-bars">{options.map((o) => <div className="sd-bar-row" key={o.label}>
