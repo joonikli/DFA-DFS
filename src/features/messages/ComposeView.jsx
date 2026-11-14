@@ -20,9 +20,9 @@ function Chips() {
   return (
     <>
       {list.slice(0, collapsed ? 4 : list.length).map((r, i) => {
-        if (r.kind === 'group') return <span className="to-chip" key={`g-${r.id}`}><Icon name="users" size={14} /> {group(r.id).name} <button onClick={() => remove(i)} aria-label="Remove"><Icon name="x" size={12} /></button></span>;
+        if (r.kind === 'group') return <span className="to-chip" key={`g-${r.id}`}><Icon name="users" size={14} /> {group(r.id).name} <button onClick={() => remove(i)} aria-label={`Remove ${group(r.id).name}`}><Icon name="x" size={15} sw={1.75} /></button></span>;
         const v = VOLS[r.id];
-        return <span className="to-chip" key={`v-${r.id}`}>{v.name}{M.channel === 'email' && <> <span className="em">({v.email})</span></>} <button onClick={() => remove(i)} aria-label={`Remove ${v.name}`}><Icon name="x" size={12} /></button></span>;
+        return <span className="to-chip" key={`v-${r.id}`}><Avatar id={r.id} />{v.name}{M.channel === 'email' && <> <span className="em">({v.email})</span></>} <button onClick={() => remove(i)} aria-label={`Remove ${v.name}`}><Icon name="x" size={15} sw={1.75} /></button></span>;
       })}
       {collapsed && <button className="to-chip more" onClick={() => { M.rcptsOpen = true; rerender(); }}>+{list.length - 4} more</button>}
       {list.length > 1 && <span className="to-count">{list.length} recipients</span>}
@@ -47,19 +47,30 @@ function ComposeEmpty() {
   if (!rc.length) {
     const sugg = ann
       ? GROUPS.slice(0, 3).map((g) => ({ kind: 'group', id: g.id, label: g.name, sub: `${g.count} members`, avs: g.members.slice(0, 3) }))
-      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `Everyone signed up (${sh.vols.length})`, avs: sh.vols.slice(0, 3) }; });
+      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
     return (
       <div className="cmp-empty">
         <div className="cmp-icon"><Icon name={ann ? 'users' : 'pen'} size={22} /></div>
         <h3>{ann ? 'New announcement' : 'New message'}</h3>
-        <p>{ann ? 'Choose a group in the To: field, or start with one of these.' : 'Add people in the To: field, or message everyone on an upcoming shift.'}</p>
+        <p>{ann ? 'Type a group or name above, or pick one of your groups.' : 'Type a name above, or pick a shift to message everyone signed up for it.'}</p>
         <div className="cmp-sugg">
-          {sugg.map((x) => (
+          {sugg.map((x) => (x.kind === 'shift' ? (
+            // Design system: Components › Small events cards (2044:26625), same anatomy as SmallEventCard
+            <button key={x.id} className="sec-card" onClick={() => pick(x.kind, x.id)} aria-label={`Message everyone on ${SHIFTS[x.id].title}, ${SHIFTS[x.id].mon} ${SHIFTS[x.id].day}`}>
+              <span className="sec-card__date"><span className="sec-card__mon">{SHIFTS[x.id].mon}</span><span className="sec-card__day">{SHIFTS[x.id].day}</span></span>
+              <span className="sec-card__body">
+                <span className="sec-card__title">{SHIFTS[x.id].title}</span>
+                <span className="sec-card__subtitle">{x.sub}</span>
+                <span className="sec-card__logistics"><span><Icon name="clock" size={14} /><span>{SHIFTS[x.id].time}</span></span><span><Icon name="pin" size={14} /><span>{SHIFTS[x.id].addr}</span></span></span>
+              </span>
+              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span><Icon name="plus" size={16} /></span>
+            </button>
+          ) : (
             <button key={x.id} className="cmp-opt" onClick={() => pick(x.kind, x.id)}>
               <span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span>
               <span className="cmp-txt"><b>{x.label}</b><small>{x.sub}</small></span><Icon name="plus" size={16} />
             </button>
-          ))}
+          )))}
         </div>
       </div>
     );

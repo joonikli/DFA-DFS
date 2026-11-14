@@ -146,7 +146,7 @@ export default function VolunteerDashboard() {
         <Announcement
           {...ANNOUNCEMENT}
           avatar={mariko}
-          onAction={() => navigate('/messages')}
+          onAction={() => navigate(`/messages?ann=${ANNOUNCEMENT.id}`)}
           onDismiss={() => dismissAnnouncement(ANNOUNCEMENT.id)}
         />
       )}

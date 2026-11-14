@@ -5,7 +5,7 @@ export function setTab(v) {
   if (M.tab === v) return;
   M.tab = v; M.composing = false; M.thread = null; M.msgThread = null;
   syncChannel();
-  if (M.tab === 'announcement' && M.filter === 'direct') M.filter = 'all';
+  if (M.tab === 'announcement' && (M.filter === 'direct' || M.filter === 'email')) M.filter = 'all';
   markRead(M.tab === 'message' ? convo(M.active) : group(M.activeGroup));
   renderConv();
 }

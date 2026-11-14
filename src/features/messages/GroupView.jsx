@@ -32,7 +32,6 @@ function Post({ a, g }) {
         <header className="post-head"><b>{ME.name}</b><time>{time}</time>
           {pinned && <span className="post-chip pin"><Icon name="pinned" size={12} /> Pinned</span>}
           {rule === 'now' && <span className="post-chip" data-tip={`Emailed to all ${g.count}, as well as posted in the app`}><Icon name="mail" size={12} /> Emailed to everyone</span>}
-          {rule === 'unseen' && <span className="post-chip" data-tip={`${emailOnly} people without the app got it by email. Anyone else who hasn’t seen it after 24 hours gets an email too.`}><Icon name="mail" size={12} /> Email if unseen · 24h</span>}
           {rule === 'off' && emailOnly > 0 && <span className="post-chip" data-tip={`Not emailed, so ${emailOnly} people without the app didn’t get it`}><Icon name="nav-messages" size={12} /> App only</span>}
           {a.replyMode === 'private' && <span className="post-chip" data-tip="Replies come to you as direct messages in Message"><Icon name="lock" size={12} /> Private replies</span>}
         </header>
@@ -50,7 +49,7 @@ function Post({ a, g }) {
             </button>
           )}
           <button className="seen-btn" onClick={(e) => UI.pop.toggle(e.currentTarget, <SeenPop id={a.id} />, { align: 'end' })} aria-haspopup="dialog" aria-expanded="false">
-            <Icon name="eye" size={13} /> Seen by {sp.total} of {g.count}{a.nudged ? ' · nudged' : ''}
+            <Icon name="eye" size={13} /> Seen by {sp.appSeen} in app{sp.opened ? ` · ${sp.opened} opened email` : ''}{a.nudged ? ' · nudged' : ''}
           </button>
         </div>
       </div>
