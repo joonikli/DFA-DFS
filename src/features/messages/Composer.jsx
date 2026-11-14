@@ -120,14 +120,6 @@ export function Composer() {
         {ann && <button className={`icon-btn round ${hasLoc ? 'on' : ''}`} style={{ width: 30, height: 30 }} onClick={toggleLoc} data-tip={hasLoc ? 'Remove location' : 'Add meeting location'} aria-label="Location"><Icon name="pin" size={15} /></button>}
         <button className="btn btn-dark btn-sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>{sendLabel}</button>
       </div>
-      {adv && (adv.ch === 'email' || adv.emailCopies?.length > 0 || M.channel !== adv.ch) && (
-        <div className={`ch-why ${adv.ch === 'email' ? 'warn' : ''}`}>
-          <span className="dot" aria-hidden="true" />
-          {M.channel === adv.ch
-            ? <span>{adv.reason}</span>
-            : <><span>Suggested: {adv.ch === 'email' ? 'Email' : 'In-app'} · {adv.reason}</span><button className="link" onClick={() => setChannel(adv.ch)}>Switch</button></>}
-        </div>
-      )}
     </div>
   );
 }
