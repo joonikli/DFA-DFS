@@ -48,10 +48,9 @@ function messagePerson(w) {
 
 export function GroupDetails({ c }) {
   const tab = M.groupTab || 'shifts';
-  const ev = c.event && SHIFTS[c.event];
 
-  // Other shifts at least one member is signed up for (the group's own event is in About), soonest first
-  const shiftIds = [...new Set(c.who.flatMap((w) => VOLS[w].upcoming || []))].filter((s) => SHIFTS[s] && s !== c.event)
+  // Shifts at least one member is signed up for, soonest first
+  const shiftIds = [...new Set(c.who.flatMap((w) => VOLS[w].upcoming || []))].filter((s) => SHIFTS[s])
     .sort((a, b) => (SHIFT_DATES[a] || '').localeCompare(SHIFT_DATES[b] || ''));
   const going = (s) => c.who.filter((w) => VOLS[w].upcoming?.includes(s));
   // Shifts and links that were shared in the conversation
@@ -90,11 +89,11 @@ export function GroupDetails({ c }) {
         <button className="btn btn-purple-outline btn-sm" onClick={addPeople} aria-haspopup="menu" aria-expanded="false">Add people</button>
       </div>
 
-      {(c.about || ev) && (
+      {c.about && (
         <div className="prof-sec">
           <h4>About</h4>
-          {c.about && <div className="prof-notes">{c.about}</div>}
-          {ev && <div className="grp-event">{shiftCard(c.event, (() => { const g = going(c.event); return g.length === c.who.length ? (c.who.length === 2 ? 'Both going' : 'Everyone going') : ev.time; })())}</div>}
+          <div className="prof-notes">{c.about}</div>
+          
         </div>
       )}
 
@@ -127,7 +126,7 @@ export function GroupDetails({ c }) {
         {tab === 'shifts'
           ? (shiftIds.length
             ? shiftIds.map((s) => { const g = going(s); return shiftCard(s, g.length === c.who.length ? (c.who.length === 2 ? 'Both going' : 'Everyone going') : `${g.map(firstName).join(', ')} going`); })
-            : <p className="grp-empty">No one here is signed up for other upcoming shifts.</p>)
+            : <p className="grp-empty">No one here is signed up for an upcoming shift.</p>)
           : (shared.length
             ? shared.map((x, i) => (x.kind === 'shift'
               ? shiftCard(x.id, SHIFTS[x.id].time)

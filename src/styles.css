@@ -1351,7 +1351,7 @@ a { color: inherit; }
 .vp-rec-title h3 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 28px; line-height: 1; }
 .vp-tag { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: var(--r-sm); font-size: 14px; font-weight: 500; }
 .vp-tag.rec { background: var(--purple-lightest); color: var(--purple-dark); }
-.vp-tag.pink { background: #ffdcee; color: #d22c7f; }
+.vp-tag.pink { background: var(--pink-light-pink); color: var(--pink-pink); }
 .vp-rec-cta { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 .vp-save { width: 34px; height: 34px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; transition: background-color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
 .vp-save:active { transform: scale(.94); }
@@ -1900,3 +1900,166 @@ a { color: inherit; }
 .to-chip .em { color: var(--darker-gray); opacity: 1; }
 .to-chip.more { padding: 4px 8px; font-weight: 500; background: var(--light-gray); color: var(--darker-gray); }
 .to-count { font: 500 14px/normal var(--sans); }
+
+/* =====================================================================================
+   Design-system alignment (tokens/tokens.css, styles/typography.css, src/components).
+   Everything below maps the manager app's legacy classes onto the design system:
+   type scale (H1 36 / H2 28 Crimson · Subheading 20 · Body 16 · Body 2 16/600 · Heading/6 16/500 ·
+   Label 1 14/600 · Label 2 14/500), color tokens, radii (8 / 12 / 18 card / 48 pill).
+   ===================================================================================== */
+:root { --radius-pill: 48px; --radius-card: 18px; --shadow-card: 0 2px 3px rgb(239 242 245 / .8); --shadow-card-hover: 0 4px 4px #e6ebef; }
+
+/* Buttons = components/Button (813:13520) and, for the tiny ones, components/PillButton */
+.btn { height: auto; padding: 10px 14px; gap: 8px; border: 1px solid transparent; border-radius: 48px; font: 400 16px/normal var(--sans); }
+.btn-dark { background: var(--neutral-black); color: var(--neutral-white); }
+@media (hover: hover) and (pointer: fine) { .btn-dark:hover { background: #252425; } }
+.btn-dark:active { background: var(--primary-darkest-purple); }
+.btn-outline, .btn-purple-outline { background: var(--neutral-white); border-color: var(--primary-dark-purple); color: var(--primary-dark-purple); }
+@media (hover: hover) and (pointer: fine) { .btn-outline:hover, .btn-purple-outline:hover { background: var(--primary-lightest-purple); } }
+.btn-ghost { background: rgb(96 120 241 / .2); color: var(--primary-darkest-purple); }
+.btn-sm { height: auto; padding: 10px 14px; font: 600 14px/normal var(--sans); }
+.btn-xs { height: auto; padding: 8px 16px; border-radius: 100px; font: 500 12px/16px var(--sans); }
+.btn-xs.btn-dark { background: #1e1e1e; color: var(--neutral-white); }
+.btn-xs.btn-outline { background: var(--neutral-white); border-color: #d6d6d6 !important; color: #1e1e1e; }
+
+/* Messaging list */
+.list-head .search-bar { flex: none; }
+.list-head .tab-nav { width: 100%; }
+.list-head .tab-nav__tab { flex: 1; width: auto; }
+.list-head .tab-nav__label { display: inline-flex; align-items: center; gap: 8px; }
+.tab-badge, .badge, .nav-badge { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; font: 600 14px/22px var(--sans); text-align: center; }
+.convo-name { font: 400 16px/normal var(--sans); color: var(--neutral-black); }
+.convo.unread .convo-name { font-weight: 600; color: var(--neutral-black); }
+.convo-prev { font: 500 14px/normal var(--sans); }
+.convo-time { font: 500 14px/normal var(--sans); }
+.convo.unread .convo-time { font-weight: 600; }
+.draft-tag { font-weight: 600; }
+
+/* Conversation */
+.conv-head .h3, .h3 { font: 600 28px/1.1 var(--serif); }
+.bubble, .bubble.email { font: 400 16px/1.45 var(--sans); }
+.msg-name { font: 600 14px/normal var(--sans); }
+.msg-time, .msg-time .st { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.new-div span { font: 600 14px/normal var(--sans); }
+.day-div { font: 500 14px/normal var(--sans); }
+.to-field label, .comp-row label { font: 500 14px/normal var(--sans); }
+.ann-body { font: 400 16px/1.5 var(--sans); }
+.ann-title { font: 600 28px/1.15 var(--serif); }
+.post-head b { font: 600 14px/normal var(--sans); }
+.post-head time, .post-chip, .seen-btn, .thread-link, .thread-link .last, .thread-link .view { font: 500 14px/normal var(--sans); }
+.thread-link b { font-weight: 600; }
+.reach-pill, .reach { font: 500 14px/normal var(--sans); }
+.reach-pill.none { font-weight: 600; }
+.icon-btn.plain { border-radius: 8px; }
+.post { border-radius: 12px; }
+.react { font: 500 14px/normal var(--sans); }
+
+/* Avatars without a photo: the design-system Avatar's gray */
+.av, .av.list, .av-stack .av, .av-stack.lg .av { background: var(--neutral-dark-gray); color: var(--neutral-white); }
+
+/* Dashboard */
+.cal-day { font: 400 16px/normal var(--sans); }
+.eyebrow-n, .trend, .p-lbl { font: 400 16px/normal var(--sans); }
+.p-hrs { font: 600 16px/normal var(--sans); }
+.chart .axis, .chart text, svg text.axis { font: 500 14px var(--sans); }
+.focus-list li, .focus li { font: 400 16px/1.4 var(--sans); }
+.focus-list b, .focus li b { font-weight: 600; }
+
+/* Report */
+.doc, .sec, .sec.full { border-radius: 18px; }
+.ai-sum { border-radius: 12px; }
+.send-circle { background: var(--neutral-gray); }
+.sec-tools button { font: 600 14px/normal var(--sans); padding: 8px 12px; }
+.sec-tools { border-radius: 8px; }
+.cal-dow span { font: 600 14px/normal var(--sans); }
+.actions-list li, .timeline li { font: 400 16px/1.4 var(--sans); }
+.actions-list b, .timeline b { font-weight: 600; }
+/* Older volunteer portal (volunteer.html) */
+.vp-tag.pink { background: var(--pink-light-pink); color: var(--pink-pink); }
+.vp-spots { font: 500 14px/normal var(--sans); }
+.big { font: 600 36px/1 var(--serif); }
+.big small { font: 500 14px/normal var(--sans); }
+.view-switch { font: 500 14px/normal var(--sans); }
+.cal-legend, .cal-legend span, .vp-legend span { font: 500 14px/normal var(--sans); }
+.vp-rec { border-radius: 12px; }
+
+/* Design-system alignment, pass 2 (beats older, more specific rules) */
+body .eyebrow-n, body .trend, body .p-lbl { font: 400 16px/normal var(--sans); }
+body .p-hrs { font: 600 16px/normal var(--sans); }
+body .chart text, body svg text.axis { font: 500 14px var(--sans); }
+body .g-logo { font: 600 14px/normal var(--sans); }
+body .p-tip .m, body .g-tip .m, body .chart-tip .m { font: 500 14px/normal var(--sans); }
+body .p-tip b, body .g-tip b, body .chart-tip b { font: 600 28px/1 var(--serif); }
+body .p-tip .trend, body .chart-tip .trend, body .g-tip-row { font: 500 14px/normal var(--sans) !important; }
+body .badge, body .tab-badge, body .nav-badge { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; font: 600 14px/22px var(--sans); }
+body .ch-toggle button { font: 500 14px/normal var(--sans); }
+body .conv-head .sub { font: 400 16px/normal var(--sans); color: var(--neutral-darker-gray); }
+body .list-head .h1 { font: 600 36px/normal var(--serif); }
+body .bubble, body .bubble .subj, body .bubble.email { color: var(--neutral-black); }
+body .bubble .subj { font-weight: 600; }
+body .ritem, body .rcpt { font: 400 16px/normal var(--sans); }
+body .menu-label { font: 600 14px/normal var(--sans); text-transform: none; letter-spacing: 0; color: var(--neutral-darker-gray); }
+body .cmp-empty h3 { font: 600 28px/1.1 var(--serif); }
+body .cmp-empty p, body .composer textarea { font: 400 16px/1.45 var(--sans); }
+body .ann-title { font: 600 28px/1.15 var(--serif); }
+body .day-div { font: 500 14px/normal var(--sans); }
+body .opt-btn { font: 500 14px/normal var(--sans); }
+body .opt-btn b { font-weight: 600; }
+/* Shift card in chats: same anatomy as the design-system Small events card */
+body .event-card { border-radius: 12px; }
+body .ec-mon { font: 600 14px/normal var(--sans); }
+body .ec-day { font: 600 36px/1 var(--serif); }
+body .ec-title { font: 500 20px/28px var(--sans); }
+body .ec-meta, body .ec-row { font: 500 14px/normal var(--sans); }
+body .rp-input .send-circle { background: var(--neutral-gray); }
+/* Pass 3: these older rules are more specific (e.g. .kpi .eyebrow-n, .posts .day-div) */
+.eyebrow-n, .trend, .p-lbl { font: 400 16px/normal var(--sans) !important; }
+.p-hrs { font: 600 16px/normal var(--sans) !important; }
+.chart text, svg text.axis { font: 500 14px var(--sans) !important; }
+.badge, .tab-badge, .nav-badge { min-width: 22px !important; height: 22px !important; padding: 0 6px !important; border-radius: 11px !important; font: 600 14px/22px var(--sans) !important; }
+.ann-title { font: 600 28px/1.15 var(--serif) !important; }
+.day-div { font: 500 14px/normal var(--sans) !important; }
+.ec-mon { font: 600 14px/normal var(--sans) !important; }
+.ec-day { font: 600 36px/1 var(--serif) !important; }
+.ec-meta, .ec-row { font: 500 14px/normal var(--sans) !important; }
+.bubble, .bubble.email, .msg.me .bubble { color: var(--neutral-black) !important; }
+.ann-body { font: 400 16px/1.5 var(--sans) !important; }
+.bar-foot, .bar-foot span { font: 500 14px/normal var(--sans) !important; }
+/* Screen-reader-only text (index.css has this in the main app; the manager page needs its own) */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Messages list header: one step down the type scale (Label 1 / Label 2 instead of Body) */
+.list-head .tab-nav__tab { font: 600 14px/normal var(--sans); }
+.list-head .search-bar { padding: 10px 16px; }
+.list-head .search-bar input { font: 500 14px/normal var(--sans); }
+.list-head .search-bar svg { width: 16px; height: 16px; }
+.list-head .sub-nav { flex-wrap: nowrap; gap: 4px; }
+.list-head .sub-nav__item { min-width: 0; height: 30px; padding: 6px 12px; font: 500 14px/normal var(--sans); }
+.list-head .sub-nav__item--selected { font-weight: 600; }
+/* Design-system Button keeps its own sizes (md = Body 16, sm = Label 1 14) */
+.btn.btn--md { font: 400 16px/normal var(--sans); }
+.btn.btn--sm { font: 600 14px/normal var(--sans); }
+.split span { font: 400 16px/normal var(--sans) !important; }
+.fill-pill { font: 500 14px/normal var(--sans) !important; padding: 4px 8px !important; border-radius: 8px !important; }
+.vp-act { font: 400 16px/20px var(--sans) !important; }
+.lbl { font: 400 16px/normal var(--sans) !important; }
+/* "Sent via" dropdown: outline pill (Button secondary look), same 14px scale as the filters */
+.list-head .filters { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.list-head .pill-select { height: 30px; padding: 0 10px 0 12px; gap: 4px; border-radius: 48px; border: 1px solid var(--primary-dark-purple); color: var(--primary-dark-purple); background: var(--neutral-white); font: 600 14px/normal var(--sans); white-space: nowrap; flex: none; }
+.list-head .pill-select .muted-label { font-weight: 500; color: var(--neutral-darker-gray); }
+@media (hover: hover) and (pointer: fine) { .list-head .pill-select:hover { background: var(--primary-lightest-purple); } }
+.list-head .sub-nav { gap: 0; min-width: 0; }
+.list-head .sub-nav__item { padding: 6px 10px; }
+.list-head .pill-select { padding: 0 8px 0 10px; }
+.list-head .pill-select .muted-label { color: var(--primary-dark-purple); }
+/* To: row — label, chips and input share one center line (Label 2 type, like the chips) */
+.to-field { align-items: center; min-height: 72px; padding: 16px var(--gutter, 32px); gap: 12px; }
+.to-field > label { font: 500 14px/30px var(--sans); padding: 0; align-self: flex-start; margin-top: 5px; color: var(--neutral-darker-gray); }
+.to-field .to-chips { align-items: center; align-self: center; min-height: 30px; }
+.to-input { height: 30px; font: 500 14px/30px var(--sans); color: var(--neutral-black); padding: 0; }
+.to-input::placeholder { color: var(--neutral-dark-gray); }
+.to-field > .btn { align-self: center; margin-top: 0; }
+/* Keep the design-system Button variants intact over the legacy .btn base */
+.btn.btn--primary { background: var(--neutral-black); color: var(--neutral-white); border-color: transparent; }
+.btn.btn--secondary { background: var(--neutral-white); border-color: var(--primary-dark-purple); color: var(--primary-dark-purple); }
+.btn.btn--tertiary { background: rgb(96 120 241 / .2); color: var(--primary-darkest-purple); border-color: transparent; }
+@media (hover: hover) and (pointer: fine) { .btn.btn--primary:hover { background: #252425; } .btn.btn--secondary:hover { background: var(--primary-lightest-purple); } }
