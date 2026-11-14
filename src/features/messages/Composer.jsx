@@ -2,7 +2,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
-import { EMAIL_RULES, M, REPLY_MODES, UI, audience, channelAdvice, closePops, convo, currentRecipients, draft, renderConv, rerender, send } from './state.js';
+import { EMAIL_RULES, M, REPLY_MODES, UI, audience, channelAdvice, closePops, convo, currentRecipients, draft, renderConv, rerender, send, threadSubject } from './state.js';
 import { EmailRuleMenu, LinkForm, RepliesMenu, ShiftPicker } from './pops.jsx';
 
 // Message box grows with its text up to ~7 lines, then scrolls
@@ -29,7 +29,7 @@ export function Composer() {
   const c = !M.composing && M.tab === 'message' ? convo(M.active) : null;
   const toList = M.composing ? M.rcpts.filter((r) => r.kind === 'vol').map((r) => r.id) : c ? c.who : [];
   const hasLoc = M.attach.some((a) => a.type === 'loc');
-  const adv = ann ? null : channelAdvice(currentRecipients());
+  const adv = ann ? null : channelAdvice(currentRecipients(), c);
   const au = ann ? audience() : null;
   const rule = d.emailRule || 'unseen', replies = d.replies || 'thread';
   const people = (n) => `${n} ${n === 1 ? 'person' : 'people'}`;
@@ -64,12 +64,12 @@ export function Composer() {
               ) : <span className="muted">Add recipients above</span>}
             </div>
           </div>
-          {toList.length > 1 && <div className="priv-note"><Icon name="users" size={12} /> Each volunteer gets their own copy, so addresses stay private.</div>}
+          {toList.length > 1 && <div className="priv-note"><Icon name="users" size={12} /> Each person gets their own email, so addresses stay private. Replies come back here, where everyone in this conversation can see them.</div>}
         </>
       )}
       {(email || ann) && (
         <div className="comp-row"><label htmlFor="subject">Subject</label>
-          <input id="subject" defaultValue={d.subject} placeholder={ann ? 'Headline volunteers will see first' : 'Add a subject'} autoComplete="off" onInput={(e) => { draft().subject = e.currentTarget.value; }} />
+          <input id="subject" defaultValue={d.subject || (!ann ? threadSubject(c) : '')} placeholder={ann ? 'Headline volunteers will see first' : 'Subject (uses your first line if left empty)'} autoComplete="off" onInput={(e) => { draft().subject = e.currentTarget.value; }} />
         </div>
       )}
       <textarea
@@ -84,7 +84,7 @@ export function Composer() {
             <span className="reach">
               <Icon name="users" size={13} /> {people(au.total)}
               <span className="reach-pill app" data-tip="Have the app and will see it there">{au.app} in app</span>
-              {au.email > 0 && <span className="reach-pill email" data-tip="Haven’t joined the app, so they’re reached by email">{au.email} email only</span>}
+              {au.email > 0 && <span className="reach-pill email" data-tip="Haven’t joined the app, so they’re reached by email">{au.email} by email</span>}
               {au.none > 0 && <span className="reach-pill none" data-tip="No app and no working email address">{au.none} can’t be reached</span>}
             </span>
           ) : <span className="reach muted">Add a group to see who this reaches</span>}
@@ -120,7 +120,7 @@ export function Composer() {
         {ann && <button className={`icon-btn round ${hasLoc ? 'on' : ''}`} style={{ width: 30, height: 30 }} onClick={toggleLoc} data-tip={hasLoc ? 'Remove location' : 'Add meeting location'} aria-label="Location"><Icon name="pin" size={15} /></button>}
         <button className="btn btn-dark btn-sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>{sendLabel}</button>
       </div>
-      {adv && (
+      {adv && (adv.ch === 'email' || adv.emailCopies?.length > 0 || M.channel !== adv.ch) && (
         <div className={`ch-why ${adv.ch === 'email' ? 'warn' : ''}`}>
           <span className="dot" aria-hidden="true" />
           {M.channel === adv.ch

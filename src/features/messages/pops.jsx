@@ -95,7 +95,7 @@ export function SeenPop({ id }) {
   };
   return (
     <div className="roster seen-split">
-      <div className="menu-label">Seen by {sp.total} of {sp.of}</div>
+      <div className="menu-label">{sp.appSeen} seen in app{sp.opened ? ` · ${sp.opened} opened email` : ''} · {sp.of} people</div>
       {rows.map(([label, n, tone]) => (
         <div className="ss-row" key={label}>
           <span>{label}</span>

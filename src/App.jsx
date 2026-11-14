@@ -8,6 +8,7 @@ import AdminEventDetail from './pages/admin/AdminEventDetail.jsx'
 import SurveysHome from './pages/admin/SurveysHome.jsx'
 import SurveyDetail from './pages/admin/SurveyDetail.jsx'
 import VolunteerSurveys from './pages/volunteer/VolunteerSurveys.jsx'
+import VolunteerMessages from './pages/volunteer/VolunteerMessages.jsx'
 import Grants from './pages/admin/Grants.jsx'
 import GenerateReports from './pages/admin/GenerateReports.jsx'
 import { EventFlowsProvider } from './features/events/EventFlows.jsx'
@@ -44,7 +45,7 @@ export default function App() {
         />
         <Route path="profile" element={<Profile />} />
         <Route path="volunteers/:id" element={<ByRole admin={<Profile />} volunteer={<Navigate to="/profile" replace />} />} />
-        <Route path="messages" element={<Placeholder title="Messages" note="Not in the Figma designs yet." />} />
+        <Route path="messages" element={<ByRole admin={<Placeholder title="Messages" note="Not in the Figma designs yet." />} volunteer={<VolunteerMessages />} />} />
         <Route path="settings" element={<Placeholder title="Settings" note="Not in the Figma designs yet." />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

@@ -2,12 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { eventsById, initialSurveyResponses, initialVolunteerState } from '../mock/events.js'
 import { seedNotifications } from '../mock/notifications.js'
 import { initialAdminState } from '../mock/adminEvents.js'
+import { seedMessages } from '../mock/messages.js'
 import { formatShortDate } from '../lib/dates.js'
 
 // In-memory demo state, mirrored to localStorage so a refresh keeps the demo
 // where you left it. "Reset demo data" in the avatar menu restores the seed.
 // Bump the key whenever the state shape changes.
-const STORAGE_KEY = 'dfs-prototype-v3'
+const STORAGE_KEY = 'dfs-prototype-v4'
 
 const seed = {
   role: 'volunteer', // 'volunteer' | 'admin'
@@ -19,6 +20,7 @@ const seed = {
     dismissedAnnouncements: [],
   },
   notifications: seedNotifications, // { volunteer: [...], admin: [...] }
+  messages: seedMessages, // the volunteer's inbox: { convos, groups, reachPref }
   profiles: {}, // role → edits made with "Edit profile" (bio, title, city, phone)
   admin: {
     ...initialAdminState,
@@ -58,6 +60,9 @@ const pushNotification = (state, role, n) => ({
 
 function reducer(state, action) {
   switch (action.type) {
+    // Messaging updates arrive as a pure function of the inbox (mock/messages.js shape)
+    case 'messages':
+      return { ...state, messages: action.fn(state.messages) }
     case 'setRole':
       return { ...state, role: action.role }
     case 'toggleSaved':
@@ -171,6 +176,7 @@ export function DemoProvider({ children }) {
       showToast,
       dismissToast: (id) => setToasts((t) => t.filter((x) => x.id !== id)),
       setRole: (role) => dispatch({ type: 'setRole', role }),
+      updateMessages: (fn) => dispatch({ type: 'messages', fn }),
       toggleSaved: (id) => dispatch({ type: 'toggleSaved', id }),
       register: (id, details) => dispatch({ type: 'register', id, details }),
       unregister: (id) => dispatch({ type: 'unregister', id }),

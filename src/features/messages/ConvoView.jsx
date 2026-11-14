@@ -38,12 +38,16 @@ function markUnreadFrom(id) {
   UI.toast(`Marked ${n} ${n === 1 ? 'message' : 'messages'} as unread`, { ic: 'dot' });
 }
 
-function MsgTools({ m }) {
+function MsgTools({ m, c }) {
+  // Threads live only in the app: a thread on an email, or with people who only get email, would never reach them
+  const emailOnly = c.who.every((w) => VOLS[w].appDays == null);
+  const canThread = m.type !== 'email' && !emailOnly;
+  const reactTip = emailOnly ? `Add reaction · only you’ll see it, ${c.who.length === 1 ? VOLS[c.who[0]].name.split(' ')[0] + ' gets' : 'they get'} email` : 'Add reaction';
   const react = (e) => toggleKeep(e, <MsgReactPicker id={m.id} />, { side: 'top', align: 'center', cls: 'pill-pop' }, m.id, `tool:${m.id}`);
   return (
     <div className="msg-tools" role="toolbar" aria-label="Message actions">
-      <button className={`icon-btn plain ${M.keepBtn === `tool:${m.id}` ? 'on' : ''}`} onClick={react} data-tip="Add reaction" aria-label="Add reaction"><Icon name="smile" size={16} /></button>
-      <button className="icon-btn plain" onClick={() => openMsgThread(m.id)} data-tip="Reply in thread" aria-label="Reply in thread"><Icon name="reply" size={16} /></button>
+      <button className={`icon-btn plain ${M.keepBtn === `tool:${m.id}` ? 'on' : ''}`} onClick={react} data-tip={reactTip} aria-label="Add reaction"><Icon name="smile" size={16} /></button>
+      {canThread && <button className="icon-btn plain" onClick={() => openMsgThread(m.id)} data-tip="Reply in thread" aria-label="Reply in thread"><Icon name="reply" size={16} /></button>}
       {m.from !== 'me' && <button className="icon-btn plain" onClick={() => markUnreadFrom(m.id)} data-tip="Mark unread from here" aria-label="Mark unread from here"><Icon name="dot" size={16} /></button>}
     </div>
   );
@@ -89,13 +93,13 @@ function MsgRow({ m, c, prev }) {
   return (
     <div className={`msg ${me ? 'me' : ''} ${cont} ${fresh} ${keep}`} data-msg={m.id}>
       {!me && <Avatar id={sender} />}
-      <div className="msg-col"><MsgTools m={m} />
+      <div className="msg-col"><MsgTools m={m} c={c} />
         {!me && !cont && c.who.length > 1 && <div className="msg-name">{VOLS[sender].name}</div>}
         {m.reAnn && <div className="msg-re"><Icon name="megaphone" size={12} /> Private reply to your announcement · {m.reAnn}</div>}
         {email
           ? <div className="bubble email">{m.subject && <span className="subj">{m.subject}</span>}{m.text}</div>
           : m.text ? <div className="bubble">{m.text}</div> : null}{atts}
-        <div className="msg-time">{via}<Status m={m} /></div><MsgExtras m={m} />
+        <div className="msg-time">{via}{m.emailCopies && <span className="via" data-tip={`${m.emailCopies.map((w) => VOLS[w].name).join(', ')} ${m.emailCopies.length === 1 ? 'hasn’t' : 'haven’t'} joined the app, so ${m.emailCopies.length === 1 ? 'they' : 'they'} got this by email`}><Icon name="mail" size={11} /> Emailed to {m.emailCopies.map((w) => VOLS[w].name.split(' ')[0]).join(', ')}</span>}<Status m={m} /></div><MsgExtras m={m} />
       </div>
     </div>
   );
