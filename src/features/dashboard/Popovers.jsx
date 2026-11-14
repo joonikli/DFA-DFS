@@ -2,11 +2,13 @@
 import { useRef, useState } from 'react';
 import { Icon, Avatar } from '../../components/Icon.jsx';
 import { Segmented, usePopClose } from '../../components/ui.jsx';
-import { ME } from '../../data.js';
+import { ME, SHIFTS } from '../../data.js';
+
+const SSD = SHIFTS.e15; // Summer Suit Drive · May 30
 import { navigate, VOLUNTEER_URL } from '../../lib/router.js';
 import { D, TPLS, WIDGETS, hiddenIds } from './state.js';
 
-const PERIODS = [{ v: 'month', label: 'This month' }, { v: 'q4', label: 'Q4 2026' }, { v: 'custom', label: 'Custom' }];
+const PERIODS = [{ v: 'month', label: 'This month' }, { v: 'q1', label: 'Q1 2026' }, { v: 'custom', label: 'Custom' }];
 
 // Generate report: period (incl. custom range), template, Open composer
 export function GenReport() {
@@ -47,9 +49,9 @@ export function GenReport() {
 }
 
 export const NOTIFS = [
-  ['sophia', 'Sophia Chen replied', '“Could I take two more slots at the January Career Closet?”', '18 min ago'],
-  ['hs19', 'Holiday Suit Drive is 46% filled', '13 spots open with 11 days to go', '1 hr ago'],
-  ['grant', 'Hillman Foundation report due Dec 12', '164 of 200 women served so far', 'Yesterday'],
+  ['sophia', 'Sophia Chen replied', '“Could I take two more slots at the June Career Closet?”', '18 min ago'],
+  ['e15', `Summer Suit Drive is ${Math.round((SSD.filled / SSD.cap) * 100)}% filled`, `${SSD.cap - SSD.filled} spots open with 10 days to go`, '1 hr ago'],
+  ['grant', 'Hillman Foundation report due May 29', '164 of 200 women served so far', 'Yesterday'],
 ];
 export function Notifications({ onReadAll, onOpen }) {
   const close = usePopClose();

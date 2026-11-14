@@ -231,7 +231,7 @@ export default function Dashboard() {
       onOpen={(k) => {
         setUnread(false);
         if (k === 'sophia') openConversation('c2');
-        else dashRef.current?.querySelector(`[data-card="${k === 'hs19' ? 'calendar' : 'grants'}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        else dashRef.current?.querySelector(`[data-card="${k === 'e15' ? 'calendar' : 'grants'}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }}
     />
   ), { align: 'end' });

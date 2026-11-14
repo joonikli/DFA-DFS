@@ -3,13 +3,15 @@ import Sidebar from '../components/Sidebar/Sidebar.jsx'
 import TopNav from '../components/TopNav/TopNav.jsx'
 import { EventFlowsProvider } from '../features/events/EventFlows.jsx'
 import './AppShell.css'
+import './embed.css'
 
 export default function AppShell() {
   return (
     <EventFlowsProvider>
       <div className="app-shell">
         <Sidebar />
-        <div className="app-shell__main">
+        {/* id="main": the scroll container embedded screens scroll to the top on navigation */}
+        <div className="app-shell__main" id="main">
           <TopNav />
           <main className="app-shell__content">
             <Outlet />

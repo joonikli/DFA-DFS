@@ -36,7 +36,7 @@ export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'events
   return (
     <div className="shell">
       <aside className="sidebar">
-        <img className="logo" src="assets/logo.png" alt="Dress for Success" />
+        <img className="logo" src="/assets/logo.png" alt="Dress for Success" />
         <nav className="nav">{nav.map(([r, label, ic]) => item(r, label, ic))}</nav>
         <div className="nav-spacer" />
         {switchTo && <a className="view-switch" href={switchTo.href}><Icon name="external" size={16} /><span>{switchTo.label}</span></a>}

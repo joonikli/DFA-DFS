@@ -11,11 +11,37 @@ npm install
 npm run dev
 ```
 
-- Component-library prototype (React Router, admin/volunteer role switch): http://localhost:5173/
-- Manager app (Bridget): http://localhost:5173/manager.html — Dashboard, Messages, Report composer
-- Volunteer portal (Maureen): http://localhost:5173/volunteer.html
+One app at http://localhost:5173/ (React Router). Switch between the admin (Bridget) and
+volunteer (Maureen) views from the avatar menu, top right.
 
-`npm run build` outputs all three pages to `dist/`.
+| Path | Admin | Volunteer |
+|---|---|---|
+| `/` | Dashboard (Lan, `src/features/dashboard/`) | Dashboard (Lan, `src/volunteer/Dashboard.jsx`) |
+| `/events` | Events (bev, `src/features/events/`; `?event=<id>` opens one) | Events (`src/pages/volunteer/`) |
+| `/surveys`, `/grants` | `src/pages/admin/` | `src/pages/volunteer/` |
+| `/messages` | Messages (Lan, `src/features/messages/`) | Messages (`src/pages/volunteer/`) |
+| `/reports/new` | Report composer (Lan, `src/features/report/`) | — |
+| `/people?type=volunteer&id=sarah`, `/people?type=admin` | Profiles (bev, `src/features/profiles/`): any volunteer, and Bridget’s own | — |
+| `/profile` | → `/people?type=admin` | Maureen’s profile (`src/pages/Profile.jsx`) |
+
+**One data set, fixed "today" of Wednesday May 20, 2026** (`src/mock/today.js`). Events live in
+`src/mock/events.js`; `src/data.js` builds the manager screens' shifts from them (same ids, plus
+roles, capacity and sign-ups), so the volunteer dashboard, Events, Surveys and Messages agree.
+The volunteer dashboard reads and writes the main store (`src/store/DemoStore.jsx`) and opens the
+main app's register / cancel / save popups. bev's admin events (`src/features/events/eventData.js`)
+still use their own sample events.
+
+Old `manager.html` / `volunteer.html` / `/manager` / `/volunteer` links (with `#…`) redirect to
+the matching screen and role. `npm run build` outputs the app to `dist/` (the host must serve
+`index.html` for unknown paths, as with any React Router app).
+
+**Screens from the former manager app** keep their own code and styles. They render inside the
+main frame through `src/embedded.jsx`, wrapped in `<div class="app-embed app-manager">`, and still
+navigate with route strings (`navigate('messages')`, `src/lib/router.js`), which `src/App.jsx` maps
+to paths. Both codebases reuse class names (`.btn`, `.modal`, `.top-nav` …) with different styles, so
+each stylesheet is scoped to where it's used — see `CSS_SCOPES` in `vite.config.js`. New CSS under
+`src/volunteer/` is volunteer-only; under `src/features/dashboard|messages|report|profiles/` it applies
+to the embedded screens; everything else is the main app's.
 
 ## What's inside
 

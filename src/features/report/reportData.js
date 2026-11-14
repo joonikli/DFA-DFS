@@ -22,12 +22,12 @@ export const TPL_EYEBROW = { funder: 'Dress for Success Pittsburgh · Funder rep
 export const TPL_NAME = { funder: 'Funder report', board: 'Board update', internal: 'Internal review', blank: 'Describe it yourself' };
 export const SUGGESTIONS = [
   ['Which events drove the most first-time attendees?', 'events'],
-  ['How did survey sentiment shift after March?', 'sentiment'],
+  ['How did survey sentiment shift this year?', 'sentiment'],
   ['Grant-eligible impact metrics, YTD', 'impact'],
 ];
 export const INTENTS = [
-  { re: /first[- ]?time|attend|which event|events?\b/i, kind: 'events', reply: 'Mobile Services drove the most first-time attendees (34), followed by the Holiday Suit Drive (27). I added a breakdown by event.' },
-  { re: /sentiment|feel|satisf|march/i, kind: 'sentiment', reply: 'Positive sentiment climbed steadily after March — from 71% in April to 91% in December. Added it as a trend chart.' },
+  { re: /first[- ]?time|attend|which event|events?\b/i, kind: 'events', reply: 'Mobile Services drove the most first-time attendees (34), followed by the Spring Suit Drive (27). I added a breakdown by event.' },
+  { re: /sentiment|feel|satisf|march/i, kind: 'sentiment', reply: 'Positive sentiment climbed steadily this year — from 71% in January to 91% in May. Added it as a trend chart.' },
   { re: /grant|impact|funder|metric|ytd|outcome/i, kind: 'impact', reply: 'Here are the grant-eligible metrics year to date. In-kind value uses $34.79/hr — change it if your funder uses a different rate.' },
   { re: /top|most hours|leaderboard|who (volunteered|gave)|best/i, kind: 'top', reply: 'Added the five volunteers with the most hours this period.' },
   { re: /retention|retain|churn|return|cohort/i, kind: 'retention', reply: 'Retention is strongest in the spring cohort (88%). Corporate groups return least often — worth a follow-up.' },
@@ -37,7 +37,7 @@ export const INTENTS = [
 ];
 
 // Section content data (shared by the renderer and the Markdown export)
-export const SENTIMENT = { labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], values: [71, 74, 78, 76, 81, 84, 86, 88, 91] };
+export const SENTIMENT = { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], values: [71, 76, 81, 86, 91] };
 export const SENTIMENT_SUB = 'Positive responses rose 20 points after the March intake redesign';
 export const SURVEY_FOOT = ['4.6 / 5 avg rating', '248 responses'];
 export const SURVEY_AI = 'Volunteers reported a 95% satisfaction rate with the in-person Mobile Services shifts. The most common request was clearer parking directions.';
@@ -47,8 +47,8 @@ export const ENGAGE_ROWS = [
   ['Volunteer retention rate', '+4 pts vs last quarter', '83%'], // hidden when compact
 ];
 export const EVENTS_SUB = '101 first-time volunteers this period — 34% of all attendees';
-export const EVENTS_ROWS = [['Mobile Services Route', 34], ['Holiday Suit Drive', 27], ['Warehouse Wednesday', 19], ['MHCI Lunch & Learn', 12], ['Career Closet Styling', 9]];
-export const IMPACT_SUB = 'Year to date, Jan 1 – Dec 31, 2026';
+export const EVENTS_ROWS = [['Mobile Services Route', 34], ['Spring Suit Drive', 27], ['Warehouse Wednesday', 19], ['MHCI Lunch & Learn', 12], ['Career Closet Styling', 9]];
+export const IMPACT_SUB = 'Year to date, Jan 1 – May 20, 2026';
 export const IMPACT_GRID = [['1,941', 'Volunteer hours'], ['$67.5k', 'In-kind value at $34.79/hr'], ['1,183', 'Women served'], ['3,420', 'Suits distributed']];
 export const IMPACT_NOTE = 'Mobile Services reached 412 clients at partner shelters, meeting the 400-client target in the 2026 Allegheny Foundation grant.';
 export const TOP_SUB = 'Five volunteers logged 230 hours between them';
@@ -68,7 +68,7 @@ export const newSec = (kind, extra = {}) => ({
 });
 export const chatMsg = (m) => ({ key: ++chatSeq, ...m });
 
-export const RP = { key: null, tpl: 'board', period: 'q4', from: null, to: null, sections: [], chat: [], loading: false, exportFmt: 'pdf', editing: null };
+export const RP = { key: null, tpl: 'board', period: 'q1', from: null, to: null, sections: [], chat: [], loading: false, exportFmt: 'pdf', editing: null };
 
 let version = 0;
 const subs = new Set();
@@ -83,8 +83,8 @@ export function ensureReport(q) {
   if (RP.key === key) return;
   RP.key = key;
   RP.tpl = TEMPLATES[q.get('tpl')] ? q.get('tpl') : 'board';
-  RP.period = ['month', 'q4', 'custom'].includes(q.get('period')) ? q.get('period') : 'q4';
-  RP.from = q.get('from') || '2026-07-01'; RP.to = q.get('to') || '2026-12-31';
+  RP.period = ['month', 'q1', 'custom'].includes(q.get('period')) ? q.get('period') : 'q1';
+  RP.from = q.get('from') || '2026-01-01'; RP.to = q.get('to') || '2026-03-31';
   RP.sections = TEMPLATES[RP.tpl].map((k) => newSec(k));
   RP.chat = [];
   RP.loading = true;
@@ -94,17 +94,17 @@ export function ensureReport(q) {
 /* ---------------- helpers ---------------- */
 const fmtDate = (s) => new Date(`${s}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 export function periodInfo() {
-  if (RP.period === 'month') return { title: 'December 2026', range: 'Dec 1 – Dec 31, 2026', short: 'Dec 2026', file: 'December-2026' };
+  if (RP.period === 'month') return { title: 'May 2026', range: 'May 1 – May 31, 2026', short: 'May 2026', file: 'May-2026' };
   if (RP.period === 'custom') {
     const t = `${fmtDate(RP.from)} – ${fmtDate(RP.to)}`;
     return { title: `${fmtDate(RP.from)}–${fmtDate(RP.to)}`, range: `${t}, 2026`, short: t, file: 'Custom' };
   }
-  return { title: 'Q4 2026', range: 'Oct 1 – Dec 31, 2026', short: 'Q4 2026', file: 'Q4-2026' };
+  return { title: 'Q1 2026', range: 'Jan 1 – Mar 31, 2026', short: 'Q1 2026', file: 'Q1-2026' };
 }
 export function hoursSeries() {
-  if (RP.period === 'month') return { labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5'], values: [48, 61, 72, 58, 23], note: 'Week 3 (Holiday Suit Drive prep) was the busiest of the month' };
-  if (RP.period === 'custom') return { labels: HOURS.year.labels.slice(6), values: HOURS.year.values.slice(6), note: 'Hours dipped in early fall, then hit a record in December' };
-  return { labels: ['Oct', 'Nov', 'Dec'], values: HOURS.q4.values, note: 'Hours tripled from October to December, ending on the year’s high' };
+  if (RP.period === 'month') return { labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5'], values: [48, 61, 72, 58, 23], note: 'Week 3 (Summer Suit Drive prep) was the busiest of the month' };
+  if (RP.period === 'custom') return { labels: HOURS.year.labels, values: HOURS.year.values, note: 'Hours climbed through the spring, hitting a record in May' };
+  return { labels: HOURS.q1.labels, values: HOURS.q1.values, note: 'Hours more than doubled from January to March' };
 }
 
 // The report as Markdown, built from section data. Mirrors what vanilla reportMarkdown()

@@ -32,7 +32,7 @@ export function Banner({ leave = false, onSurvey, onDismiss, onGone }) {
   return (
     <section className="vp-thanks" id="vpBanner" aria-label="Thanks for volunteering" ref={ref}>
       <div className="vp-thanks-art" aria-hidden="true">
-        <img className="vp-thanks-dot" src="assets/banner/ellipse.svg" alt="" width="190" height="190" />
+        <img className="vp-thanks-dot" src="/assets/banner/ellipse.svg" alt="" width="190" height="190" />
         {STRIPES.map((s) => <span key={s.right} className="vp-thanks-stripe" style={{ right: s.right, top: s.top }}><i /></span>)}
       </div>
       <div className="vp-thanks-main">

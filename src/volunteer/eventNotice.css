@@ -1,6 +1,0 @@
-/* volunteer.html doesn't load src/index.css, so give the shared Notification toaster
-   the same base it gets in the router prototype (Notification.css has the visuals). */
-.vp-event-toaster { font-family: 'Inter', system-ui, sans-serif; line-height: normal; color: var(--neutral-black); }
-.vp-event-toaster p { margin: 0; }
-.vp-event-toaster .notification__link { font: 400 16px/normal 'Inter', system-ui, sans-serif; }
-@media (prefers-reduced-motion: reduce) { .vp-event-toaster .notification { animation: none; } }

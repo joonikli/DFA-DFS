@@ -1,8 +1,10 @@
 // Figma: Sidebar (instance 56:199 in every screen) + Nav Item (Property 1 = Default | Selected)
 import { Calendar, CircleDollarSign, FilePen, House, MessagesSquare, Settings } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import Logo from '../Logo/Logo.jsx'
 import { useDemo } from '../../store/DemoStore.jsx'
+import { CONVOS, GROUPS } from '../../data.js'
+import { useStore } from '../../lib/store.js'
 import './Sidebar.css'
 
 const MAIN_NAV = [
@@ -25,8 +27,14 @@ export function NavItem({ to, label, Icon, end, badge }) {
 
 export default function Sidebar() {
   const { role, messages } = useDemo()
-  // Unread messages + announcements in the volunteer's inbox
-  const unread = role === 'volunteer' && messages ? [...messages.convos, ...messages.groups].reduce((n, x) => n + x.unread, 0) : 0
+  const { pathname } = useLocation()
+  useStore() // re-render when the admin inbox (Lan's Messages, src/data.js) changes
+  // Volunteer: unread messages + announcements in their inbox.
+  // Admin: unread in the manager inbox, hidden while Messages is open (as in the manager app).
+  const unread =
+    role === 'volunteer'
+      ? messages ? [...messages.convos, ...messages.groups].reduce((n, x) => n + x.unread, 0) : 0
+      : pathname === '/messages' ? 0 : [...CONVOS, ...GROUPS].reduce((n, x) => n + x.unread, 0)
   return (
     <nav className="sidebar" aria-label="Main">
       <div className="sidebar__logo">

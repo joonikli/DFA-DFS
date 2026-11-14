@@ -6,7 +6,7 @@ import { Icon } from '../../components/Icon.jsx';
 import { LineChart } from '../../components/LineChart.jsx';
 import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
-import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, GRANTS, GRANTS_MORE, LOCATIONS, TODAY } from '../../data.js';
+import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, GRANTS, GRANTS_MORE, LOCATIONS, SHIFTS, TODAY } from '../../data.js';
 import { reducedMotion } from '../../lib/store.js';
 import { useMsgShift } from './hooks.js';
 import { navigate } from '../../lib/router.js';
@@ -81,9 +81,9 @@ function ExecCard() {
       <p id="execText" ref={textRef}>{EXEC[shown]}</p>
       <button className="link" aria-expanded={D.execOpen} aria-controls="execMore" onClick={() => { D.execOpen = !D.execOpen; bump(); }}>View recommended action items <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.execOpen ? 'open' : ''}`} id="execMore"><div><ul className="actions-list">
-        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in November.</li>
-        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts in spring but none since September.</li>
-        <li><b>Fill the Holiday Suit Drive</b>11 of 24 spots filled for Dec 19. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('hs19')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
+        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in April.</li>
+        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts last fall but none since January.</li>
+        <li><b>Fill the Summer Suit Drive</b>{SHIFTS.e15.filled} of {SHIFTS.e15.cap} spots filled for May 30. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('e15')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
       </ul></div></div>
     </section>
   );
@@ -108,13 +108,13 @@ function EngageCard() {
 
 function RecCard() {
   return (
-    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q1</h3>
-      <p>Add two Allegheny County routes and a second styling suite; the December cohort has capacity for roughly 180 more hours.</p>
+    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q3</h3>
+      <p>Add two Allegheny County routes and a second styling suite; the May cohort has capacity for roughly 180 more hours.</p>
       <button className="link" aria-expanded={D.planOpen} aria-controls="planMore" onClick={() => { D.planOpen = !D.planOpen; bump(); }}>View action plan <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.planOpen ? 'open' : ''}`} id="planMore"><div><ul className="actions-list dark" style={{ gridTemplateColumns: '1fr' }}>
-        <li><b>Jan · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
-        <li><b>Feb · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
-        <li><b>Mar · Open second styling suite</b>Homestead back room, after the spring sort.</li>
+        <li><b>Jun · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
+        <li><b>Jul · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
+        <li><b>Aug · Open second styling suite</b>Homestead back room, after the summer sort.</li>
       </ul></div></div>
     </div>
   );
@@ -201,10 +201,10 @@ function ParticipationCard() {
 
 const gInitials = (name) => name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join('');
 const GRANTS_ALL = [...GRANTS, ...GRANTS_MORE];
-// Days from TODAY to a "Mon D" due date (December is 2026, everything else 2027)
+// Days from TODAY to a "Mon D" due date (all in 2026)
 const daysUntil = (due) => {
   const [mon, day] = due.split(' ');
-  const y = mon === 'Dec' ? 2026 : 2027;
+  const y = 2026;
   const d = new Date(`${mon} ${day}, ${y} 12:00`), t = new Date(`${TODAY}T12:00`);
   return Math.round((d - t) / 86400000);
 };
@@ -212,7 +212,7 @@ function GrantsCard() {
   const [hot, setHot] = useState(null);
   const [tip, setTip] = useState({ on: false, i: null, top: 0 });
   const list = D.grantsOpen ? GRANTS_ALL : GRANTS;
-  const draft = () => { Object.assign(D.gen, { tpl: 'funder', period: 'q4' }); navigate('report?tpl=funder&period=q4'); };
+  const draft = () => { Object.assign(D.gen, { tpl: 'funder', period: 'q1' }); navigate('report?tpl=funder&period=q1'); };
   const over = (e) => {
     const card = e.currentTarget;
     const row = e.target.closest('.grant[data-g]');
@@ -255,7 +255,7 @@ function GrantsCard() {
           </div>
         </>}
       </div>
-      <footer className="grants-foot"><span><Icon name="nav-calendar" size={16} /> Next report due December 12</span><button className="link" onClick={draft}>Draft report <Icon name="arrow-r" size={14} /></button></footer>
+      <footer className="grants-foot"><span><Icon name="nav-calendar" size={16} /> Next report due May 29</span><button className="link" onClick={draft}>Draft report <Icon name="arrow-r" size={14} /></button></footer>
     </section>
   );
 }

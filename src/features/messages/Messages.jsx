@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect } from 'react';
 import { CONVOS, GROUPS } from '../../data.js';
 import { useStore } from '../../lib/store.js';
 import { takeIntent } from '../../lib/bridge.js';
+import { currentRoute } from '../../lib/router.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import { usePop, useToast } from '../../components/ui.jsx';
 import TabNav from '../../components/TabNav/TabNav.jsx';
@@ -104,7 +105,7 @@ export default function Messages() {
     markCurrentRead();
     rerender();
     const onHash = () => {
-      if (!location.hash.startsWith('#messages')) return;
+      if (currentRoute() !== 'messages') return;
       if (applyIntent(takeIntent())) { markCurrentRead(); rerender(); }
     };
     addEventListener('hashchange', onHash);
