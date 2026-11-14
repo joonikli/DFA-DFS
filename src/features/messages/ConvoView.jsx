@@ -147,7 +147,7 @@ function Profile({ id }) {
         <div className="prof-line"><Icon name="mail" size={14} /> {v.email}</div>
         <div className="prof-line"><Icon name="phone" size={14} /> {v.phone}</div>
         <div className="prof-line"><Icon name="tags" size={14} /> {v.tags.map((t) => <span className="tag blue" key={t}>{t}</span>)}</div></div>
-      <div className="prof-sec"><h4>Notes</h4><div style={{ fontSize: 13 }}>{v.notes}</div></div>
+      <div className="prof-sec"><h4>Notes</h4><div className="prof-notes">{v.notes}</div></div>
       <div className="tabs">
         <button className={M.sideTab === 'upcoming' ? 'on' : ''} onClick={() => setTab('upcoming')}>Upcoming</button>
         <button className={M.sideTab === 'attended' ? 'on' : ''} onClick={() => setTab('attended')}>Attended</button>

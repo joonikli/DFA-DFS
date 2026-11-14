@@ -1791,3 +1791,40 @@ a { color: inherit; }
 .ss-track .bad { background: var(--pink-dark); }
 .ss-n { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
 .ss-note { font-size: 11px; color: var(--darker-gray); padding: 2px 10px 4px; }
+
+/* ---------- Volunteer profile side panel: Figma "AI summary/Side bars" (2044:26993) ----------
+   Text uses the design-system styles (Subheading 20/500, Body 16/400, Body 2 16/600, Label 1 14/600,
+   Label 2 14/500, Heading/6 16/500 · 24). Sentence-case headings, no made-up sizes. */
+.side:not(.force) { width: 298px; padding: 16px 16px 16px 0; border-left: 0; }
+.side.closed:not(.force) { padding: 0; }
+.side:not(.force) > .side-card { width: 282px; }
+.side .side-card:not(.thread) { border: 1px solid var(--gray); border-radius: 12px; padding: 27px 0 24px; height: auto; max-height: 100%; overflow: auto; }
+.side-card:not(.thread) .prof-top { gap: 12px; padding: 0 16px; }
+.side-card:not(.thread) .prof-top .btn-purple-outline { max-width: 204px; }
+.side-card:not(.thread) .prof-sub { white-space: nowrap; }
+.side-card:not(.thread) .prof-top .av.xl { width: 118px; height: 118px; font-size: 36px; }
+.side-card:not(.thread) .prof-name { font: 500 20px/normal var(--sans); color: var(--black); margin: 0; }
+.side-card:not(.thread) .prof-sub { font: 400 16px/normal var(--sans); color: var(--dark-gray); margin-top: -7px; }
+.side-card:not(.thread) .prof-top .btn-purple-outline { width: 100% !important; height: auto; margin-top: 0 !important; padding: 10px 14px; border: 1px solid var(--purple-dark); border-radius: 48px; background: var(--white); color: var(--purple-dark); font: 600 14px/normal var(--sans); }
+@media (hover: hover) and (pointer: fine) { .side-card:not(.thread) .prof-top .btn-purple-outline:hover { background: var(--purple-lightest); } }
+.side-card:not(.thread) .prof-sec { padding: 0 16px; margin-top: 24px; }
+.side-card:not(.thread) .prof-sec + .prof-sec { margin-top: 36px; }
+.side-card:not(.thread) .prof-sec h4 { margin: 0 0 11px; font: 600 16px/normal var(--sans); text-transform: none; letter-spacing: 0; color: var(--black); }
+.side-card:not(.thread) .prof-sec:last-of-type h4 { margin-bottom: 6px; }
+.side-card:not(.thread) .prof-line { gap: 8px; margin-bottom: 12px; font: 400 16px/normal var(--sans); color: var(--black); }
+.side-card:not(.thread) .prof-line:last-child { margin-bottom: 0; }
+.side-card:not(.thread) .prof-line .ic { width: 16px; height: 16px; flex: none; }
+.side-card:not(.thread) .prof-line .tag { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 8px; font: 500 14px/normal var(--sans); margin-right: -4px; }
+.side-card:not(.thread) .prof-line:has(.tag) { flex-wrap: wrap; row-gap: 4px; }
+.side-card:not(.thread) .prof-notes { font: 400 16px/normal var(--sans); color: var(--darker-gray); }
+.side-card:not(.thread) .tabs { grid-template-columns: 124px 124px; justify-content: center; margin-top: 24px; border-bottom: 2px solid var(--gray); }
+.side-card:not(.thread) .tabs button { height: auto; padding-bottom: 10px; font: 600 16px/normal var(--sans); color: var(--darker-gray); }
+.side-card:not(.thread) .tabs button.on { color: var(--purple-dark); font-weight: 600; }
+.side-card:not(.thread) .tabs .tab-line { left: calc(50% - 124px); width: 124px; bottom: -2px; background: var(--purple); }
+.side-card:not(.thread) .mini-shifts { padding: 20px 14px 0; gap: 8px; }
+.side-card:not(.thread) .mini-shift { height: 76px; padding: 12px 16px; gap: 8px; border: 1px solid var(--gray); border-radius: 12px; align-items: center; }
+.side-card:not(.thread) .mini-shift .d { width: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-right: 20px; border-right: 1px solid var(--gray); color: var(--black); }
+.side-card:not(.thread) .mini-shift .d small { font: 600 14px/normal var(--sans); }
+.side-card:not(.thread) .mini-shift .d b { font: 500 20px/normal var(--sans); }
+.side-card:not(.thread) .mini-shift .t, .side-card:not(.thread) .mini-shift .s { font: 500 16px/24px var(--sans); color: var(--black); }
+@media (hover: hover) and (pointer: fine) { .side-card:not(.thread) button.mini-shift:hover { border-color: var(--purple-light); background: var(--vlight); } }

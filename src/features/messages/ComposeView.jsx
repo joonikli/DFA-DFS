@@ -47,12 +47,12 @@ function ComposeEmpty() {
   if (!rc.length) {
     const sugg = ann
       ? GROUPS.slice(0, 3).map((g) => ({ kind: 'group', id: g.id, label: g.name, sub: `${g.count} members`, avs: g.members.slice(0, 3) }))
-      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `Everyone signed up (${sh.vols.length})`, avs: sh.vols.slice(0, 3) }; });
+      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
     return (
       <div className="cmp-empty">
         <div className="cmp-icon"><Icon name={ann ? 'users' : 'pen'} size={22} /></div>
         <h3>{ann ? 'New announcement' : 'New message'}</h3>
-        <p>{ann ? 'Choose a group in the To: field, or start with one of these.' : 'Add people in the To: field, or message everyone on an upcoming shift.'}</p>
+        <p>{ann ? 'Type a group or name above, or pick one of your groups.' : 'Type a name above, or pick a shift to message everyone signed up for it.'}</p>
         <div className="cmp-sugg">
           {sugg.map((x) => (
             <button key={x.id} className="cmp-opt" onClick={() => pick(x.kind, x.id)}>
