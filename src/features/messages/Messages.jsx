@@ -5,7 +5,11 @@ import { CONVOS, GROUPS } from '../../data.js';
 import { useStore } from '../../lib/store.js';
 import { takeIntent } from '../../lib/bridge.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
-import { Segmented, usePop, useToast } from '../../components/ui.jsx';
+import { usePop, useToast } from '../../components/ui.jsx';
+import TabNav from '../../components/TabNav/TabNav.jsx';
+import SearchBar from '../../components/SearchBar/SearchBar.jsx';
+import SubNav from '../../components/SubNav/SubNav.jsx';
+import Button from '../../components/Button/Button.jsx';
 import {
   M, UI, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel,
   markCurrentRead, rerender, scrollBehavior, startShiftCompose, unreadIn,
@@ -123,16 +127,15 @@ export default function Messages() {
 
   // One row of chips; "Email" = conversations whose latest message went by email
   const filters = M.tab === 'message' ? ['all', 'unread', 'direct', 'email'] : ['all', 'unread'];
-  const FILTER_TIP = { email: 'Conversations whose latest message went by email' };
   return (
     <div className="msgs">
       <section className="list-col">
         <div className="list-head">
-          <div className="row"><h1 className="h1">Messages</h1><button className="btn btn-dark btn-sm" onClick={compose}>Compose <Icon name="pen" size={14} /></button></div>
-          <Segmented id="tabSeg" value={M.tab} onChange={setTab} options={[{ v: 'message', label: <TabLabel tab="message" /> }, { v: 'announcement', label: <TabLabel tab="announcement" /> }]} />
-          <label className="search"><Icon name="search" size={16} /><input id="q" placeholder="Search" value={M.q} autoComplete="off" onChange={(e) => { M.q = e.target.value; rerender(); }} /></label>
+          <div className="row"><h1 className="h1">Messages</h1><Button color="primary" size="sm" onClick={compose}>Compose</Button></div>
+          <div id="tabSeg"><TabNav label="Messages sections" value={M.tab} onChange={setTab} tabs={[{ value: 'message', label: <TabLabel tab="message" /> }, { value: 'announcement', label: <TabLabel tab="announcement" /> }]} /></div>
+          <SearchBar value={M.q} onChange={(v) => { M.q = v; rerender(); }} placeholder="Search" label="Search conversations" />
           <div className="filters">
-            <div className="chips">{filters.map((f) => <button key={f} className={`chip ${M.filter === f ? 'on' : ''}`} data-tip={FILTER_TIP[f]} onClick={() => { M.filter = f; rerender(); }}>{f[0].toUpperCase() + f.slice(1)}</button>)}</div>
+            <SubNav label="Filter conversations" value={M.filter} onChange={(f) => { M.filter = f; rerender(); }} items={filters.map((f) => ({ value: f, label: f[0].toUpperCase() + f.slice(1) }))} />
           </div>
         </div>
         <ul className="convos" id="convList"><ListItems /></ul>

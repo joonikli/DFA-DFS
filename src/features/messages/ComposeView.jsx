@@ -2,6 +2,7 @@
 import { useLayoutEffect } from 'react';
 import { CONVOS, GROUPS, SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
+import Button from '../../components/Button/Button.jsx';
 import {
   M, UI, addAttach, addRcpt, closePops, firstName, group, openRcpts, syncChannel, rcptOptions,
   renderConv, rerender,
@@ -141,7 +142,7 @@ export function ComposeView() {
             onKeyDown={onKeyDown}
           />
         </div>
-        <button className="btn btn-outline btn-xs" onClick={discard}>Discard</button>
+        <Button color="secondary" size="sm" onClick={discard}>Discard</Button>
       </div>
       <div className="conv-body"><div className="stream-col">
         <div className="stream cmp-stream"><div className="cmp-wrap" id="cmpEmpty"><ComposeEmpty /></div></div>

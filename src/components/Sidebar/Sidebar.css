@@ -55,4 +55,4 @@
 }
 
 /* Unread count on Messages (volunteer inbox) */
-.nav-item__badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--primary-purple); color: var(--neutral-white); font-size: 12px; font-weight: 600; line-height: 20px; text-align: center; }
+.nav-item__badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--primary-purple); color: var(--neutral-white); font-size: 14px; font-weight: 600; line-height: 22px; text-align: center; }

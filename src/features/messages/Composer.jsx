@@ -2,6 +2,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import { SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
+import Button from '../../components/Button/Button.jsx';
 import { EMAIL_RULES, M, REPLY_MODES, UI, audience, channelAdvice, closePops, convo, currentRecipients, draft, renderConv, rerender, send, threadSubject } from './state.js';
 import { EmailRuleMenu, LinkForm, RepliesMenu, ShiftPicker } from './pops.jsx';
 
@@ -118,7 +119,7 @@ export function Composer() {
           ))}
         </div>
         {ann && <button className={`icon-btn round ${hasLoc ? 'on' : ''}`} style={{ width: 30, height: 30 }} onClick={toggleLoc} data-tip={hasLoc ? 'Remove location' : 'Add meeting location'} aria-label="Location"><Icon name="pin" size={15} /></button>}
-        <button className="btn btn-dark btn-sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>{sendLabel}</button>
+        <Button color="primary" size="sm" onClick={send} data-tip={email || ann ? '⌘ Enter' : 'Enter'}>{sendLabel}</Button>
       </div>
     </div>
   );

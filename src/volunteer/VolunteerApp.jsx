@@ -126,7 +126,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
         <div className="card vp-acts">
           <div className="eyebrow-n">Activities</div>
           <div className="vp-act" data-tip="38 hours this year"><i style={{ background: 'var(--lime)' }} />Mobile services</div>
-          <div className="vp-act" data-tip="22 hours this year"><i style={{ background: '#ffdcee' }} />Warehouse Wednesday</div>
+          <div className="vp-act" data-tip="22 hours this year"><i style={{ background: 'var(--pink-light-pink)' }} />Warehouse Wednesday</div>
         </div>
       </div>
       <div className="vp-surveys">

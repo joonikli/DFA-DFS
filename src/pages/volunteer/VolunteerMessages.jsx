@@ -5,11 +5,12 @@
 // and "How we reach you" is the preference the manager's composer reads to pick a channel.
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowUp, Check, ChevronDown, ChevronRight, Lock, Mail, Megaphone, MessageSquareReply, Search, Smile, SquarePen, X } from 'lucide-react'
+import { ArrowUp, Check, ChevronDown, ChevronRight, Lock, Mail, Megaphone, MessageSquareReply, Smile, SquarePen, X } from 'lucide-react'
 import { PageHeader } from '../../layout/AppShell.jsx'
 import Avatar from '../../components/Avatar/Avatar.jsx'
 import TabNav from '../../components/TabNav/TabNav.jsx'
 import Button from '../../components/Button/Button.jsx'
+import SearchBar from '../../components/SearchBar/SearchBar.jsx'
 import { useDemo } from '../../store/DemoStore.jsx'
 import { useDismiss } from '../../lib/useDismiss.js'
 import { eventsById } from '../../mock/events.js'
@@ -483,10 +484,7 @@ export default function VolunteerMessages() {
 
       <div className="vm-frame">
         <section className="vm-list" aria-label={tab === 'messages' ? 'Conversations' : 'Announcement groups'}>
-          <label className="vm-search">
-            <Search size={16} aria-hidden="true" />
-            <input type="search" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
-          </label>
+          <div className="vm-search"><SearchBar value={q} onChange={setQ} placeholder="Search" label="Search conversations" /></div>
           <ul>
             {tab === 'messages' && composing && (
               <li><button type="button" className="vm-row is-on"><span className="vm-row__ic"><SquarePen size={18} /></span><span className="vm-row__main"><span className="vm-row__top"><b>New message</b></span><span className="vm-row__prev">Choose a coordinator</span></span></button></li>
