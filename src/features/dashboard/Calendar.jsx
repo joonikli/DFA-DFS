@@ -2,6 +2,7 @@
 // and the "+ add shift" popover form (vanilla calCardHTML / evItem / add-shift).
 import { useEffect, useRef } from 'react';
 import { Icon } from '../../components/Icon.jsx';
+import CalendarKey from '../../components/CalendarKey/CalendarKey.jsx';
 import { usePop, usePopClose, useToast, hideTip } from '../../components/ui.jsx';
 import { SHIFTS, SHIFT_DATES, TODAY } from '../../data.js';
 import { emit } from '../../lib/store.js';
@@ -101,11 +102,13 @@ export function CalendarCard() {
     <section className="card cal-card" data-card="calendar" id="calCard">
       <div className="cal">
         <div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => nav(-1)}><Icon name="chev-r" size={22} /></button>
-          <span aria-live="polite">{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
+          <span className="calendar-title">
+            <span aria-live="polite">{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
+            <CalendarKey><span><i className="dot needs" /> Needs volunteers</span><span><i className="dot" /> Staffed</span></CalendarKey>
+          </span>
           <button className="icon-btn plain" aria-label="Next month" onClick={() => nav(1)}><Icon name="chev-r" size={22} /></button></div>
         <div className="cal-grid cal-dow">{DOW.map((d) => <span key={d}>{d}</span>)}</div>
         <div className="cal-grid">{cells}</div>
-        <div className="cal-legend"><span><i className="dot needs" /> Needs volunteers</span><span><i className="dot" /> Staffed</span></div>
       </div>
       <div className="ev">
         <div className="ev-head"><div><h2 className="h2">Upcoming events</h2><div className="card-sub" style={{ fontWeight: 500, fontSize: 14 }}>{all.length} scheduled shifts across {programs} programs</div></div>

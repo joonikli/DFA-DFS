@@ -78,8 +78,8 @@ function QuickSurvey({ event }) {
 
 export default function VolunteerDashboard() {
   const navigate = useNavigate()
-  const { volunteer, toggleSaved, dismissAnnouncement, markPostEventSeen } = useDemo()
-  const { openRegistration, openPostEvent, openSurveyResponse } = useEventFlows()
+  const { volunteer, dismissAnnouncement, markPostEventSeen } = useDemo()
+  const { openRegistration, openPostEvent, openSurveyResponse, toggleSave } = useEventFlows()
   const [calMonth, setCalMonth] = useState(TODAY)
   const [showAward, setShowAward] = useState(false)
 
@@ -224,7 +224,7 @@ export default function VolunteerDashboard() {
                   <EventCta
                     status="open"
                     saved={volunteer.saved.includes(e.id)}
-                    onToggleSaved={() => toggleSaved(e.id)}
+                    onToggleSaved={() => toggleSave(e)}
                     onRegister={() => openRegistration(e)}
                   />
                 }

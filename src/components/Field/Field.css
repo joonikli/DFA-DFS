@@ -64,15 +64,58 @@
   color: var(--neutral-darker-gray);
 }
 
+/* Time: Figma "time1" trigger + app-style menu (replaces the native time popup) */
+.time-field {
+  position: relative;
+  display: inline-flex;
+}
 .field--time {
   width: auto;
   color: var(--neutral-darker-gray);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
 }
-.field--time input {
-  border: 0;
-  background: transparent;
-  color: var(--neutral-darker-gray);
+.field--time:focus-visible {
   outline: none;
+  border-color: var(--primary-light-purple);
+  background: var(--neutral-white);
+}
+.field--time[aria-expanded='true'] {
+  border-color: var(--primary-light-purple);
+  background: var(--neutral-white);
+}
+.time-field__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5;
+  min-width: 100%;
+  max-height: 224px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(60 57 64 / 0.12);
+}
+.time-field__opt {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+  color: var(--neutral-black);
+  cursor: pointer;
+}
+.time-field__opt--active {
+  background: var(--neutral-light-gray);
+}
+.time-field__opt--on {
+  background: var(--primary-lightest-purple);
+  color: var(--primary-darkest-purple);
 }
 
 /* Checkbox */

@@ -2,6 +2,7 @@
 // Month grid with dots: light purple = any event that day, dark purple = one you're registered for.
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { MONTHS, sameDay } from '../../lib/dates.js'
+import CalendarKey from '../CalendarKey/CalendarKey.jsx'
 import './EventCalendar.css'
 
 const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
@@ -20,14 +21,20 @@ export function CalendarTags({ tone, children }) {
  * @param {(d: Date) => ('registered'|'event'|null)} dotFor
  * @param {Date} selected        highlighted day (black circle)
  * @param {{tone: 'event'|'registered', label: string}[] | null} [legend]
- *        legend row under the month name; pass null or [] to hide it
+ *        dot key, shown in an info popover next to the month name; pass null or [] to hide it
  */
 const DEFAULT_LEGEND = [
   { tone: 'event', label: 'All Events' },
   { tone: 'registered', label: 'Registered Events' },
 ]
 
-export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND }) {
+/**
+ * variant="dashboard" matches the "Upcoming events" calendar on the volunteer.html /
+ * manager.html dashboards (CalendarCard): today in purple bold, black circle only for
+ * the picked day, dots under the number, dot key behind the info icon (darker dot first).
+ * Needs `today` to mark today and grey out earlier days.
+ */
+export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND, variant = 'default', today }) {
   const year = month.getFullYear()
   const m = month.getMonth()
   const firstWeekday = new Date(year, m, 1).getDay()
@@ -39,29 +46,88 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
   ]
   while (cells.length % 7) cells.push(null)
 
+  if (variant === 'dashboard') {
+    const todayStart = today && new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    const key = legend?.length ? [...legend].sort((a, b) => (a.tone === 'registered' ? -1 : 0) - (b.tone === 'registered' ? -1 : 0)) : []
+    return (
+      <div className="event-calendar event-calendar--dashboard">
+        <div className="ecd-head">
+          <button type="button" className="ecd-nav" onClick={() => onMonthChange(new Date(year, m - 1, 1))} aria-label="Previous month">
+            <ChevronLeft size={22} strokeWidth={2} />
+          </button>
+          <span className="calendar-title">
+            <span aria-live="polite">
+              {MONTHS[m]} {year}
+            </span>
+            {key.length > 0 && (
+              <CalendarKey>
+                {key.map((l) => (
+                  <span key={l.tone + l.label}>
+                    <i className={`ecd-dot ecd-dot--${l.tone}`} aria-hidden="true" /> {l.label}
+                  </span>
+                ))}
+              </CalendarKey>
+            )}
+          </span>
+          <button type="button" className="ecd-nav" onClick={() => onMonthChange(new Date(year, m + 1, 1))} aria-label="Next month">
+            <ChevronRight size={22} strokeWidth={2} />
+          </button>
+        </div>
+        <div className="ecd-grid ecd-dow">
+          {WEEKDAYS.map((d) => (
+            <span key={d}>{d}</span>
+          ))}
+        </div>
+        <div className="ecd-grid">
+          {cells.map((date, i) => {
+            if (!date) return <span key={`blank-${i}`} />
+            const dot = dotFor(date)
+            const isSelected = selected && sameDay(date, selected)
+            const isToday = today && sameDay(date, today)
+            const isPast = todayStart && date < todayStart
+            return (
+              <button
+                key={date.getDate()}
+                type="button"
+                className={`ecd-day${isToday ? ' today' : ''}${isSelected ? ' sel' : ''}${isPast ? ' past' : ''}`}
+                aria-pressed={Boolean(isSelected)}
+                aria-label={`${MONTHS[m]} ${date.getDate()}${dot ? ', has events' : ''}`}
+                onClick={() => onSelect(date)}
+              >
+                {date.getDate()}
+                {dot && <i className={`ecd-dot ecd-dot--${dot}`} aria-hidden="true" />}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="event-calendar">
       <div className="event-calendar__head">
         <button type="button" className="event-calendar__nav" onClick={() => onMonthChange(new Date(year, m - 1, 1))} aria-label="Previous month">
           <ChevronLeft size={24} strokeWidth={1.5} />
         </button>
-        <p className="text-subheading">
-          {MONTHS[m]} {year}
-        </p>
+        <span className="calendar-title">
+          <p className="text-subheading">
+            {MONTHS[m]} {year}
+          </p>
+          {legend?.length > 0 && (
+            <CalendarKey>
+              {legend.map((l) => (
+                <span key={l.tone + l.label}>
+                  <span className={`calendar-dot calendar-dot--${l.tone}`} aria-hidden="true" /> {l.label}
+                </span>
+              ))}
+            </CalendarKey>
+          )}
+        </span>
         <button type="button" className="event-calendar__nav" onClick={() => onMonthChange(new Date(year, m + 1, 1))} aria-label="Next month">
           <ChevronRight size={24} strokeWidth={1.5} />
         </button>
       </div>
-
-      {legend?.length > 0 && (
-        <div className="event-calendar__legend">
-          {legend.map((l) => (
-            <CalendarTags key={l.tone + l.label} tone={l.tone}>
-              {l.label}
-            </CalendarTags>
-          ))}
-        </div>
-      )}
 
       <div className="event-calendar__grid" role="grid" aria-label={`${MONTHS[m]} ${year}`}>
         {WEEKDAYS.map((d) => (

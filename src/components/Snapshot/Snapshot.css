@@ -27,7 +27,7 @@
 }
 .snapshot__nav:hover {
   color: var(--neutral-black);
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .snapshot__chart {

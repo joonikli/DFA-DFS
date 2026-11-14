@@ -7,7 +7,6 @@ import EventAsset from '../features/events/EventAsset.jsx';
 import { Awards, Portrait, ProfileAsset, Statistics } from '../features/profiles/Profiles.jsx';
 import ProfileEditor from '../features/profiles/ProfileEditor.jsx';
 import { PROFILE_YEAR } from '../features/profiles/profileData.js';
-import { CancelConfirm } from './Calendar.jsx';
 import { EventCard, EventDialog } from './Events.jsx';
 import { AnnouncementModal } from './Modals.jsx';
 import VolunteerTopNav from './TopNav.jsx';
@@ -24,7 +23,7 @@ export default function VolunteerProfile({ registered, setRegistered, saved, set
   useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
   const [tab, setTab] = useState('Upcoming'), [year, setYear] = useState(PROFILE_YEAR);
   const [editor, setEditor] = useState(null), [announcement, setAnnouncement] = useState(false);
-  const { onSave, onRegister } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved, confirmation: (id, cancel) => <CancelConfirm id={id} onConfirm={cancel} /> });
+  const { onSave, onRegister } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved });
   useEffect(() => () => { popRef.current.close(null, true); hideTip(); }, []);
   const changeTab = value => { pop.close(null, true); hideTip(); setTab(value); };
   const related = tab === 'Attended' ? [...ATTENDED_EVENTS].sort((a, b) => b.date.localeCompare(a.date)) : volunteerEvents().filter(event => registered.has(event.id)).sort((a, b) => a.date.localeCompare(b.date));

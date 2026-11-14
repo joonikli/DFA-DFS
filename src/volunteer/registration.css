@@ -32,6 +32,10 @@
 .vr-dialog > footer .btn { height: 39px; padding: 10px 14px; border-radius: 48px; font: 400 16px/19px var(--sans); }
 .vr-dialog > footer .vr-cancel { background: rgba(96,120,241,.2); color: #3a3ea9; }
 .vr-error { margin: -14px 0; color: #c2191c; font-size: 14px; line-height: 20px; }
+/* Cancel-registration confirm: same shell, narrower and content-height */
+.vr-dialog.vr-confirm { width: min(560px, calc(100vw - 32px)); min-height: 0; gap: 24px; }
+.vr-confirm-note { margin: 0; color: var(--darker-gray); }
+.vr-confirm > footer { margin-top: 4px; }
 .vr-dialog :is(button, input, select, textarea):focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
 @media (max-width: 600px) {
   .vr-dialog { min-height: 0; padding: 24px 20px; gap: 24px; }

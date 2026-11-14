@@ -44,8 +44,8 @@
 }
 
 .nav-item:hover {
-  background: var(--neutral-very-light-gray);
-  color: var(--neutral-darker-gray);
+  background: var(--neutral-light-gray);
+  color: var(--neutral-black);
 }
 
 .nav-item--selected,

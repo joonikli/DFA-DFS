@@ -1,11 +1,13 @@
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .app-shell__main {
   flex: 1;
   min-width: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -13,7 +15,7 @@
 /* Figma frames: content starts 53px right of the sidebar, 41px below the top nav */
 .app-shell__content {
   flex: 1;
-  padding: 41px 56px 64px 53px;
+  padding: 41px 56px 40px 53px;
 }
 
 .page-header {

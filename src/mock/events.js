@@ -4,7 +4,7 @@
 const REDMOND = '8374 Redmond Rd, Pittsburgh, PA'
 const BOUTIQUE = '1100 Smallman St, Pittsburgh, PA'
 
-// tone → tag color: blue | green | pink | lime | yellow
+// tone → tag color: blue | pink | lime | yellow
 const programs = {
   mobileServices: {
     title: 'Mobile Services',
@@ -17,7 +17,7 @@ const programs = {
     location: REDMOND,
     description:
       'Help with reviewing resumes for women looking to enter STEM fields, or assist in the background with basic setup/takedown.',
-    tags: [['any language', 'green'], ['english', 'green'], ['spanish', 'green']],
+    tags: [['any language', 'pink'], ['english', 'pink'], ['spanish', 'pink']],
   },
   warehouseWednesday: {
     title: 'Warehouse Wednesday',
@@ -35,19 +35,19 @@ const programs = {
     title: 'Mobile Shop',
     location: 'Miscellaneous driving points',
     description: 'Staff the mobile boutique as it visits partner sites around Allegheny County.',
-    tags: [["driver's license", 'pink'], ['any language', 'green']],
+    tags: [["driver's license", 'pink'], ['any language', 'pink']],
   },
   careerClosetPrep: {
     title: 'Career Closet Prep',
     location: 'Community clothing center',
     description: 'Sort donated workwear and assemble interview-ready outfits for women starting new careers.',
-    tags: [['workwear', 'green'], ['interview prep', 'green'], ['no experience', 'green']],
+    tags: [['workwear', 'pink'], ['interview prep', 'pink'], ['no experience', 'pink']],
   },
   interviewPractice: {
     title: 'Interview Practice',
     location: 'Community career center',
     description: 'Help women build confidence through mock interviews, practice questions, and supportive feedback.',
-    tags: [['interviews', 'green'], ['mentoring', 'green'], ['career', 'green']],
+    tags: [['interviews', 'pink'], ['mentoring', 'pink'], ['career', 'pink']],
   },
   resumeCoaching: {
     title: 'Resume Coaching',
@@ -67,13 +67,13 @@ const programs = {
     title: 'Boutique',
     location: BOUTIQUE,
     description: 'Style clients one-on-one for interviews and their first weeks on the job.',
-    tags: [['styling', 'green'], ['no experience', 'green']],
+    tags: [['styling', 'pink'], ['no experience', 'pink']],
   },
   fillABag: {
     title: 'Fill-A-Bag',
     location: 'Dress for Success Pittsburgh, 1100 Smallman St',
     description: 'Help pack essential items for those in need and make a difference in the Pittsburgh community.',
-    tags: [['no requirements', 'blue'], ['packing', 'green']],
+    tags: [['no requirements', 'blue'], ['packing', 'pink']],
   },
   mhciLunch: {
     title: 'MHCI Lunch',

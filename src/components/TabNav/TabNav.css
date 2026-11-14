@@ -26,21 +26,54 @@
 }
 
 .tab-nav__label {
+  position: relative;
   display: inline-block;
 }
 
-/* Pulse: draws the eye to the tab a card was just moved into */
-.tab-nav__tab--pulse .tab-nav__label {
-  animation: tab-nav-pulse 900ms cubic-bezier(0.3, 0.7, 0.4, 1) 120ms;
+/* Dot: the tab a card was just saved / registered into. Sits left of the label,
+   vertically centred, positioned absolutely so it never shifts the label or underline. */
+.tab-nav__dot {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 6px);
+  margin-top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-purple);
+  animation: tab-nav-dot 600ms cubic-bezier(0.3, 0.7, 0.4, 1) 120ms both;
 }
-@keyframes tab-nav-pulse {
-  0%   { transform: scale(1);    color: var(--neutral-darker-gray); }
-  30%  { transform: scale(1.18); color: var(--primary-purple); }
-  60%  { transform: scale(0.97); color: var(--primary-purple); }
-  100% { transform: scale(1);    color: var(--neutral-darker-gray); }
+/* Soft ring that expands out of the dot (plays on first appearance and every new addition) */
+.tab-nav__dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--primary-purple);
+  animation: tab-nav-ring 700ms ease-out 180ms both;
+}
+@keyframes tab-nav-dot {
+  0%   { transform: scale(0.4); }
+  45%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+@keyframes tab-nav-ring {
+  from { transform: scale(1); opacity: 0.45; }
+  to   { transform: scale(2.6); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tab-nav__tab--pulse .tab-nav__label {
+  .tab-nav__dot,
+  .tab-nav__dot::after {
     animation: none;
   }
+  .tab-nav__dot::after { opacity: 0; }
+}
+
+.tab-nav__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

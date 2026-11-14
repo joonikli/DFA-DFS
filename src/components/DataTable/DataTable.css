@@ -36,7 +36,7 @@
   cursor: pointer;
 }
 .data-table tr.is-clickable:hover td {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .data-table__empty {
@@ -84,7 +84,8 @@
   color: var(--neutral-darker-gray);
 }
 .page-nav button:hover:not(:disabled) {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
+  color: var(--neutral-black);
 }
 .page-nav button.is-current {
   background: var(--neutral-light-gray);

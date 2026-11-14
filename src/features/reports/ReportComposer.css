@@ -62,7 +62,7 @@
   gap: 2px;
 }
 .gen-report__kind:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 .gen-report__kind.is-on {
   background: var(--primary-lightest-purple);
@@ -206,7 +206,7 @@
   border-left: 1px solid var(--neutral-gray);
 }
 .rc-block__controls button:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .rc-block__prompt {

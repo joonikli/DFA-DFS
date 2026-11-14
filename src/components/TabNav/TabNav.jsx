@@ -4,25 +4,29 @@ import './TabNav.css'
 
 /**
  * @param {{value: string, label: string}[]} tabs
- * @param {{value: string, n: number}} [pulse]  briefly highlights a tab (e.g. where a card was just moved);
- *                                               bump `n` to replay it
+ * @param {Record<string, number>} [marks]  tab value → count of unseen additions. A count > 0 shows a
+ *                                          dot on that tab; each increase replays the dot's pulse
  */
-export default function TabNav({ tabs, value, onChange, label = 'Sections', pulse }) {
+export default function TabNav({ tabs, value, onChange, label = 'Sections', marks = {} }) {
   return (
     <div className="tab-nav" role="tablist" aria-label={label}>
       {tabs.map((t) => {
-        const pulsing = pulse?.value === t.value && t.value !== value
+        const mark = t.value !== value ? marks[t.value] || 0 : 0
         return (
           <button
-            // remounting on a new pulse restarts the CSS animation
-            key={pulsing ? `${t.value}-${pulse.n}` : t.value}
+            key={t.value}
             type="button"
             role="tab"
             aria-selected={value === t.value}
-            className={`tab-nav__tab text-body-2 ${value === t.value ? 'tab-nav__tab--active' : ''} ${pulsing ? 'tab-nav__tab--pulse' : ''}`}
+            className={`tab-nav__tab text-body-2 ${value === t.value ? 'tab-nav__tab--active' : ''}`}
             onClick={() => onChange(t.value)}
           >
-            <span className="tab-nav__label">{t.label}</span>
+            <span className="tab-nav__label">
+              {/* remounting on a new count restarts the pulse */}
+              {mark > 0 && <span key={mark} className="tab-nav__dot" aria-hidden="true" />}
+              {t.label}
+            </span>
+            {mark > 0 && <span className="tab-nav__sr">, new events added</span>}
           </button>
         )
       })}

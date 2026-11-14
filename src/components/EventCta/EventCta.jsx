@@ -3,6 +3,7 @@
 // Here the variant is derived from two props: `status` and `saved`.
 import Button from '../Button/Button.jsx'
 import Saved from '../Saved/Saved.jsx'
+import './EventCta.css'
 
 /**
  * @param {'open'|'registered'|'attended'} status

@@ -12,7 +12,6 @@
 }
 
 button.small-event-card:hover {
-  border-color: var(--primary-light-purple);
   box-shadow: var(--shadow-card-hover);
 }
 

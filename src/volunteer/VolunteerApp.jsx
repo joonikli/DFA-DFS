@@ -1,7 +1,7 @@
 // Volunteer portal (Maureen Kelly) — Figma 1085:4706. Port of the vanilla volunteer.js.
 // Shares data.js with the manager app, so the same shifts, announcements and people appear in both.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LiveRegion, PopProvider, ToastProvider, hideTip, useFitZoom, useGlobalTooltips, usePop, useToast } from '../components/ui.jsx';
+import { LiveRegion, PopProvider, ToastProvider, hideTip, useFitZoom, useGlobalTooltips, useToast } from '../components/ui.jsx';
 import { Shell } from '../components/Shell.jsx';
 import { SHIFTS } from '../data.js';
 import { emit, reducedMotion, useStore } from '../lib/store.js';
@@ -10,9 +10,11 @@ import VolunteerEvents from './Events.jsx';
 import VolunteerProfile from './Profile.jsx';
 import VolunteerTopNav from './TopNav.jsx';
 import { RegistrationProvider, useRegistration } from './Registration.jsx';
+import { EventNoticeProvider, useEventNotice } from './EventNotice.jsx';
+import { useVolunteerEventActions } from './useEventActions.js';
 import { PAST_SURVEYS, RECOMMENDED, SURVEY_EVENT, VOL_NAV, firstName, vol } from './shared.js';
 import { Banner } from './Banner.jsx';
-import { CalendarCard, CancelConfirm } from './Calendar.jsx';
+import { CalendarCard } from './Calendar.jsx';
 import { RecommendedCard } from './Recommended.jsx';
 import { PastSurveys, SurveyCard } from './Surveys.jsx';
 import { Modal } from './Modal.jsx';
@@ -25,9 +27,10 @@ const del = (set, id) => { const n = new Set(set); n.delete(id); return n; };
 
 function Dashboard({ registered, setRegistered, saved, setSaved }) {
   useStore();
-  const { openRegistration } = useRegistration();
+  const { openRegistration, openCancel } = useRegistration();
   const toast = useToast();
-  const pop = usePop();
+  const notice = useEventNotice();
+  const { onSave: save } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved });
   const vpRef = useRef(null);
   const recsRef = useRef(null);
   useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000 });
@@ -75,15 +78,14 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
     setRegistered((r) => del(r, id));
     setFlash(null);
     SHIFTS[id].filled -= 1; emit();
-    toast(`You’ve cancelled ${SHIFTS[id].title}`, {
-      ic: 'check', action: 'Undo',
-      onAction: () => { setRegistered((r) => add(r, id)); SHIFTS[id].filled += 1; setFlash(id); emit(); },
+    notice({
+      variant: 'alert', parts: [['Registration cancelled', true], [' for ', false], [SHIFTS[id].title, true]],
+      action: { label: 'Undo', onClick: () => { setRegistered((r) => add(r, id)); SHIFTS[id].filled += 1; setFlash(id); emit(); } },
     });
   };
-  const cancelShift = (anchor, id) => pop.toggle(anchor, <CancelConfirm id={id} onConfirm={confirmCancel} />, { align: 'end' });
+  const cancelShift = (anchor, id) => openCancel(id, anchor, () => confirmCancel(id));
 
   // ---------- Recommended events ----------
-  const save = (id) => { hideTip(); setSaved((s) => (s.has(id) ? del(s, id) : add(s, id))); };
   const register = (anchor, id) => {
     if (registered.has(id)) { cancelShift(anchor, id); return; }
     openRegistration(id, anchor);
@@ -182,7 +184,7 @@ export default function VolunteerApp() {
   return (
     <ToastProvider>
       <PopProvider>
-        <Portal />
+        <EventNoticeProvider><Portal /></EventNoticeProvider>
         <LiveRegion />
       </PopProvider>
     </ToastProvider>

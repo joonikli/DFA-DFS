@@ -152,6 +152,8 @@ export default function AdminEvents() {
           <EventCalendar
             month={calMonth}
             onMonthChange={setCalMonth}
+            variant="dashboard"
+            today={TODAY}
             selected={day ?? TODAY}
             legend={[
               { tone: 'event', label: 'Your events' },
