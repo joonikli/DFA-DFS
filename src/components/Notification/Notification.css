@@ -114,11 +114,12 @@
   background: currentColor;
 }
 
-/* ---- Toasts ---- */
+/* ---- Toasts (top center) ---- */
 .toaster {
   position: fixed;
-  top: 84px;
-  right: 24px;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 200;
   display: flex;
   flex-direction: column;

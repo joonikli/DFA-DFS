@@ -67,10 +67,10 @@ export const EVENT_TYPES = [
 export const TAG_OPTIONS = [
   ['Clothes', 'purple'],
   ['Organizing', 'purple'],
-  ['spanish', 'green'],
-  ['any language', 'green'],
+  ['spanish', 'pink'],
+  ['any language', 'pink'],
   ['no requirements', 'blue'],
   ['heavy lifting', 'pink'],
   ['own transportation', 'purple'],
-  ['no experience', 'green'],
+  ['no experience', 'pink'],
 ]

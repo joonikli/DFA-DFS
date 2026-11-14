@@ -16,7 +16,7 @@
   color: #1e1e1e;
 }
 .pill-btn--outline:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .pill-btn--inverse {
@@ -24,7 +24,7 @@
   color: var(--neutral-white);
 }
 .pill-btn--inverse:hover {
-  background: var(--neutral-black);
+  background: var(--primary-dark-purple);
 }
 .pill-btn:disabled {
   opacity: 0.5;

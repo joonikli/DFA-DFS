@@ -1,0 +1,71 @@
+/* Works in both stylesheets: legacy styles.css (--white, --gray…) and tokens.css (--neutral-*). */
+.calendar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-key {
+  position: relative;
+  display: inline-flex;
+}
+
+.calendar-key__btn {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--darker-gray, var(--neutral-darker-gray, #7a7f84));
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.calendar-key__btn.is-open {
+  color: var(--black, var(--neutral-black, #3a393a));
+  background: var(--light-gray, var(--neutral-light-gray, #eff2f5));
+}
+.calendar-key__btn:focus-visible {
+  outline: 2px solid var(--purple-dark, var(--primary-dark-purple, #5f2a82));
+  outline-offset: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .calendar-key__btn:hover {
+    color: var(--black, var(--neutral-black, #3a393a));
+    background: var(--light-gray, var(--neutral-light-gray, #eff2f5));
+  }
+}
+
+.calendar-key__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: left;
+  color: var(--darker-gray, var(--neutral-darker-gray, #7a7f84));
+  background: var(--white, var(--neutral-white, #fff));
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(58, 57, 58, .06), 0 10px 28px -6px rgba(58, 57, 58, .18), 0 2px 6px rgba(58, 57, 58, .06);
+  transform: translateX(-50%);
+  transform-origin: top center;
+  animation: calendar-key-in 200ms cubic-bezier(.23, 1, .32, 1);
+}
+.calendar-key__panel[hidden] { display: none; }
+.calendar-key__panel > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes calendar-key-in {
+  from { opacity: 0; transform: translateX(-50%) scale(.96); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .calendar-key__panel { animation: none; }
+}

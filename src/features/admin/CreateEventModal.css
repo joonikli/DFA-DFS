@@ -66,9 +66,10 @@
 }
 .ce-times .field--time {
   padding: 4px 6px;
+  gap: 4px;
 }
 .ce-times .field--time svg {
-  display: none;
+  flex-shrink: 0;
 }
 .ce-times__dash {
   width: 10px;
@@ -131,7 +132,7 @@
   font-size: 14px;
 }
 .tag-picker__opt:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 .tag-picker__opt--on {
   background: var(--primary-lightest-purple);
@@ -168,12 +169,12 @@
 .ce__row--3 {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1.45fr);
 }
-.ce-times .field--time input {
-  width: 100%;
+.ce-times .time-field {
+  flex: 1;
   min-width: 0;
 }
 .ce-times .field--time {
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 @media (max-width: 900px) {

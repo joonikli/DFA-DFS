@@ -29,7 +29,7 @@
   text-decoration: none;
 }
 .todo-item:hover {
-  border-color: var(--primary-light-purple);
+  background: var(--neutral-light-gray);
   color: var(--neutral-black);
 }
 .todo-item__text {

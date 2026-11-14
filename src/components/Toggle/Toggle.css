@@ -8,17 +8,31 @@
   background: var(--neutral-light-gray);
 }
 
+/* Options keep a fixed width so the icons never shift when the view changes.
+   The active pill (36px in Figma; inactive slot reads as 30px) is drawn as a
+   background that extends 3px toward the center. */
 .toggle__option {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
+  width: 33px;
   height: 30px;
   border-radius: 18px;
   color: var(--neutral-black);
 }
 
-.toggle__option--active {
-  width: 36px;
+.toggle__option > * {
+  position: relative;
+}
+
+.toggle__option--active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
   background: var(--neutral-white);
 }
+
+.toggle__option--active:first-child::before { right: -3px; }
+.toggle__option--active:last-child::before { left: -3px; }

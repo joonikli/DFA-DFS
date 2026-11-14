@@ -69,7 +69,7 @@
   color: var(--neutral-white);
 }
 .banner__cta:hover {
-  background: #252425;
+  background: var(--primary-dark-purple);
 }
 
 .banner__close {

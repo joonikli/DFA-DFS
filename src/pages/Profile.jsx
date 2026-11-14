@@ -126,8 +126,8 @@ export default function Profile() {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const demo = useDemo()
-  const { role, volunteer, admin, profiles, toggleSaved, adminToggleSaved, setNote } = demo
-  const { openRegistration } = useEventFlows()
+  const { role, volunteer, admin, profiles, adminToggleSaved, setNote } = demo
+  const { openRegistration, openCancelRegistration, toggleSave } = useEventFlows()
   const adminEvents = useAdminEvents()
   const [editing, setEditing] = useState(false)
   const [editingNote, setEditingNote] = useState(false)
@@ -211,7 +211,7 @@ export default function Profile() {
         <EventCard
           key={e.id}
           event={e}
-          cta={<EventCta status={status} saved={volunteer.saved.includes(e.id)} onToggleSaved={() => toggleSaved(e.id)} onRegister={() => openRegistration(e)} />}
+          cta={<EventCta status={status} saved={volunteer.saved.includes(e.id)} onToggleSaved={() => toggleSave(e)} onRegister={() => openRegistration(e)} onUnregister={() => openCancelRegistration(e)} />}
         />
       )
     }

@@ -6,7 +6,9 @@
   align-items: center;
   justify-content: flex-end;
   gap: 24px;
-  padding: 16px 56px;
+  flex-shrink: 0; /* fixed height: don't let the shell's flex column squash it */
+  height: 68px;
+  padding: 0 56px;
   background: var(--neutral-white);
   border-bottom: 1px solid var(--neutral-gray);
 }
@@ -38,7 +40,7 @@
   border-radius: 4px;
 }
 .top-nav__bell:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .top-nav__divider {
@@ -84,7 +86,7 @@
   color: var(--neutral-black);
 }
 .avatar-menu__item:hover {
-  background: var(--primary-lightest-purple);
+  background: var(--neutral-light-gray);
 }
 
 .avatar-menu__muted {

@@ -9,17 +9,22 @@
   border: 1px solid var(--neutral-light-gray);
   color: var(--neutral-dark-gray);
   background: var(--neutral-white);
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
 .saved:hover {
-  border-color: var(--neutral-gray);
-  color: var(--neutral-darker-gray);
+  background: var(--primary-lightest-purple);
+  border-color: var(--primary-light-purple);
+  color: var(--primary-dark-purple);
 }
 
-.saved--selected,
-.saved--selected:hover {
+.saved--selected {
   background: var(--neutral-black);
   border-color: var(--neutral-gray);
+  color: var(--neutral-white);
+}
+.saved--selected:hover {
+  background: var(--primary-dark-purple);
+  border-color: var(--primary-dark-purple);
   color: var(--neutral-white);
 }

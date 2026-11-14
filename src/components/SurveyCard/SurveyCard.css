@@ -25,7 +25,7 @@
   border-radius: 6px;
 }
 .survey-card__menu > button:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 .survey-card__menu-panel {
   position: absolute;
@@ -48,7 +48,7 @@
   font-size: 14px;
 }
 .survey-card__menu-panel button:hover {
-  background: var(--primary-lightest-purple);
+  background: var(--neutral-light-gray);
 }
 
 .survey-card__head {
@@ -154,7 +154,7 @@
   color: var(--neutral-white);
 }
 .survey-card__btn--solid:hover {
-  background: #252425;
+  background: var(--primary-dark-purple);
 }
 
 /* list layout (Toggle = Row) */

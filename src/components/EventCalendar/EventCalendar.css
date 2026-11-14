@@ -25,14 +25,7 @@
 }
 .event-calendar__nav:hover {
   color: var(--neutral-black);
-  background: var(--neutral-very-light-gray);
-}
-
-.event-calendar__legend {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 0 8px;
+  background: var(--neutral-light-gray);
 }
 
 /* Calendar Tags */
@@ -95,7 +88,7 @@
 }
 
 .event-calendar__day:hover .event-calendar__num {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .event-calendar__day--selected .event-calendar__num,
@@ -108,4 +101,77 @@
 .event-calendar__day .calendar-dot {
   position: absolute;
   top: 0;
+}
+
+/* variant="dashboard": same design as the volunteer.html / manager.html dashboard
+   calendar (.cal in styles.css), inside this component's card frame */
+.event-calendar--dashboard {
+  display: block;
+  padding: 20px 24px;
+}
+.ecd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--neutral-black);
+}
+.ecd-nav {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--neutral-dark-gray);
+  transition: background-color 150ms ease;
+}
+.ecd-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 4px;
+  justify-items: center;
+}
+.ecd-dow span {
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--neutral-dark-gray);
+}
+.ecd-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 42px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: 18px;
+  color: var(--neutral-black);
+  transition: background-color 150ms ease, color 150ms ease, transform 100ms cubic-bezier(.23, 1, .32, 1);
+}
+.ecd-day:active { transform: scale(.94); }
+.ecd-day.past { color: var(--neutral-dark-gray); }
+.ecd-day.today { color: var(--primary-dark-purple); font-weight: 600; }
+.ecd-day.sel { background: var(--neutral-black); color: var(--neutral-white); }
+.ecd-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary-light-purple);
+}
+.ecd-dot--registered { background: var(--primary-dark-purple); }
+.ecd-day .ecd-dot {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  margin-left: -3.5px;
+}
+.ecd-day.sel .ecd-dot { background: var(--neutral-white); }
+@media (hover: hover) and (pointer: fine) {
+  .ecd-nav:hover { background: var(--neutral-light-gray); }
+  .ecd-day:not(.sel):hover { background: var(--neutral-light-gray); }
 }

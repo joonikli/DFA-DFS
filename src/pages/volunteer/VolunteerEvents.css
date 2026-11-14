@@ -1,11 +1,12 @@
-/* The page fills the viewport below the 73px top nav (minus the shell's
-   41px top / 64px bottom padding) so only the event list scrolls. */
+/* The page is locked to the viewport below the 68px top nav (minus the
+   shell's 41px top / 40px bottom padding), so the header, tabs and search
+   never move: only the event list (and, on short screens, the right column)
+   scroll inside it. */
 .volunteer-events {
   display: flex;
   flex-direction: column;
   max-width: 1380px;
-  height: calc(100vh - 73px - 41px - 64px);
-  min-height: 480px;
+  height: max(480px, calc(100vh - 68px - 41px - 40px));
 }
 
 .volunteer-events__list {
@@ -17,8 +18,11 @@
   overflow-y: auto;
   /* room so card shadows aren't clipped by the scroll box */
   margin: -4px -8px -8px;
-  padding: 4px 8px 8px;
+  /* 24px below the last card so the end of every tab's list has breathing room */
+  padding: 4px 8px 24px;
   scrollbar-width: none;
+  /* reaching the end of the list must not hand the scroll to the page */
+  overscroll-behavior: contain;
 }
 .volunteer-events__list::-webkit-scrollbar {
   display: none;
@@ -63,17 +67,22 @@
   grid-template-columns: minmax(0, 849px) 400px;
   justify-content: space-between;
   column-gap: 48px;
+  /* one row that exactly fills the rest of the page */
+  grid-template-rows: minmax(0, 1fr);
   margin-top: 16px;
-  flex: 1;
+  flex: 1 1 0;
   min-height: 0;
 }
 
+/* height: 0 keeps the list from sizing the row (the right column does);
+   min-height: 100% then stretches it to that row so the list scrolls inside. */
 .volunteer-events__main {
   display: flex;
   flex-direction: column;
   gap: 20px;
   min-width: 0;
-  min-height: 0;
+  height: 0;
+  min-height: 100%;
 }
 
 .volunteer-events__toolbar {
@@ -95,6 +104,17 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* on short screens the calendar + snapshot scroll on their own instead of
+     stretching the page (same hidden scrollbar and shadow room as the list) */
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  margin: -4px -8px -8px;
+  padding: 4px 8px 8px;
+}
+.volunteer-events__aside::-webkit-scrollbar {
+  display: none;
 }
 
 /* Stacked layout: the right column moves under the list, so fall back to
@@ -103,14 +123,23 @@
   .volunteer-events {
     height: auto;
   }
+  .volunteer-events__main {
+    height: auto;
+    min-height: 0;
+  }
   .volunteer-events__list {
     overflow: visible;
   }
   .volunteer-events__body {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
     row-gap: 32px;
+    flex: none;
   }
   .volunteer-events__aside {
+    overflow: visible;
+    margin: 0;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 400px));
     align-items: start;

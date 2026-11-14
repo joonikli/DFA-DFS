@@ -31,6 +31,21 @@ const TABS = [
   { value: 'attended', label: 'Attended' },
 ]
 
+// Tabs that can receive a moved event, and the tag a newly arrived card gets there
+const MARKED_TABS = ['upcoming', 'saved', 'registered']
+// (Upcoming arrivals are tagged with where they came from: "Removed from saved / registered")
+const FLAGS = { saved: 'Newly saved', registered: 'Newly registered' }
+// Event ids in each of those tabs (same rules as byTab below, without search/day filters)
+function membersOf(volunteer) {
+  const future = events.filter((e) => e.start >= TODAY)
+  const ids = (keep) => future.filter(keep).map((e) => e.id)
+  return {
+    upcoming: ids((e) => !volunteer.saved.includes(e.id) && !volunteer.registered.includes(e.id)),
+    saved: ids((e) => volunteer.saved.includes(e.id)),
+    registered: ids((e) => volunteer.registered.includes(e.id)),
+  }
+}
+
 // Empty-state copy per tab, per bucket ("This Week" / "This Month")
 const EMPTY = {
   upcoming: { icon: Handshake, week: 'No events scheduled this week — check back soon', month: 'No more events scheduled this month' },
@@ -82,8 +97,8 @@ function activityFor(month, attendedIds) {
 }
 
 export default function VolunteerEvents() {
-  const { volunteer, toggleSaved, unregister, showToast } = useDemo()
-  const { openRegistration, openSurvey } = useEventFlows()
+  const { volunteer } = useDemo()
+  const { openRegistration, openCancelRegistration, openSurvey, toggleSave } = useEventFlows()
   const [params, setParams] = useSearchParams()
   const tab = TABS.some((t) => t.value === params.get('tab')) ? params.get('tab') : 'upcoming'
 
@@ -130,21 +145,54 @@ export default function VolunteerEvents() {
   const ctx = `${tab}|${query}|${sortDir}|${selectedDay?.getTime() ?? ''}`
   const current = groups.flatMap((g) => g.items.map((e, index) => ({ event: e, id: e.id, group: g.key, index })))
   const idsKey = current.map((c) => c.id).join(',')
-  const [track, setTrack] = useState({ ctx, idsKey, items: current, leaving: [], pulse: null })
+  const [track, setTrack] = useState({ ctx, idsKey, items: current, leaving: [] })
   if (track.ctx !== ctx || track.idsKey !== idsKey) {
     const now = new Set(current.map((c) => c.id))
     let leaving = []
-    let pulse = track.pulse
     if (track.ctx === ctx) {
       const gone = track.items.filter((p) => !now.has(p.id))
       leaving = [...track.leaving.filter((l) => !now.has(l.id)), ...gone]
-      // Where did it go? Registered beats Saved; otherwise back to Upcoming.
-      const dest = (id) =>
-        volunteer.registered.includes(id) ? 'registered' : volunteer.saved.includes(id) ? 'saved' : 'upcoming'
-      const target = gone.map((g) => dest(g.id)).find((t) => t !== tab)
-      if (target) pulse = { value: target, n: (track.pulse?.n ?? 0) + 1 }
     }
-    setTrack({ ctx, idsKey, items: current, leaving, pulse })
+    setTrack({ ctx, idsKey, items: current, leaving })
+  }
+
+  /* ---- "New" markers ----
+     Whenever an event newly lands in another tab's list — saved, registered,
+     or moved back to Upcoming by unsaving / cancelling — that tab gets a dot
+     (it pulses again for each further arrival). Opening the tab clears the dot
+     and tags those cards (FLAGS / "Removed from …") until the user switches tabs. An event that
+     leaves the tab again before it's seen drops out of both. */
+  const members = useMemo(() => membersOf(volunteer), [volunteer])
+  const [unseen, setUnseen] = useState({ upcoming: [], saved: [], registered: [] })
+  const [fresh, setFresh] = useState({ tab, ids: [] })
+  const unseenRef = useRef(unseen)
+  unseenRef.current = unseen
+  const prevMembers = useRef(members)
+  // Event id → the list it was just removed from ('saved' | 'registered'), for its Upcoming tag
+  const removedFrom = useRef({})
+  useEffect(() => {
+    const prev = prevMembers.current
+    prevMembers.current = members
+    for (const id of members.upcoming) {
+      if (!prev.upcoming.includes(id)) removedFrom.current[id] = prev.registered.includes(id) ? 'registered' : 'saved'
+    }
+    setUnseen((u) => {
+      const next = {}
+      for (const key of MARKED_TABS) {
+        const added = key === tab ? [] : members[key].filter((id) => !prev[key].includes(id) && !u[key].includes(id))
+        next[key] = [...u[key], ...added].filter((id) => members[key].includes(id))
+      }
+      return next
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [members])
+  useEffect(() => {
+    setFresh({ tab, ids: unseenRef.current[tab] || [] })
+    setUnseen((u) => (u[tab]?.length ? { ...u, [tab]: [] } : u))
+  }, [tab])
+  const flagFor = (e) => {
+    if (fresh.tab !== tab || !fresh.ids.includes(e.id) || !members[tab]?.includes(e.id)) return undefined
+    return tab === 'upcoming' ? `Removed from ${removedFrom.current[e.id] || 'saved'}` : FLAGS[tab]
   }
 
   // Drop each leaving card once its animation has played.
@@ -222,30 +270,15 @@ export default function VolunteerEvents() {
       <EventCard
         event={e}
         layout={view}
+        flag={leaving ? undefined : flagFor(e)}
         onOpen={needsSurvey ? () => openSurvey(e) : undefined}
         cta={
           <EventCta
             status={status}
             saved={volunteer.saved.includes(e.id)}
-            onToggleSaved={() => {
-              const wasSaved = volunteer.saved.includes(e.id)
-              toggleSaved(e.id)
-              showToast(
-                wasSaved
-                  ? { variant: 'alert', parts: [['Removed from saved', true]], preview: e.title, time: 'Now', category: 'Event' }
-                  : { variant: 'success', parts: [['Saved!', true]], preview: `${e.title} is now in your Saved events.`, time: 'Now', category: 'Event' },
-              )
-            }}
+            onToggleSaved={() => toggleSave(e)}
             onRegister={() => openRegistration(e)}
-            onUnregister={() => {
-              unregister(e.id)
-              showToast({
-                variant: 'alert',
-                parts: [['Registration cancelled', true], [' for ', false], [e.title, true]],
-                time: 'Now',
-                category: 'Event',
-              })
-            }}
+            onUnregister={() => openCancelRegistration(e)}
           />
         }
       />
@@ -261,7 +294,7 @@ export default function VolunteerEvents() {
         label="Event lists"
         tabs={TABS}
         value={tab}
-        pulse={track.pulse}
+        marks={{ upcoming: unseen.upcoming.length, saved: unseen.saved.length, registered: unseen.registered.length }}
         onChange={(v) => {
           setSelectedDay(null)
           setParams(v === 'upcoming' ? {} : { tab: v })
@@ -314,6 +347,8 @@ export default function VolunteerEvents() {
             month={calMonth}
             onMonthChange={setCalMonth}
             dotFor={dotFor}
+            variant="dashboard"
+            today={TODAY}
             selected={selectedDay ?? TODAY}
             onSelect={(d) => setSelectedDay((cur) => (cur && sameDay(cur, d)) || sameDay(d, TODAY) ? null : d)}
           />

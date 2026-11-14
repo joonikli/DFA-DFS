@@ -16,7 +16,7 @@ const inventorySurvey = {
 
 export const INITIAL_EVENTS = [
   { id: 'reference-1', date: '2026-05-28', title: 'Warehouse Wednesday', detailTitle: 'Donation Inventory Organizing', start: '18:00', end: '20:00', time: '6-8 pm', registered: 15, group: 'mine', tags: ['pink', 'pink', 'pink'], longDescription: EVENT_DESCRIPTION, tagText: 'organized, spanish, own transportation', survey: inventorySurvey.title, surveyDefinition: inventorySurvey, surveyMissingIds: ['sarah', 'sophia', 'marie', 'andre', 'priya'], surveyCompletedIds: ['tasha', 'elena', 'marcus', 'janice', 'rosaline', 'jimmy', 'maureen', 'dana'] },
-  { id: 'reference-2', date: '2026-05-30', title: 'Warehouse Wednesday', start: '11:30', end: '15:30', time: '11:30-3:30 pm', registered: 45, group: 'mine', tags: ['pink', 'green'] },
+  { id: 'reference-2', date: '2026-05-30', title: 'Warehouse Wednesday', start: '11:30', end: '15:30', time: '11:30-3:30 pm', registered: 45, group: 'mine', tags: ['pink', 'pink'] },
   { id: 'reference-3', date: '2026-06-02', title: 'Mobile Shop', start: '11:30', end: '16:00', time: '11:30 am-4 pm', registered: 3, group: 'month', tags: [] },
   { id: 'reference-4', date: '2026-06-04', title: 'Clothing Distribution', start: '18:00', end: '20:00', time: '6-8 pm', registered: 0, group: 'month', tags: ['pink', 'pink', 'pink'] },
   // Existing prototype history, presented with the same admin card component.

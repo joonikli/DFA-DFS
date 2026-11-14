@@ -107,3 +107,9 @@
   font-style: italic;
   color: var(--neutral-dark-gray);
 }
+
+/* Cancel-registration confirm: body note under the registration-style header */
+.flow-cancel__note {
+  margin-top: 24px;
+  color: var(--neutral-darker-gray);
+}

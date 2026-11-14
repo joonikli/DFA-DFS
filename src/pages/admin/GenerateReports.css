@@ -443,7 +443,7 @@
   border-left: 1px solid var(--neutral-gray);
 }
 .source-pop__btns button:hover {
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 .source-pop .ai-source {
   display: inline-flex;

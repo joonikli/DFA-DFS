@@ -15,7 +15,7 @@
   color: var(--neutral-white);
 }
 .btn--primary:hover {
-  background: #252425;
+  background: var(--primary-dark-purple);
 }
 /* "State=Pressed" */
 .btn--primary:active {

@@ -2,7 +2,7 @@
 //   Register → event-registration-popup → success toast + notification
 //   After an event → Post-event popup ("Thank you for volunteering today!") → event-survey-popup
 // Any page can open these through useEventFlows().
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useMemo, useRef, useState } from 'react'
 import { Handshake } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Modal from '../../components/Modal/Modal.jsx'
@@ -128,6 +128,88 @@ function RegistrationPopup({ event, onClose }) {
           <Button type="submit">Register</Button>
         </div>
       </form>
+    </Modal>
+  )
+}
+
+/* ---------- Cancel-registration confirm ----------
+   No Figma frame for this one, so it reuses the registration popup's shell,
+   header and footer (tertiary "keep" left, primary action right). */
+function CancelRegistrationPopup({ event, onClose }) {
+  const { unregister, showToast } = useDemo()
+  const range = `${longTime(event.start)} - ${longTime(event.end)} ${ampm(event.end)}`
+  function confirm() {
+    unregister(event.id)
+    showToast({
+      variant: 'alert',
+      parts: [['Registration cancelled', true], [' for ', false], [event.title, true]],
+      time: 'Now',
+      category: 'Event',
+    })
+    onClose()
+  }
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      width={560}
+      title="Cancel your registration?"
+      subtitle={
+        <>
+          You’re registered for <strong>{event.title}</strong> on{' '}
+          <strong>
+            {MONTHS[event.start.getMonth()]} {event.start.getDate()}, {range}
+          </strong>
+          .
+        </>
+      }
+    >
+      <p className="text-body flow-cancel__note">
+        Your spot will open up for another volunteer. You can register again while spots are available.
+      </p>
+      <div className="modal__footer">
+        <Button color="tertiary" onClick={onClose} autoFocus>
+          Keep registration
+        </Button>
+        <Button onClick={confirm}>Cancel registration</Button>
+      </div>
+    </Modal>
+  )
+}
+
+/* ---------- Unsave confirm ----------
+   Same shell as the cancel-registration confirm above. */
+function UnsavePopup({ event, onClose }) {
+  const { volunteer, toggleSaved, showToast } = useDemo()
+  const range = `${longTime(event.start)} - ${longTime(event.end)} ${ampm(event.end)}`
+  function confirm() {
+    if (volunteer.saved.includes(event.id)) toggleSaved(event.id)
+    showToast({ variant: 'alert', parts: [['Removed from saved', true]], preview: event.title, time: 'Now', category: 'Event' })
+    onClose()
+  }
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      width={560}
+      title="Remove from saved?"
+      subtitle={
+        <>
+          <strong>{event.title}</strong> on{' '}
+          <strong>
+            {MONTHS[event.start.getMonth()]} {event.start.getDate()}, {range}
+          </strong>
+          .
+        </>
+      }
+    >
+      <p className="text-body flow-cancel__note">It will no longer appear in your Saved events. You can save it again anytime.</p>
+      <div className="modal__footer">
+        <Button color="tertiary" onClick={onClose} autoFocus>
+          Keep saved
+        </Button>
+        <Button onClick={confirm}>Remove from saved</Button>
+      </div>
     </Modal>
   )
 }
@@ -279,23 +361,38 @@ function Toaster() {
 }
 
 export function EventFlowsProvider({ children }) {
-  const [flow, setFlow] = useState(null) // { kind: 'register'|'survey'|'thanks', event }
+  const [flow, setFlow] = useState(null) // { kind: 'register'|'cancel'|'unsave'|'survey'|'thanks'|'response', event }
   const close = () => setFlow(null)
+  const { volunteer, toggleSaved, showToast } = useDemo()
+  const savedRef = useRef(volunteer.saved)
+  savedRef.current = volunteer.saved
 
   const api = useMemo(
     () => ({
       openRegistration: (event) => setFlow({ kind: 'register', event }),
+      openCancelRegistration: (event) => setFlow({ kind: 'cancel', event }),
+      // Saving happens right away (with a toast); unsaving asks first.
+      toggleSave: (event) => {
+        if (savedRef.current.includes(event.id)) {
+          setFlow({ kind: 'unsave', event })
+          return
+        }
+        toggleSaved(event.id)
+        showToast({ variant: 'success', parts: [['Saved!', true]], preview: `${event.title} is now in your Saved events.`, time: 'Now', category: 'Event' })
+      },
       openSurvey: (event) => setFlow({ kind: 'survey', event }),
       openPostEvent: (event) => setFlow({ kind: 'thanks', event }),
       openSurveyResponse: (event) => setFlow({ kind: 'response', event }),
     }),
-    [],
+    [toggleSaved, showToast],
   )
 
   return (
     <FlowContext.Provider value={api}>
       {children}
       {flow?.kind === 'register' && <RegistrationPopup event={flow.event} onClose={close} />}
+      {flow?.kind === 'cancel' && <CancelRegistrationPopup event={flow.event} onClose={close} />}
+      {flow?.kind === 'unsave' && <UnsavePopup event={flow.event} onClose={close} />}
       {flow?.kind === 'survey' && <SurveyPopup event={flow.event} onClose={close} />}
       {flow?.kind === 'response' && <SurveyResponsePopup event={flow.event} onClose={close} />}
       {flow?.kind === 'thanks' && (

@@ -20,8 +20,9 @@ export function RichText({ parts }) {
  * @param {string} category     "Event" / "Messages"
  * @param {{label: string, detail: string, to: string}} [link]  purple chip under the text
  * @param {boolean} [unread]
+ * @param {{label: string, onClick: Function}} [action]  same purple chip as `link`, as a button (e.g. Undo)
  */
-export default function Notification({ variant = 'default', image, parts, preview, time, category, link, unread, onClick, as = 'div' }) {
+export default function Notification({ variant = 'default', image, parts, preview, time, category, link, action, unread, onClick, as = 'div' }) {
   const Tag = as
   return (
     <Tag className={`notification notification--${variant} ${unread ? 'notification--unread' : ''}`} onClick={onClick}>
@@ -50,6 +51,11 @@ export default function Notification({ variant = 'default', image, parts, previe
             {link.detail}
             <ArrowRight size={20} strokeWidth={1.75} aria-hidden="true" />
           </Link>
+        )}
+        {action && (
+          <button type="button" className="notification__link text-body" onClick={(e) => { e.stopPropagation(); action.onClick() }}>
+            {action.label}
+          </button>
         )}
       </div>
     </Tag>

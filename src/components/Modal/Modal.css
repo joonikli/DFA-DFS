@@ -40,7 +40,7 @@
 }
 .modal__close:hover {
   color: var(--neutral-black);
-  background: var(--neutral-very-light-gray);
+  background: var(--neutral-light-gray);
 }
 
 .modal__subtitle {
