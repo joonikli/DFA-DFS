@@ -46,7 +46,7 @@ function ListItems() {
         return (
           <li key={c.id}><button className={`convo ${!M.composing && c.id === M.active ? 'on' : ''} ${c.unread ? 'unread' : ''} ${M.fresh.convo === c.id ? 'is-new' : ''}`} onClick={() => openConvo(c.id)}>
             {c.who.length > 1 ? <span className="av-stack">{c.who.slice(0, 2).map((w) => <Avatar key={w} id={w} />)}</span> : <Avatar id={c.who[0]} className="list" />}
-            <span className="convo-main"><span className="convo-top"><span className="convo-name">{convoName(c)}</span><span className="convo-time">{c.time}</span></span>
+            <span className="convo-main"><span className="convo-top"><span className="convo-name">{convoName(c)}{c.muted && <span className="convo-muted" aria-label="Muted"><Icon name="bell-off" size={12} /></span>}</span><span className="convo-time">{c.time}</span></span>
               <span className="convo-bot"><span className="convo-prev">{showDraft
                 ? <><span className="draft-tag">Draft:</span> {d.body}</>
                 : <>{lastIsEmail && <><span data-tip="Latest message went by email" style={{ display: 'inline-flex' }}><Icon name="mail" size={12} /></span> </>}{lastPreview(c)}</>}</span>

@@ -330,7 +330,7 @@ export default function VolunteerMessages() {
                         )}
                         {m.event && <EventAttachment id={m.event} />}
                         <div className="vm-msg__foot">
-                          {m.emailed && <span className="vm-via" title={`${p.first} also emailed this to maureen.lee@gmail.com`}><Mail size={12} aria-hidden="true" /> Also sent to your email</span>}
+                          {m.emailed && <span className="vm-via" title={`${p.first} also emailed this to maureen.lee@gmail.com`}><Mail size={14} aria-hidden="true" /> Also sent to your email</span>}
                           {me && m.status && <span className="vm-status">{m.status === 'seen' ? 'Seen' : 'Sent'}</span>}
                         </div>
                         <ReactBar reacts={m.reacts} mine={[]} onToggle={(e) => toggleMsgReact(m.id, e)} labelFor={(v) => v.map((w) => (w === 'me' ? 'You' : who(w).first)).join(', ')} />

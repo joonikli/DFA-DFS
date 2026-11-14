@@ -1278,7 +1278,7 @@ a { color: inherit; }
 .convo.unread .convo-time { color: var(--purple-dark); font-weight: 600; }
 .tab-badge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px; margin-left: 6px; border-radius: 8px; background: var(--purple); color: var(--white); font-size: 10px; font-weight: 600; vertical-align: 1px; line-height: 1; }
 .new-div { display: flex; align-items: center; gap: 8px; margin: 2px 0; animation: fadeIn var(--dur-pop) var(--ease-out); }
-.new-div::before { content: ''; flex: 1; height: 1px; background: var(--purple); }
+.new-div::before, .new-div::after { content: ''; flex: 1; height: 1px; background: var(--purple); }
 .new-div span { font-size: 11px; font-weight: 600; color: var(--purple-dark); background: var(--purple-lightest); padding: 2px 8px; border-radius: var(--r-pill); }
 .posts .new-div { margin: 8px 12px 2px; }
 
@@ -1774,7 +1774,7 @@ a { color: inherit; }
 .opt-check { width: 14px; flex: none; color: var(--purple-dark); padding-top: 1px; }
 /* Thread: email is a route on the message, not a separate card */
 .bubble.email .subj { display: block; font-weight: 600; margin-bottom: 3px; }
-.via { display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; margin-right: 6px; border: 1px solid var(--gray); border-radius: var(--r-pill); font-size: 11px; font-weight: 600; color: var(--darker-gray); vertical-align: middle; cursor: default; }
+.via { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; margin-right: 6px; border: 1px solid var(--gray); border-radius: 8px; background: transparent; font: 500 14px/normal var(--sans); color: var(--darker-gray); white-space: nowrap; vertical-align: middle; }
 .msg:has(+ .msg.cont) .msg-time:has(.via) { display: block; }
 .msg-re { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--darker-gray); margin-bottom: 4px; }
 /* "Sent via" filter label */
@@ -1828,3 +1828,32 @@ a { color: inherit; }
 .side-card:not(.thread) .mini-shift .d b { font: 500 20px/normal var(--sans); }
 .side-card:not(.thread) .mini-shift .t, .side-card:not(.thread) .mini-shift .s { font: 500 16px/24px var(--sans); color: var(--black); }
 @media (hover: hover) and (pointer: fine) { .side-card:not(.thread) button.mini-shift:hover { border-color: var(--purple-light); background: var(--vlight); } }
+
+/* ---------- Group conversation details (same anatomy as the profile panel) ---------- */
+.grp-avs { display: flex; justify-content: center; }
+.side-card .grp-avs .av { width: 72px; height: 72px; font-size: 22px; border: 3px solid var(--white); }
+.side-card .grp-avs .av + .av { margin-left: -20px; }
+.side-card:not(.thread) .prof-sec h4 .grp-count { font-weight: 500; color: var(--darker-gray); margin-left: 4px; }
+.grp-event { margin-top: 12px; }
+.grp-reach { font: 500 14px/normal var(--sans); color: var(--darker-gray); margin: -4px 0 12px; }
+.grp-people { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.grp-person { display: flex; align-items: center; gap: 10px; min-height: 36px; }
+.side-card .grp-person .av { width: 36px; height: 36px; font-size: 12px; flex: none; }
+.grp-person__txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.grp-person__txt b { font: 400 16px/normal var(--sans); color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.grp-person__txt small { font: 500 14px/normal var(--sans); color: var(--darker-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.grp-ch { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid var(--gray); border-radius: 8px; color: var(--darker-gray); font: 500 14px/normal var(--sans); flex: none; }
+.grp-dm { width: 30px; height: 30px; flex: none; opacity: 0; transition: opacity var(--dur-micro) ease; }
+.grp-person:hover .grp-dm, .grp-dm:focus-visible { opacity: 1; }
+@media (hover: none) { .grp-dm { opacity: 1; } }
+.grp-empty { margin: 0; padding: 4px 2px; font: 400 14px/1.4 var(--sans); color: var(--darker-gray); }
+.side-card:not(.thread) .grp-link { height: auto; min-height: 52px; color: var(--black); text-decoration: none; }
+.grp-actions { display: flex; flex-direction: column; gap: 2px; margin: 24px 16px 0; padding-top: 16px; border-top: 1px solid var(--gray); }
+.grp-actions button { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px; border-radius: 8px; font: 500 14px/normal var(--sans); color: var(--darker-gray); text-align: left; transition: background-color var(--dur-micro) ease, color var(--dur-micro) ease; }
+@media (hover: hover) and (pointer: fine) { .grp-actions button:hover { background: var(--vlight); color: var(--black); } }
+.grp-add { width: 300px; padding: 6px; }
+.grp-add-row { display: flex !important; align-items: center; gap: 10px; }
+.grp-add-row > span:not(.grp-ch) { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.grp-add-row b { font-weight: 500; font-size: 14px; }
+.grp-add-row small { font-size: 12px; color: var(--darker-gray); }
+.convo-muted { display: inline-flex; margin-left: 6px; color: var(--dark-gray); vertical-align: -1px; }

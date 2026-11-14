@@ -116,8 +116,9 @@
 .vm-msg__foot { display: flex; gap: 10px; align-items: center; }
 .vm-msg__foot:empty { display: none; }
 .vm-via {
-  display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 999px;
-  border: 1px solid var(--neutral-gray); font-size: 11.5px; font-weight: 500; color: var(--neutral-darker-gray);
+  /* Outline version of the design-system tag (Figma Tags 863:21544): 4×8 padding incl. border, 8px radius, Label 2 text */
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 8px;
+  border: 1px solid var(--neutral-gray); font: 500 14px/normal 'Inter', system-ui, sans-serif; color: var(--neutral-darker-gray); white-space: nowrap;
 }
 .vm-status { font-size: 12px; color: var(--neutral-darker-gray); }
 .vm-msg--me .vm-bubble { color: var(--neutral-black); }

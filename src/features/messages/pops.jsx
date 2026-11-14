@@ -233,13 +233,6 @@ export function AnnMoreMenu({ id }) {
     closePops(true); renderConv();
     UI.toast(M.pinned[g] ? 'Pinned to the top of this group' : 'Unpinned', { ic: 'pinned' });
   };
-  const unread = () => {
-    const g = group(M.activeGroup);
-    const n = g.anns.length - g.anns.findIndex((a) => a.id === id);
-    g.unread = n; M.newFrom = { id: g.id, n };
-    closePops(true); renderConv();
-    UI.toast(`Marked ${n} ${n === 1 ? 'announcement' : 'announcements'} as unread`, { ic: 'dot' });
-  };
   const copy = () => {
     const a = annById(id);
     navigator.clipboard?.writeText(`${a.title}\n\n${a.body}`).catch(() => {});
@@ -260,7 +253,6 @@ export function AnnMoreMenu({ id }) {
   return (
     <div className="menu" style={{ width: 160 }}>
       <button className="menu-item" onClick={pin}><Icon name="pinned" size={14} /> {pinned ? 'Unpin' : 'Pin'}</button>
-      <button className="menu-item" onClick={unread}><Icon name="dot" size={14} /> Mark unread from here</button>
       <button className="menu-item" onClick={copy}><Icon name="copy" size={14} /> Copy text</button>
       <button className="menu-item danger" onClick={remove}><Icon name="trash" size={14} /> Remove</button>
     </div>

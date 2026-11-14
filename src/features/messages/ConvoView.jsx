@@ -10,6 +10,7 @@ import { M, UI, addAttach, convoName, ensureIds, findMsg, newIndex, renderConv, 
 import { AttachInline, EventCard, MsgReacts, NewDiv, Status, ThreadPanel, toggleKeep } from './parts.jsx';
 import { MsgReactPicker } from './pops.jsx';
 import { Composer } from './Composer.jsx';
+import { GroupDetails } from './GroupDetails.jsx';
 
 // After the pane (re)builds: scroll to the bottom, or to the "New" divider if there is one
 export function useStreamInit() {
@@ -30,14 +31,6 @@ function openMsgThread(id) {
   setTimeout(() => document.getElementById('tReply')?.focus(), 50);
 }
 
-function markUnreadFrom(id) {
-  const [m, c] = findMsg(id);
-  const n = c.msgs.slice(c.msgs.indexOf(m)).filter((x) => x.type !== 'divider' && x.from !== 'me').length;
-  c.unread = n; M.newFrom = { id: c.id, n };
-  hideTip(); renderConv();
-  UI.toast(`Marked ${n} ${n === 1 ? 'message' : 'messages'} as unread`, { ic: 'dot' });
-}
-
 function MsgTools({ m, c }) {
   // Threads live only in the app: a thread on an email, or with people who only get email, would never reach them
   const emailOnly = c.who.every((w) => VOLS[w].appDays == null);
@@ -48,7 +41,6 @@ function MsgTools({ m, c }) {
     <div className="msg-tools" role="toolbar" aria-label="Message actions">
       <button className={`icon-btn plain ${M.keepBtn === `tool:${m.id}` ? 'on' : ''}`} onClick={react} data-tip={reactTip} aria-label="Add reaction"><Icon name="smile" size={16} /></button>
       {canThread && <button className="icon-btn plain" onClick={() => openMsgThread(m.id)} data-tip="Reply in thread" aria-label="Reply in thread"><Icon name="reply" size={16} /></button>}
-      {m.from !== 'me' && <button className="icon-btn plain" onClick={() => markUnreadFrom(m.id)} data-tip="Mark unread from here" aria-label="Mark unread from here"><Icon name="dot" size={16} /></button>}
     </div>
   );
 }
@@ -88,8 +80,8 @@ function MsgRow({ m, c, prev }) {
   const email = m.type === 'email';
   const repliedBefore = !me && c.msgs.slice(0, c.msgs.indexOf(m)).some((x) => x.from === 'me');
   const via = email && (me
-    ? <span className="via" data-tip={c.who.length > 1 ? `Each of the ${c.who.length} people got their own copy` : `Sent to ${VOLS[c.who[0]].email}`}><Icon name="mail" size={11} /> Sent by email</span>
-    : <span className="via" data-tip={`From ${VOLS[sender].email}`}><Icon name="mail" size={11} /> {repliedBefore ? 'Replied by email' : 'Emailed you'}</span>);
+    ? <span className="via" data-tip={c.who.length > 1 ? `Each of the ${c.who.length} people got their own copy` : `Sent to ${VOLS[c.who[0]].email}`}><Icon name="mail" size={14} /> Sent by email</span>
+    : <span className="via" data-tip={`From ${VOLS[sender].email}`}><Icon name="mail" size={14} /> {repliedBefore ? 'Replied by email' : 'Emailed you'}</span>);
   return (
     <div className={`msg ${me ? 'me' : ''} ${cont} ${fresh} ${keep}`} data-msg={m.id}>
       {!me && <Avatar id={sender} />}
@@ -99,7 +91,7 @@ function MsgRow({ m, c, prev }) {
         {email
           ? <div className="bubble email">{m.subject && <span className="subj">{m.subject}</span>}{m.text}</div>
           : m.text ? <div className="bubble">{m.text}</div> : null}{atts}
-        <div className="msg-time">{via}{m.emailCopies && <span className="via" data-tip={`${m.emailCopies.map((w) => VOLS[w].name).join(', ')} ${m.emailCopies.length === 1 ? 'hasn’t' : 'haven’t'} joined the app, so ${m.emailCopies.length === 1 ? 'they' : 'they'} got this by email`}><Icon name="mail" size={11} /> Emailed to {m.emailCopies.map((w) => VOLS[w].name.split(' ')[0]).join(', ')}</span>}<Status m={m} /></div><MsgExtras m={m} />
+        <div className="msg-time">{via}{m.emailCopies && <span className="via" data-tip={`${m.emailCopies.map((w) => VOLS[w].name).join(', ')} ${m.emailCopies.length === 1 ? 'hasn’t' : 'haven’t'} joined the app, so ${m.emailCopies.length === 1 ? 'they' : 'they'} got this by email`}><Icon name="mail" size={14} /> Emailed to {m.emailCopies.map((w) => VOLS[w].name.split(' ')[0]).join(', ')}</span>}<Status m={m} /></div><MsgExtras m={m} />
       </div>
     </div>
   );
@@ -168,18 +160,6 @@ function Profile({ id }) {
   );
 }
 
-function Members({ ids }) {
-  return (
-    <div className="side-card" style={{ padding: 16 }}>
-      <h4 style={{ margin: '0 0 12px', fontSize: 14 }}>{ids.length} people</h4>
-      {ids.map((w) => (
-        <div key={w} style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}><Avatar id={w} />
-          <div><div style={{ fontSize: 14 }}>{VOLS[w].name}</div><div className="muted" style={{ fontSize: 12 }}>{VOLS[w].role}</div></div></div>
-      ))}
-    </div>
-  );
-}
-
 export function ConvoView({ c }) {
   const [overlayOpen, setOverlayOpen] = useState(false); // ≤1280px drawer
   useStreamInit();
@@ -221,7 +201,7 @@ export function ConvoView({ c }) {
         </div>
         {thread
           ? <aside className="side force side-in" id="side" key={`t-${thread.id}`}><MsgThread c={c} m={thread} /></aside>
-          : <aside className={`side${M.sideClosed ? ' closed' : ''}${overlayOpen ? ' open' : ''}`} id="side" key="prof">{solo ? <Profile id={c.who[0]} /> : <Members ids={c.who} />}</aside>}
+          : <aside className={`side${M.sideClosed ? ' closed' : ''}${overlayOpen ? ' open' : ''}`} id="side" key="prof">{solo ? <Profile id={c.who[0]} /> : <GroupDetails c={c} />}</aside>}
       </div>
     </>
   );
