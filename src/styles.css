@@ -2043,3 +2043,15 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .list-head .sub-nav__item { padding: 6px 10px; }
 .list-head .pill-select { padding: 0 8px 0 10px; }
 .list-head .pill-select .muted-label { color: var(--primary-dark-purple); }
+/* To: row — label, chips and input share one center line (Label 2 type, like the chips) */
+.to-field { align-items: center; min-height: 72px; padding: 16px var(--gutter, 32px); gap: 12px; }
+.to-field > label { font: 500 14px/30px var(--sans); padding: 0; align-self: flex-start; margin-top: 5px; color: var(--neutral-darker-gray); }
+.to-field .to-chips { align-items: center; align-self: center; min-height: 30px; }
+.to-input { height: 30px; font: 500 14px/30px var(--sans); color: var(--neutral-black); padding: 0; }
+.to-input::placeholder { color: var(--neutral-dark-gray); }
+.to-field > .btn { align-self: center; margin-top: 0; }
+/* Keep the design-system Button variants intact over the legacy .btn base */
+.btn.btn--primary { background: var(--neutral-black); color: var(--neutral-white); border-color: transparent; }
+.btn.btn--secondary { background: var(--neutral-white); border-color: var(--primary-dark-purple); color: var(--primary-dark-purple); }
+.btn.btn--tertiary { background: rgb(96 120 241 / .2); color: var(--primary-darkest-purple); border-color: transparent; }
+@media (hover: hover) and (pointer: fine) { .btn.btn--primary:hover { background: #252425; } .btn.btn--secondary:hover { background: var(--primary-lightest-purple); } }
