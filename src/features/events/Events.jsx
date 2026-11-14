@@ -22,10 +22,32 @@ export function EventTabs({ value, onChange, items = TABS, label = 'Event status
   return <SlidingTabs value={value} onChange={onChange} items={items} label={label} panelId={panelId} className={`ae-tabs ${className}`} lineClassName="ae-tab-line" />;
 }
 
-function DateFilter({ date, onApply }) {
-  const [value, setValue] = useState(date || '');
+// Time filter: `from` / `to` are <input type="time"> values ('18:00'), compared with each event's start / end
+const NO_TIME = { from: '', to: '' };
+const timeFilterLabel = ({ from, to }) => (from && to ? `${timeLabel(from)} – ${timeLabel(to)}` : from ? `From ${timeLabel(from)}` : `Until ${timeLabel(to)}`);
+
+// Location / tag filter: OR within a group, AND across groups. Tags come from the event's tag text
+// (cards still show color placeholders); locations show their place name ('8374 Redmond Rd')
+const NO_PICKS = { places: [], tags: [] };
+const placeName = (address) => address.split(',')[0];
+const eventTags = (e) => (e.tagText || '').split(',').map((tag) => tag.trim()).filter(Boolean);
+const toggleItem = (list, value) => (list.includes(value) ? list.filter((item) => item !== value) : [...list, value]);
+
+function ChipGroup({ legend, options, value, onChange, label = (option) => option }) {
+  if (!options.length) return null;
+  return <fieldset className="ae-chip-group"><legend>{legend}</legend><div className="chips">{options.map((option) => <button type="button" key={option} className={`chip ${value.includes(option) ? 'on' : ''}`} aria-pressed={value.includes(option)} onClick={() => onChange(toggleItem(value, option))}>{label(option)}</button>)}</div></fieldset>;
+}
+
+function DateFilter({ date, time, picks, options, onApply }) {
+  const [value, setValue] = useState(date || ''), [from, setFrom] = useState(time.from), [to, setTo] = useState(time.to);
+  const [places, setPlaces] = useState(picks.places), [tags, setTags] = useState(picks.tags);
   const close = usePopClose();
-  return <form className="ae-date-filter" onSubmit={(e) => { e.preventDefault(); onApply(value); close(); }}><label>Filter by date<input className="field" aria-label="Filter by date" type="date" value={value} onChange={(e) => setValue(e.target.value)} /></label><div><button type="button" className="btn btn-outline" onClick={() => { onApply(''); close(); }}>Clear</button><button className="btn btn-dark">Apply</button></div></form>;
+  const invalid = Boolean(from && to && from >= to);
+  return <form className="ae-date-filter" onSubmit={(e) => { e.preventDefault(); if (invalid) return; onApply(value, { from, to }, { places, tags }); close(); }}>
+    <fieldset className="ae-time-range"><legend>Date &amp; time</legend><div><label>Date<input className="field" aria-label="Filter by date" type="date" value={value} onChange={(e) => setValue(e.target.value)} /></label><label>From<input className="field" type="time" value={from} onChange={(e) => setFrom(e.target.value)} aria-invalid={invalid} /></label><label>To<input className="field" type="time" value={to} onChange={(e) => setTo(e.target.value)} aria-invalid={invalid} /></label></div>{invalid && <p className="ae-form-error ae-time-error" role="alert">End time must be after start time</p>}</fieldset>
+    <ChipGroup legend="Location" options={options.places} value={places} onChange={setPlaces} label={placeName} />
+    <ChipGroup legend="Tags" options={options.tags} value={tags} onChange={setTags} />
+    <div><button type="button" className="btn btn-outline" onClick={() => { onApply('', NO_TIME, NO_PICKS); close(); }}>Clear</button><button className="btn btn-dark" disabled={invalid}>Apply</button></div></form>;
 }
 
 function Calendar({ month, onMonth, selected, onSelect, events, saved }) {
@@ -48,11 +70,12 @@ export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationC
   if (layout === 'grid') return <EventGridCard event={event} saved={saved} onSave={onSave} onEditDraft={onEditDraft} />;
   const isDraft = Boolean(onEditDraft);
   const date = event.date ? parseDate(event.date) : null;
-  return <article className={`ae-event-card ${event.id === 'reference-1' ? 'ae-card-tall' : ''}`}>
+  // Direction D "Quiet column": quiet month / day / weekday column; time moves into the icon row below the title
+  return <article className="ae-event-card">
     {isDraft ? <button className="ae-card-open" aria-label={`Continue editing ${event.title}`} onClick={onEditDraft} /> : <a className="ae-card-open" href={`#events?event=${event.id}`} aria-label={`Open ${event.title}, ${dateLabel(event.date)}`} />}
-    <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'long' }) : 'Date'}</span><b>{date ? date.getDate() : '—'}</b><small>{event.time}</small></div>
+    <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'short' }) : 'Date'}</span><b>{date ? date.getDate() : '—'}</b>{date && <small>{date.toLocaleDateString('en-US', { weekday: 'short' })}</small>}</div>
     <div className="ae-card-body"><div className="ae-card-title"><h2>{event.title}</h2><div className="ae-card-actions">{event.status !== 'Upcoming' && <span className={`ae-status ${event.status.toLowerCase()}`}>{event.status}</span>}{isDraft ? <Icon name="pen" size={16} /> : <>{showRegistrationCount && <span className="ae-registered"><EventAsset name="list-frame" />{event.registered} Registered</span>}<button className={`ae-bookmark ${saved ? 'on' : ''}`} aria-label={`${saved ? 'Unsave' : 'Save'} ${event.title}, ${dateLabel(event.date)}`} aria-pressed={saved} data-tip={saved ? 'Remove from saved' : 'Save event'} onClick={() => onSave(event)}><EventAsset name={saved ? 'list-bookmark-saved' : 'list-bookmark2'} /></button></>}</div></div>
-      <div className="ae-card-location"><span>{event.address || 'Location to be added'}</span>{event.address && <><EventAsset name="list-dot" /><span>0.5 mi from you</span></>}</div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{event.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
+      <div className="ae-card-meta">{event.time && <span className="ae-card-time"><Icon name="clock" size={16} sw={1.75} />{event.time}</span>}<span className="ae-card-location"><Icon name="pin" size={16} sw={1.75} /><span>{event.address ? `${event.address} · 0.5 mi from you` : 'Location to be added'}</span></span></div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{event.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
     </div>
   </article>;
 }
@@ -85,7 +108,11 @@ export default function Events() {
   const page = useRef(null), list = useRef(null);
   useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
   const [events, setEvents] = useEventState('events'), [saved, setSaved] = useEventState('saved');
-  const [tab, setTab] = useState('Upcoming'), [query, setQuery] = useState(''), [selected, setSelected] = useState('');
+  const [tab, setTab] = useState('Upcoming'), [query, setQuery] = useState(''), [selected, setSelected] = useState(''), [time, setTime] = useState(NO_TIME);
+  const timeOn = Boolean(time.from || time.to);
+  const [picks, setPicks] = useState(NO_PICKS);
+  const picksOn = picks.places.length + picks.tags.length > 0, filtersOn = Boolean(selected || timeOn || picksOn);
+  const clearFilters = () => { setSelected(''); setTime(NO_TIME); setPicks(NO_PICKS); };
   const [month, setMonth] = useState(parseDate('2026-05-01')), [view, setView] = useState('list');
   const [editor, setEditor] = useState(null), [drafts, setDrafts] = useEventState('drafts'), [task, setTask] = useState(null), [unread, setUnread] = useState(true);
   const [tasks, setTasks] = useState([{ id: 'survey', type: 'Survey', title: 'Check missing volunteer survey', done: false }, { id: 'grant', type: 'Grant', title: 'Confirm grant report disbursement', done: false }]);
@@ -95,7 +122,11 @@ export default function Events() {
   useEffect(() => { document.getElementById('main')?.scrollTo(0, 0); }, [active?.id]);
   const draftEvents = drafts.map((item) => ({ ...item.form, id: item.id, title: item.form.title.trim() || 'Untitled event', time: item.form.start && item.form.end ? `${timeLabel(item.form.start)}-${timeLabel(item.form.end)}`.toLowerCase() : 'Time to be added', status: 'Draft', tags: [] }));
   const tabEvents = tab === 'Drafts' ? draftEvents : events.filter((e) => tab === 'Saved' ? saved.has(e.id) : e.status === tab);
-  const visible = tabEvents.filter((e) => (!selected || selected === e.date) && `${e.title} ${e.address} ${e.description}`.toLowerCase().includes(query.trim().toLowerCase()));
+  // Events without a start / end yet (drafts) can't match a time window
+  const fitsTime = (e) => !timeOn || (Boolean(e.start && e.end) && (!time.from || e.start >= time.from) && (!time.to || e.end <= time.to));
+  const fitsPicks = (e) => (!picks.places.length || picks.places.includes(e.address)) && (!picks.tags.length || eventTags(e).some((tag) => picks.tags.includes(tag)));
+  const filterOptions = { places: [...new Set(tabEvents.map((e) => e.address).filter(Boolean))].sort(), tags: [...new Set(tabEvents.flatMap(eventTags))].sort() };
+  const visible = tabEvents.filter((e) => (!selected || selected === e.date) && fitsTime(e) && fitsPicks(e) && `${e.title} ${e.address} ${e.description}`.toLowerCase().includes(query.trim().toLowerCase()));
   const groupItems = tab === 'Upcoming' ? [['My Events', visible.filter((e) => e.group === 'mine')], ['This Month', visible.filter((e) => e.group !== 'mine')]] : [[tab === 'Drafts' ? 'Draft Events' : `${tab} Events`, visible]];
   const editDraft = (id) => {
     const item = drafts.find((entry) => entry.id === id);
@@ -107,7 +138,7 @@ export default function Events() {
     setSaved(next); toast(wasSaved ? 'Event removed from saved' : 'Event saved', { ic: 'bookmark' });
   };
   const selectDate = (date) => { hideTip(); setSelected(date); };
-  const changeTab = (next) => { pop.close(null, true); setTab(next); setSelected(''); hideTip(); };
+  const changeTab = (next) => { pop.close(null, true); setTab(next); clearFilters(); hideTip(); };
   const saveEvent = (form, draftOnly) => {
     if (draftOnly) {
       const item = { id: editor?.draftId || `draft-${crypto.randomUUID()}`, form: { ...form }, sourceEventId: editor?.event?.id };
@@ -140,9 +171,11 @@ export default function Events() {
       <header className="ae-heading"><h1>Events</h1><p>Create and manage Dress for Success’s events and to-do tasks</p></header>
       <EventTabs value={tab} onChange={changeTab} />
       <div className="ae-layout"><section className="ae-list" id="admin-events-panel" role="tabpanel" aria-label={`${tab} events`} ref={list}>
-        <div className="ae-toolbar"><label className="search ae-search"><EventAsset name="list-vector" /><input aria-label="Search events" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} /></label><button className={`ae-filter ${selected ? 'on' : ''}`} aria-haspopup="dialog" aria-label="Filter events by date" onClick={(e) => pop.toggle(e.currentTarget, <DateFilter date={selected} onApply={selectDate} />, { align: 'end' })}><EventAsset name="list-list-filter" />Date</button><div className="ae-views" role="group" aria-label="Event layout"><button aria-label="Grid view" aria-pressed={view === 'grid'} className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}><EventAsset name="list-grip" /></button><button aria-label="List view" aria-pressed={view === 'list'} className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}><EventAsset name="list-layout-list" /></button></div><button className="btn btn-dark ae-create" onClick={() => setEditor({})}>Create event<EventAsset name="list-plus" /></button></div>
-        {selected && <button className="ae-active-filter" onClick={() => selectDate('')}>{dateLabel(selected)}<Icon name="x" size={14} /><span className="sr">Clear date filter</span></button>}
-        <div className="ae-groups">{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} layout={view} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(selected || query.trim())} onClear={() => { setSelected(''); setQuery(''); }} />}</div>
+        <div className="ae-toolbar"><label className="search ae-search"><EventAsset name="list-vector" /><input aria-label="Search events" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} /></label><button className={`ae-filter ${filtersOn ? 'on' : ''}`} aria-haspopup="dialog" aria-label="Filter events by date, time, location and tags" onClick={(e) => pop.toggle(e.currentTarget, <DateFilter date={selected} time={time} picks={picks} options={filterOptions} onApply={(date, range, nextPicks) => { selectDate(date); setTime(range); setPicks(nextPicks); }} />, { align: 'end' })}><EventAsset name="list-list-filter" />Date</button><div className="ae-views" role="group" aria-label="Event layout"><button aria-label="Grid view" aria-pressed={view === 'grid'} className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}><EventAsset name="list-grip" /></button><button aria-label="List view" aria-pressed={view === 'list'} className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}><EventAsset name="list-layout-list" /></button></div><button className="btn btn-dark ae-create" onClick={() => setEditor({})}>Create event<EventAsset name="list-plus" /></button></div>
+        {filtersOn && <div className="ae-active-filters">{selected && <button className="ae-active-filter" onClick={() => selectDate('')}>{dateLabel(selected)}<Icon name="x" size={14} /><span className="sr">Clear date filter</span></button>}{timeOn && <button className="ae-active-filter" onClick={() => setTime(NO_TIME)}>{timeFilterLabel(time)}<Icon name="x" size={14} /><span className="sr">Clear time filter</span></button>}
+          {picks.places.map((address) => <button key={address} className="ae-active-filter" onClick={() => setPicks((current) => ({ ...current, places: toggleItem(current.places, address) }))}>{placeName(address)}<Icon name="x" size={14} /><span className="sr">Clear location filter</span></button>)}
+          {picks.tags.map((tag) => <button key={tag} className="ae-active-filter" onClick={() => setPicks((current) => ({ ...current, tags: toggleItem(current.tags, tag) }))}>{tag}<Icon name="x" size={14} /><span className="sr">Clear tag filter</span></button>)}</div>}
+        <div className="ae-groups">{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} layout={view} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(filtersOn || query.trim())} onClear={() => { clearFilters(); setQuery(''); }} />}</div>
       </section><aside className="ae-rail"><Calendar month={month} onMonth={(direction) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + direction, 1))} selected={selected} onSelect={selectDate} events={events} saved={saved} /><Tasks tasks={tasks} onOpen={setTask} /></aside></div>
     </div>}
     {editor && <EventEditor event={editor.event} draft={editor.form} defaultDate={selected || EVENT_TODAY} onSave={saveEvent} onClosed={() => setEditor(null)} startSurvey={editor.startSurvey} />}

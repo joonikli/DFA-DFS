@@ -5,7 +5,6 @@ import { Clock, MapPin, Users } from 'lucide-react'
 import { MONTHS, formatTimeRange } from '../../lib/dates.js'
 import Tags from '../Tags/Tags.jsx'
 import RecommendedTag from '../RecommendedTag/RecommendedTag.jsx'
-import LogisticsAtom from '../LogisticsAtom/LogisticsAtom.jsx'
 import './EventCard.css'
 
 /**
@@ -23,10 +22,11 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
       className={`event-card event-card--${layout} ${onOpen ? 'event-card--clickable' : ''}`}
       onClick={onOpen}
     >
+      {/* Direction D "Quiet column": quiet month / day / weekday; the time moves into the meta row */}
       <div className="event-card__time">
-        <p className="event-card__month text-subheading">{MONTHS[start.getMonth()]}</p>
-        <p className="event-card__day text-label-large">{start.getDate()}</p>
-        <p className="event-card__hours text-label-2">{formatTimeRange(start, end)}</p>
+        <p className="event-card__month">{MONTHS[start.getMonth()].slice(0, 3)}</p>
+        <p className="event-card__day">{start.getDate()}</p>
+        <p className="event-card__weekday">{start.toLocaleDateString('en-US', { weekday: 'short' })}</p>
       </div>
 
       <div className="event-card__divider" aria-hidden="true" />
@@ -50,7 +50,16 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
               {cta}
             </div>
           </div>
-          <LogisticsAtom items={[event.location, event.distance]} />
+          <div className="event-card__meta text-body">
+            <span className="event-card__meta-time">
+              <Clock size={16} strokeWidth={1.75} aria-hidden="true" />
+              {formatTimeRange(start, end)}
+            </span>
+            <span className="event-card__meta-loc">
+              <MapPin size={16} strokeWidth={1.75} aria-hidden="true" />
+              <span>{[event.location, event.distance].filter(Boolean).join(' · ')}</span>
+            </span>
+          </div>
         </div>
 
         <div className="event-card__bottom">

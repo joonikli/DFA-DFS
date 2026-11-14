@@ -56,7 +56,7 @@
 .ve-card-body { flex: 1; min-width: 0; padding: 12px 0 8px; }
 .ve-card-body > header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .ve-card-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.ve-card-title h2 { margin: 0; font: 600 28px/31px var(--serif); overflow-wrap: anywhere; }
+.ve-card-title h2 { margin: 0; font: 600 24px/27px var(--serif); overflow-wrap: anywhere; }
 .ve-recommend { padding: 4px 8px; border-radius: 8px; background: var(--purple-lightest); color: var(--purple-dark); font: 500 14px/17px var(--sans); }
 .ve-actions { position: relative; z-index: 2; display: flex; align-items: center; flex: 0 0 auto; gap: 8px; }
 .ve-event-card .ve-actions { pointer-events: none; }
@@ -103,9 +103,24 @@
 .ve-cards.grid .ve-card-body > header { flex-direction: column; gap: 12px; }
 .ve-cards.grid .ve-actions { width: auto; justify-content: flex-end; }
 .ve-cards.grid .ve-register, .ve-cards.grid .ve-attended { margin-left: 0; }
-.ve-filter-form { display: flex; flex-direction: column; gap: 16px; width: 280px; padding: 18px; }
+.ve-filter-form { display: flex; flex-direction: column; gap: 16px; width: min(460px, calc(100vw - 32px)); padding: 18px; }
 .ve-filter-form label { display: flex; flex-direction: column; gap: 8px; }
 .ve-filter-form > div { display: flex; justify-content: flex-end; gap: 8px; }
+/* Time range: From / To side by side under the date field */
+.ve-time-range { min-width: 0; margin: 0; padding: 0; border: 0; }
+.ve-time-range legend { padding: 0; margin-bottom: 8px; }
+/* Date / From / To on one row */
+.ve-time-range > div { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ve-time-range label { gap: 4px; color: var(--darker-gray); font-size: 13px; }
+.ve-time-range .field { width: 100%; min-width: 0; padding: 0 8px; color: var(--black); font-size: 13px; }
+.ve-filter-error { margin: 8px 0 0; color: var(--pink-dark); font-size: 13px; }
+.ve-active-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Location / tag chips: the shared .chip toggle, outlined so unselected options read as buttons */
+.ve-chip-group { min-width: 0; margin: 0; padding: 0; border: 0; }
+.ve-chip-group legend { padding: 0; margin-bottom: 8px; }
+.ve-chip-group .chips { flex-wrap: wrap; gap: 6px; }
+.ve-chip-group .chip { border: 1px solid var(--gray); }
+.ve-chip-group .chip.on { background: var(--purple-dark); border-color: var(--purple-dark); color: var(--white); }
 .ve-notifications { width: 300px; padding: 16px; }
 .ve-dialog { max-height: inherit; overflow-y: auto; width: min(740px, calc(100vw - 32px)); padding: 28px; }
 .modal-panel:has(.ve-dialog) { padding: 0; width: auto; max-width: none; max-height: calc(100vh - 32px); overflow: hidden; border-radius: 16px; }
@@ -127,7 +142,6 @@
 .ve-page.fluid .ve-card-body > header { flex-wrap: wrap; }
 .ve-page.fluid .ve-card-date { flex-basis: 80px; padding-right: 16px; }
 .ve-page.fluid .ve-card-date > b { font-size: 48px; }
-.ve-page.fluid .ve-card-title h2 { font-size: 25px; line-height: 28px; }
 .ve-page.fluid .ve-event-card { gap: 16px; padding: 16px; }
 .ve-page.fluid .ve-card-location { font-size: 14px; }
 .ve-page.fluid .ve-cards.grid { grid-template-columns: minmax(0, 1fr); }
@@ -164,3 +178,65 @@
   .ve-tabs > button:not(.on):hover { color: var(--black); }
 }
 @media (prefers-reduced-motion: reduce) { .ve-tab-line, .ve-tabs > button { transition: none; } .ve-bars > div { animation: none; transition: none; } }
+
+/* ---- List card: Direction D "Quiet column" (EventCardD). Grid view keeps the .ve-card-* card above. ---- */
+.ve-event-card.ve-d { gap: 24px; min-height: 0; padding: 18px 20px 18px 24px; }
+.ve-d-date { display: flex; flex: 0 0 64px; flex-direction: column; align-items: center; justify-content: center; padding-right: 24px; border-right: 1px solid var(--gray); box-sizing: content-box; }
+.ve-d-date > span { color: var(--darker-gray); font: 600 13px/16px var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.ve-d-date > b { font: 400 44px/1.1 var(--sans); }
+.ve-d-date > small { color: var(--darker-gray); font: 500 13px/16px var(--sans); }
+.ve-d-body { display: flex; flex: 1; flex-direction: column; gap: 10px; min-width: 0; padding: 4px 0; }
+.ve-d-body > header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.ve-d .ve-card-title { padding-top: 4px; }
+.ve-d-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: -4px; font: 400 15px/19px var(--sans); }
+.ve-d-meta > span { display: inline-flex; align-items: flex-start; gap: 6px; min-width: 0; }
+.ve-d-meta .ic { flex-shrink: 0; margin-top: 1px; }
+.ve-d-time { color: var(--black); font-weight: 500; white-space: nowrap; }
+.ve-d-loc { color: var(--darker-gray); overflow-wrap: anywhere; }
+.ve-d-body > p { display: -webkit-box; max-width: 640px; margin: 0; overflow: hidden; color: var(--darker-gray); font: 400 15px/19px var(--sans); -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.ve-page.fluid .ve-event-card.ve-d { gap: 16px; padding: 16px; }
+.ve-page.fluid .ve-d-date { flex-basis: 52px; padding-right: 16px; }
+.ve-page.fluid .ve-d-date > b { font-size: 38px; }
+.ve-page.fluid .ve-d-body > header { flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .ve-page.fluid .ve-d-date { flex: 0 0 auto; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; padding: 0 0 12px; border-right: 0; border-bottom: 1px solid var(--gray); }
+  .ve-page.fluid .ve-d-date > b { font-size: 28px; }
+  .ve-d-body > header { flex-direction: column; }
+  .ve-d-body > header > .ve-actions { width: 100%; }
+}
+
+/* ---- TEST ONLY: Direction E "Tinted date panel" card. Delete this block with EventCardE. ---- */
+.ve-event-card.ve-e { gap: 22px; min-height: 0; padding: 10px 20px 10px 10px; }
+.ve-e-date { --tint: var(--purple-lightest); --tint-ink: var(--purple-dark);
+  display: flex; flex: 0 0 104px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 14px 8px; border-radius: 12px; background: var(--tint); transition: background-color var(--dur-micro) ease; }
+.ve-e--registered .ve-e-date { --tint: #daf9df; --tint-ink: var(--green-dark); }
+.ve-e--past .ve-e-date { --tint: var(--light-gray); --tint-ink: var(--darker-gray); }
+.ve-e-date > span { color: var(--tint-ink); font: 600 13px/16px var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.ve-e-date > b { font: 400 44px/1.05 var(--sans); }
+.ve-e-date > small { margin-top: 4px; padding: 3px 8px; border-radius: 48px; background: var(--white); color: var(--black); font: 500 13px/16px var(--sans); text-align: center; }
+.ve-e-body { display: flex; flex: 1; flex-direction: column; gap: 10px; min-width: 0; padding: 10px 0 8px; }
+.ve-e-body > header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.ve-e .ve-card-title { padding-top: 4px; }
+.ve-e-loc { display: flex; align-items: flex-start; gap: 6px; margin-top: -4px; color: var(--darker-gray); font: 400 15px/19px var(--sans); overflow-wrap: anywhere; }
+.ve-e-loc .ic { flex-shrink: 0; margin-top: 1px; }
+.ve-e-body > p { display: -webkit-box; max-width: 640px; margin: 0; overflow: hidden; color: var(--darker-gray); font: 400 15px/19px var(--sans); -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.ve-page.fluid .ve-event-card.ve-e { gap: 16px; padding: 8px 16px 8px 8px; }
+.ve-page.fluid .ve-e-date { flex-basis: 84px; }
+.ve-page.fluid .ve-e-date > b { font-size: 38px; }
+.ve-page.fluid .ve-e-body > header { flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .ve-page.fluid .ve-event-card.ve-e { padding: 8px 8px 16px; }
+  .ve-page.fluid .ve-e-date { flex: 0 0 auto; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; padding: 10px 12px; }
+  .ve-page.fluid .ve-e-date > b { font-size: 28px; }
+  .ve-page.fluid .ve-e-date > small { margin: 0 0 0 auto; }
+  .ve-page.fluid .ve-e-body { padding: 0 8px; }
+  .ve-e-body > header { flex-direction: column; }
+  .ve-e-body > header > .ve-actions { width: 100%; }
+}
+
+/* ---- TEST ONLY: floating D / E card switch on #events-d. ---- */
+.ve-test-switch { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--gray); border-radius: 48px; background: var(--white); box-shadow: var(--shadow-pop); }
+.ve-test-switch > span { padding: 0 8px 0 10px; color: var(--darker-gray); font: 500 13px/16px var(--sans); }
+.ve-test-switch > button { height: 32px; padding: 0 14px; border-radius: 48px; color: var(--darker-gray); font: 500 14px/17px var(--sans); white-space: nowrap; transition: background-color var(--dur-micro) ease, color var(--dur-micro) ease; }
+.ve-test-switch > button.on { background: var(--black); color: var(--white); }
+@media (hover: hover) and (pointer: fine) { .ve-test-switch > button:not(.on):hover { background: var(--purple-lightest); color: var(--purple-dark); } }

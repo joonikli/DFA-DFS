@@ -11,7 +11,7 @@
 .ve-event-contact { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--gray); }
 .ve-event-contact p { margin: 16px 0; font: 400 16px/24px var(--sans); color: var(--darker-gray); }
 .ve-event-contact > a { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; }
-.ve-event-not-found h1 { font: 600 36px/40px var(--serif); }
+.ve-event-not-found h1 { font: 600 28px/31px var(--serif); }
 .ve-event-not-found p { margin: 24px 0; }
 /* Keep registration prominent on mobile; logistics remain in Event Details. */
 .ve-page.fluid .ve-detail .ae-detail-content { display: contents; }

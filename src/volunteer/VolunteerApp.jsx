@@ -153,7 +153,9 @@ function Portal() {
   useGlobalTooltips();
   const toast = useToast();
   const { route, params } = useRoute();
-  const active = ['events', 'profile', 'logged-out'].includes(route) ? route : 'dashboard';
+  // 'events-d' = TEST copy of Events with a D / E card switch ('events-e' opens it on E). Not linked in the nav.
+  const TEST_CARDS = { 'events-d': 'd', 'events-e': 'e' };
+  const active = ['events', 'profile', 'logged-out', ...Object.keys(TEST_CARDS)].includes(route) ? route : 'dashboard';
   const [registered, setRegistered] = useState(() => new Set(vol.upcoming));
   const [saved, setSaved] = useState(() => new Set());
   useEffect(() => {
@@ -170,9 +172,10 @@ function Portal() {
   return (
     <div className="route-enter">
       <RegistrationProvider {...{ registered, setRegistered }}>
-      {active === 'logged-out' ? <div className="vop-exit"><section aria-labelledby="prototype-exit-title"><h1 id="prototype-exit-title">You’ve left the volunteer prototype</h1><p>This is a prototype-only exit. No authentication service is connected, so this does not sign out a real account. Changes are local to this preview and aren’t saved to an account.</p><button className="btn btn-dark" onClick={() => navigate('dashboard')}>Return to volunteer prototype</button></section></div> : <Shell route={active} nav={VOL_NAV} routes={['dashboard', 'events']} switchTo={{ href: MANAGER_URL, label: 'Manager view' }} onNav={onNav} showBadges={false}>
+      {active === 'logged-out' ? <div className="vop-exit"><section aria-labelledby="prototype-exit-title"><h1 id="prototype-exit-title">You’ve left the volunteer prototype</h1><p>This is a prototype-only exit. No authentication service is connected, so this does not sign out a real account. Changes are local to this preview and aren’t saved to an account.</p><button className="btn btn-dark" onClick={() => navigate('dashboard')}>Return to volunteer prototype</button></section></div> : <Shell route={TEST_CARDS[active] ? 'events' : active} nav={VOL_NAV} routes={['dashboard', 'events']} switchTo={{ href: MANAGER_URL, label: 'Manager view' }} onNav={onNav} showBadges={false}>
         <div hidden={active !== 'dashboard'}><Dashboard {...{ registered, setRegistered, saved, setSaved }} /></div>
         {active === 'events' && <VolunteerEvents {...{ registered, setRegistered, saved, setSaved }} eventId={params.get('id')} />}
+        {TEST_CARDS[active] && <VolunteerEvents key={active} {...{ registered, setRegistered, saved, setSaved }} eventId={params.get('id')} route={active} cardStyle={TEST_CARDS[active]} />}
         {active === 'profile' && <VolunteerProfile {...{ registered, setRegistered, saved, setSaved }} />}
       </Shell>}
       </RegistrationProvider>

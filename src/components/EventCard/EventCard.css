@@ -20,22 +20,68 @@
   cursor: pointer;
 }
 
+/* ---- List card: Direction D "Quiet column" ----
+   Values match the volunteer/manager card (.ve-d / .ae-card-*) 1:1. Those apps zoom their
+   1488px-wide pages to fit the window (~0.8 on a laptop); this app renders at 100%, so the
+   list card is zoomed to match — type, spacing and buttons alike. 0.88 = the ~0.8 match + 10%. */
+.event-card--list {
+  align-items: stretch;
+  gap: 24px;
+  padding: 18px 20px 18px 24px;
+  zoom: 0.88;
+}
+
 .event-card__time {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 85px;
+  justify-content: center;
+  width: 64px;
   flex-shrink: 0;
-  padding: 12px 0;
   text-align: center;
 }
-.event-card__month,
+.event-card__month {
+  color: var(--neutral-darker-gray);
+  font: 600 13px/16px 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .event-card__day {
   color: var(--neutral-black);
+  font: 400 44px/1.1 'Inter', system-ui, sans-serif;
 }
-.event-card__hours {
+.event-card__weekday {
   color: var(--neutral-darker-gray);
+  font: 500 13px/16px 'Inter', system-ui, sans-serif;
+}
+
+/* time · location row (replaces the Logistics_atom line); .event-card prefix outranks .text-body */
+.event-card .event-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 15px;
+  line-height: 19px;
+}
+.event-card__meta > span {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.event-card__meta svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.event-card__meta-time {
+  color: var(--neutral-black);
+  font-weight: 500;
   white-space: nowrap;
+}
+.event-card__meta-loc {
+  color: var(--neutral-darker-gray);
+  overflow-wrap: anywhere;
 }
 
 .event-card__divider {
@@ -48,21 +94,25 @@
 .event-card__content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
-  padding: 12px 0 8px;
+  padding: 4px 0;
 }
 
 .event-card__header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+}
+.event-card__title {
+  padding-top: 4px;
 }
 
 .event-card__top {
   display: flex;
-  align-items: flex-end;
+  /* title sits at the top of the row; the taller CTA no longer pushes it down */
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   min-height: 27px;
@@ -92,6 +142,8 @@
   .event-card__flag { animation: none; }
 }
 .event-card__title h3 {
+  /* card title size */
+  font-size: 24px;
   color: var(--neutral-black);
   white-space: nowrap;
   overflow: hidden;
@@ -129,6 +181,15 @@
   max-width: 471px;
   color: var(--neutral-darker-gray);
 }
+.event-card--list .event-card__desc {
+  display: -webkit-box;
+  max-width: 640px;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 19px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 
 .event-card__tags {
   display: flex;
@@ -157,6 +218,10 @@
 .event-card__grid-title {
   color: var(--neutral-black);
   overflow-wrap: anywhere;
+}
+/* card title size; the extra class outranks .text-heading-2 */
+.event-card .event-card__grid-title {
+  font-size: 24px;
 }
 .event-card__grid-badges {
   display: flex;

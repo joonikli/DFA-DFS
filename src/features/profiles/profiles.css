@@ -43,7 +43,7 @@
 .ap-events-panel { padding-top: 25px; }
 .ap-events-panel > header { display: flex; align-items: center; justify-content: space-between; min-height: 23px; padding: 2px 8px; margin-bottom: 8px; font: 400 16px/19px var(--sans); color: var(--darker-gray); }
 .ap-page .ae-event-card { border-radius: 18px; box-shadow: 0 2px 3px rgba(239, 242, 245, .8); }
-.ap-page .ae-card-tall { min-height: 208px; }
+/* .ae-card-tall removed: the Direction D list card has no fixed height */
 .ap-contact > h2 { margin-bottom: 20px; }
 .ap-contact dl { display: flex; flex-direction: column; gap: 15px; margin: 0; }
 .ap-contact dl > div { display: flex; align-items: center; gap: 21px; min-height: 24px; }

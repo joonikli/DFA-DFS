@@ -2,11 +2,19 @@
    shell's 41px top / 40px bottom padding), so the header, tabs and search
    never move: only the event list (and, on short screens, the right column)
    scroll inside it. */
+/* The page is zoomed to 0.88 so it sits at the same scale as the Direction D list cards
+   (EventCard.css). Viewport-based height and max-width are divided by the zoom so the page
+   still fills the same on-screen area; cards inside reset their own zoom (no double-shrink). */
 .volunteer-events {
+  --page-zoom: 0.88;
+  zoom: var(--page-zoom);
   display: flex;
   flex-direction: column;
-  max-width: 1380px;
-  height: max(480px, calc(100vh - 68px - 41px - 40px));
+  max-width: calc(1380px / var(--page-zoom));
+  height: calc(max(480px, calc(100vh - 68px - 41px - 40px)) / var(--page-zoom));
+}
+.volunteer-events .event-card--list {
+  zoom: 1;
 }
 
 .volunteer-events__list {
