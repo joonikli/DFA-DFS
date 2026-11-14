@@ -20,9 +20,9 @@ function Chips() {
   return (
     <>
       {list.slice(0, collapsed ? 4 : list.length).map((r, i) => {
-        if (r.kind === 'group') return <span className="to-chip" key={`g-${r.id}`}><Icon name="users" size={14} /> {group(r.id).name} <button onClick={() => remove(i)} aria-label="Remove"><Icon name="x" size={12} /></button></span>;
+        if (r.kind === 'group') return <span className="to-chip" key={`g-${r.id}`}><Icon name="users" size={14} /> {group(r.id).name} <button onClick={() => remove(i)} aria-label={`Remove ${group(r.id).name}`}><Icon name="x" size={15} sw={1.75} /></button></span>;
         const v = VOLS[r.id];
-        return <span className="to-chip" key={`v-${r.id}`}>{v.name}{M.channel === 'email' && <> <span className="em">({v.email})</span></>} <button onClick={() => remove(i)} aria-label={`Remove ${v.name}`}><Icon name="x" size={12} /></button></span>;
+        return <span className="to-chip" key={`v-${r.id}`}><Avatar id={r.id} />{v.name}{M.channel === 'email' && <> <span className="em">({v.email})</span></>} <button onClick={() => remove(i)} aria-label={`Remove ${v.name}`}><Icon name="x" size={15} sw={1.75} /></button></span>;
       })}
       {collapsed && <button className="to-chip more" onClick={() => { M.rcptsOpen = true; rerender(); }}>+{list.length - 4} more</button>}
       {list.length > 1 && <span className="to-count">{list.length} recipients</span>}
