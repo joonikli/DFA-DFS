@@ -1,0 +1,39 @@
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 18px 30px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 12px;
+}
+
+.stat-tile__label {
+  color: var(--neutral-darker-gray);
+}
+
+.stat-tile__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-tile__value {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  color: var(--neutral-black);
+}
+
+.stat-tile__unit {
+  padding: 4px 0;
+  color: var(--neutral-darker-gray);
+}
+
+.stat-tile__delta--up {
+  color: var(--green-dark-green);
+}
+.stat-tile__delta--down {
+  color: var(--red-dark-red);
+}

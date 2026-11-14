@@ -1,41 +1,71 @@
-// Manager app (Bridget): Dashboard · Messages · Report composer
-import { PopProvider, ToastProvider, LiveRegion, useGlobalTooltips } from './components/ui.jsx';
-import { Shell } from './components/Shell.jsx';
-import { useRoute } from './lib/router.js';
-import Dashboard from './features/dashboard/Dashboard.jsx';
-import Messages from './features/messages/Messages.jsx';
-import Report from './features/report/Report.jsx';
-import Events from './features/events/Events.jsx';
-import Profiles from './features/profiles/Profiles.jsx';
-import Surveys from './features/surveys/Surveys.jsx';
-import Grants from './features/grants/Grants.jsx';
-import GrantReport from './features/grants/GrantReport.jsx';
+import { Navigate, Route, Routes } from 'react-router-dom'
+import AppShell from './layout/AppShell.jsx'
+import Placeholder from './pages/Placeholder.jsx'
+import VolunteerEvents from './pages/volunteer/VolunteerEvents.jsx'
+import VolunteerDashboard from './pages/volunteer/VolunteerDashboard.jsx'
+import AdminEvents from './pages/admin/AdminEvents.jsx'
+import AdminEventDetail from './pages/admin/AdminEventDetail.jsx'
+import SurveysHome from './pages/admin/SurveysHome.jsx'
+import SurveyDetail from './pages/admin/SurveyDetail.jsx'
+import VolunteerSurveys from './pages/volunteer/VolunteerSurveys.jsx'
+import VolunteerMessages from './pages/volunteer/VolunteerMessages.jsx'
+import Grants from './pages/admin/Grants.jsx'
+import GenerateReports from './pages/admin/GenerateReports.jsx'
+import { EventFlowsProvider } from './features/events/EventFlows.jsx'
+import ReportComposer from './pages/admin/ReportComposer.jsx'
+import Profile from './pages/Profile.jsx'
+import AdminDashboardPlaceholder from './pages/admin/AdminDashboardPlaceholder.jsx'
+import { useDemo } from './store/DemoStore.jsx'
 
-function Routes() {
-  useGlobalTooltips();
-  const { route, params } = useRoute();
-  if (route === 'grant-report') return <div className="route-enter" key="grant-report"><GrantReport params={params} /></div>;
-  if (route === 'report') return <div className="route-enter" key="report"><Report params={params} /></div>;
-  if (route === 'events') return <div className="route-enter" key="events"><Shell route="events" routes={['dashboard', 'events', 'surveys', 'grants', 'messages']}><Events /></Shell></div>;
-  if (route === 'surveys') return <div className="route-enter" key="surveys"><Shell route="surveys" routes={['dashboard', 'events', 'surveys', 'grants', 'messages']}><Surveys /></Shell></div>;
-  if (route === 'grants') return <div className="route-enter" key="grants"><Shell route="grants" routes={['dashboard', 'events', 'surveys', 'grants', 'messages']}><Grants /></Shell></div>;
-  if (route === 'profile') return <div className="route-enter" key="profile"><Shell route="profile"><Profiles key={`${params.get('type')}/${params.get('id')}`} params={params} /></Shell></div>;
-  return (
-    <div className="route-enter" key={route}>
-      <Shell route={route === 'messages' ? 'messages' : 'dashboard'}>
-        {route === 'messages' ? <Messages /> : <Dashboard />}
-      </Shell>
-    </div>
-  );
+// Each route renders the admin or volunteer version of a screen based on the
+// role chosen in the avatar menu (top right).
+function ByRole({ admin, volunteer }) {
+  const { role } = useDemo()
+  return role === 'admin' ? admin : volunteer
 }
+
 
 export default function App() {
   return (
-    <ToastProvider>
-      <PopProvider>
-        <Routes />
-        <LiveRegion />
-      </PopProvider>
-    </ToastProvider>
-  );
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<ByRole admin={<AdminDashboardPlaceholder />} volunteer={<VolunteerDashboard />} />} />
+        <Route path="events" element={<ByRole admin={<AdminEvents />} volunteer={<VolunteerEvents />} />} />
+        <Route path="events/:id" element={<ByRole admin={<AdminEventDetail />} volunteer={<Navigate to="/events" replace />} />} />
+        <Route path="surveys" element={<ByRole admin={<SurveysHome />} volunteer={<VolunteerSurveys />} />} />
+        <Route path="surveys/:id" element={<ByRole admin={<SurveyDetail />} volunteer={<Navigate to="/surveys" replace />} />} />
+        <Route
+          path="grants"
+          element={
+            <ByRole
+              admin={<Grants />}
+              volunteer={<Placeholder title="Grants" note="Grants are managed by Dress for Success staff. Switch to the admin view (avatar menu) to see them." />}
+            />
+          }
+        />
+        <Route path="profile" element={<Profile />} />
+        <Route path="volunteers/:id" element={<ByRole admin={<Profile />} volunteer={<Navigate to="/profile" replace />} />} />
+        <Route path="messages" element={<ByRole admin={<Placeholder title="Messages" note="Not in the Figma designs yet." />} volunteer={<VolunteerMessages />} />} />
+        <Route path="settings" element={<Placeholder title="Settings" note="Not in the Figma designs yet." />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+      {/* Full-screen document workspace — no sidebar in the Figma frames */}
+      <Route
+        path="grants/reports"
+        element={
+          <EventFlowsProvider>
+            <ByRole admin={<GenerateReports />} volunteer={<Navigate to="/" replace />} />
+          </EventFlowsProvider>
+        }
+      />
+      <Route
+        path="reports/new"
+        element={
+          <EventFlowsProvider>
+            <ByRole admin={<ReportComposer />} volunteer={<Navigate to="/" replace />} />
+          </EventFlowsProvider>
+        }
+      />
+    </Routes>
+  )
 }

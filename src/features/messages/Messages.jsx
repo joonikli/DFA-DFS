@@ -7,11 +7,10 @@ import { takeIntent } from '../../lib/bridge.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import { Segmented, usePop, useToast } from '../../components/ui.jsx';
 import {
-  M, UI, CH_LABEL, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel, annRule,
+  M, UI, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel,
   markCurrentRead, rerender, scrollBehavior, startShiftCompose, unreadIn,
 } from './state.js';
 import { compose, openConvo, openGroup, setTab } from './actions.js';
-import { ChannelFilterMenu } from './pops.jsx';
 import { ConvoView } from './ConvoView.jsx';
 import { GroupView } from './GroupView.jsx';
 import { ComposeView } from './ComposeView.jsx';
@@ -37,27 +36,27 @@ function ListItems() {
   const q = M.q.toLowerCase();
   let items;
   if (M.tab === 'message') {
-    const chOk = (c) => M.channelFilter === 'all' || c.msgs.some((m) => m.type !== 'divider' && (m.type === 'email') === (M.channelFilter === 'email'));
+    const chOk = (c) => M.filter !== 'email' || c.channel === 'email';
     items = CONVOS.filter((c) => (M.filter !== 'unread' || c.unread || (!M.composing && c.id === M.active)) && (M.filter !== 'direct' || c.who.length === 1) && chOk(c))
       .filter((c) => !q || convoName(c).toLowerCase().includes(q) || lastPreview(c).toLowerCase().includes(q))
       .map((c) => {
         const d = M.drafts[c.id];
         const showDraft = c.id !== M.active && (d?.body || '').trim();
-        const lastIsEmail = [...c.msgs].reverse().find((m) => m.type !== 'divider')?.type === 'email';
+        const lastIsEmail = c.channel === 'email';
         return (
           <li key={c.id}><button className={`convo ${!M.composing && c.id === M.active ? 'on' : ''} ${c.unread ? 'unread' : ''} ${M.fresh.convo === c.id ? 'is-new' : ''}`} onClick={() => openConvo(c.id)}>
             {c.who.length > 1 ? <span className="av-stack">{c.who.slice(0, 2).map((w) => <Avatar key={w} id={w} />)}</span> : <Avatar id={c.who[0]} className="list" />}
-            <span className="convo-main"><span className="convo-top"><span className="convo-name">{convoName(c)}</span><span className="convo-time">{c.time}</span></span>
+            <span className="convo-main"><span className="convo-top"><span className="convo-name">{convoName(c)}{c.muted && <span className="convo-muted" aria-label="Muted"><Icon name="bell-off" size={12} /></span>}</span><span className="convo-time">{c.time}</span></span>
               <span className="convo-bot"><span className="convo-prev">{showDraft
                 ? <><span className="draft-tag">Draft:</span> {d.body}</>
-                : <>{lastIsEmail && <><Icon name="mail" size={12} /> </>}{lastPreview(c)}</>}</span>
+                : <>{lastIsEmail && <><span data-tip="Latest message went by email" style={{ display: 'inline-flex' }}><Icon name="mail" size={12} /></span> </>}{lastPreview(c)}</>}</span>
               {c.unread ? <span className="badge">{c.unread}</span> : null}</span></span>
           </button></li>
         );
       });
   } else {
     if (M.filter === 'direct') return <li className="empty-list">Announcements always go to a group.<br />Switch to <b>Message</b> for direct conversations.</li>;
-    items = GROUPS.filter((g) => (M.filter !== 'unread' || g.unread || (!M.composing && g.id === M.activeGroup)) && (M.channelFilter !== 'email' || g.anns.some((a) => annRule(a) !== 'off')))
+    items = GROUPS.filter((g) => (M.filter !== 'unread' || g.unread || (!M.composing && g.id === M.activeGroup)))
       .filter((g) => !q || g.name.toLowerCase().includes(q))
       .map((g) => {
         const last = g.anns[g.anns.length - 1];
@@ -122,7 +121,9 @@ export default function Messages() {
   // Leaving #messages: the To: input is gone, so forget the dropdown handle
   useEffect(() => () => { M.rcptPop = null; }, []);
 
-  const filters = ['all', 'unread', 'direct'];
+  // One row of chips; "Email" = conversations whose latest message went by email
+  const filters = M.tab === 'message' ? ['all', 'unread', 'direct', 'email'] : ['all', 'unread'];
+  const FILTER_TIP = { email: 'Conversations whose latest message went by email' };
   return (
     <div className="msgs">
       <section className="list-col">
@@ -131,8 +132,7 @@ export default function Messages() {
           <Segmented id="tabSeg" value={M.tab} onChange={setTab} options={[{ v: 'message', label: <TabLabel tab="message" /> }, { v: 'announcement', label: <TabLabel tab="announcement" /> }]} />
           <label className="search"><Icon name="search" size={16} /><input id="q" placeholder="Search" value={M.q} autoComplete="off" onChange={(e) => { M.q = e.target.value; rerender(); }} /></label>
           <div className="filters">
-            <div className="chips">{filters.map((f) => <button key={f} className={`chip ${M.filter === f ? 'on' : ''}`} onClick={() => { M.filter = f; rerender(); }}>{f[0].toUpperCase() + f.slice(1)}</button>)}</div>
-            <button className="pill-select" id="channelBtn" onClick={(e) => UI.pop.toggle(e.currentTarget, <ChannelFilterMenu />, { align: 'end' })} aria-expanded="false" aria-haspopup="menu"><span className="muted-label">Sent via:</span> {CH_LABEL[M.channelFilter]} <Icon name="chev" size={14} /></button>
+            <div className="chips">{filters.map((f) => <button key={f} className={`chip ${M.filter === f ? 'on' : ''}`} data-tip={FILTER_TIP[f]} onClick={() => { M.filter = f; rerender(); }}>{f[0].toUpperCase() + f.slice(1)}</button>)}</div>
           </div>
         </div>
         <ul className="convos" id="convList"><ListItems /></ul>

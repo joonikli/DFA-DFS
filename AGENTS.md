@@ -2,6 +2,9 @@
 
 Prioritize accuracy and faithful execution over speed.
 
+Figma file to reference: https://www.figma.com/design/jIXKjfx96sNdtcKZgMBeI6/Dress-for-Success-Redesign?node-id=781-12667
+
+
 Before changing anything:
 1. Inspect the relevant existing files, screens, components, and prior work.
 2. Explain your understanding of the intended result in 2 to 4 concise bullets.

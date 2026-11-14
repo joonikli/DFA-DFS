@@ -259,7 +259,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="acts" ref={headActs}>
-            <button className="btn btn-outline" data-customize="" onClick={customize}><Icon name="sliders" size={16} /> Edit dashboard</button>
+            <button className="btn btn-outline" data-customize="" onClick={customize}>Customize</button>
             <button className="btn btn-dark" aria-haspopup="dialog" onClick={openGen}>Generate report</button>
           </div>
         )}

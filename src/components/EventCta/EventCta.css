@@ -1,0 +1,9 @@
+/* Event-card actions. Hover colours now come from the library (Saved → purple tint,
+   selected/Register → dark purple, press → darkest purple), so only the press scale lives here. */
+.event-cta .saved {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
+}
+.event-cta .saved:active,
+.event-cta .btn:not(:disabled):active {
+  transform: scale(0.97);
+}

@@ -63,7 +63,7 @@ export const CONVOS = [
     { from: 'me', text: 'Yes please! They have ~40 suits boxed at the front desk.', time: '9:31' },
     { from: 'them', text: 'Perfect, I’ll swing by at 5 and bring them to Redmond Rd.', time: '9:33' },
   ]},
-  { id: 'c4', who: ['priya', 'tasha'], unread: 3, time: '3 hr ago', channel: 'inapp', name: 'Holiday Suit Drive leads', msgs: [
+  { id: 'c4', who: ['priya', 'tasha'], unread: 3, time: '3 hr ago', channel: 'inapp', name: 'Holiday Suit Drive leads', about: 'Planning the drop-off line for the Holiday Suit Drive: steamers, signs and sizing.', event: 'hs19', created: 'Nov 28', msgs: [
     { from: 'priya', text: 'Do we have enough steamers for the 19th? Last year we had a line.', time: '8:02', replies: [
       { who: 'tasha', when: '8:20', text: 'Checked the supply closet — we have three. I’ll bring two more from home.' },
       { who: 'me', when: '8:31', text: 'Perfect. I’ll pick up the closet ones from Redmond Rd on Friday.' },

@@ -1,7 +1,7 @@
 /* Final / Profiles. Shared event controls, fonts and modal primitives are reused. */
 .ap-page { color: var(--black); }
 .ap-asset { display: block; object-fit: contain; flex-shrink: 0; }
-.ap-top-nav.top-nav { margin: 0; height: 73px; padding: 16px 56px; gap: 24px; }
+.ap-top-nav.top-nav { margin: 0; height: 68px; padding: 16px 56px; gap: 24px; }
 .ap-cover { height: 197px; background: var(--purple-light); }
 .ap-masthead { position: relative; height: 142px; }
 .ap-portrait { position: absolute; top: -100px; left: 52px; width: 200px; height: 200px; border-radius: 50%; overflow: hidden; background: var(--placeholder); }
@@ -10,7 +10,7 @@
 .ap-photo-edit { position: absolute; left: 210px; top: 57px; display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--white); border-radius: 20px; background: var(--purple); }
 .ap-joined { position: absolute; top: 23px; right: 58px; display: flex; gap: 35px; font: 600 16px/19px var(--sans); color: var(--dark-gray); }
 .ap-own-admin .ap-joined { top: 30px; right: 91px; gap: 24px; font-weight: 400; }
-.ap-content { margin: 0 46px 70px 52px; }
+.ap-content { margin: 0 46px 40px 52px; }
 .ap-own-admin .ap-content { margin-left: 78px; margin-right: 91px; }
 .ap-columns { display: grid; grid-template-columns: 849px 371px; gap: 170px; align-items: start; }
 .ap-own-admin .ap-columns { grid-template-columns: 849px 300px; }
@@ -95,14 +95,14 @@
 .ae-roster-profile { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; }
 .ae-roster-profile > .av { width: 36px; height: 36px; }
 @media (hover: hover) and (pointer: fine) {
-  .ap-contact dd a:hover, .ae-roster-person a:hover { color: var(--purple-dark); text-decoration: underline; }
-  .ap-notes-edit:hover { background: var(--vlight); border-radius: 4px; }
+  .ap-contact dd a:hover, .ae-roster-person a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .ap-notes-edit:hover { background: var(--light-gray); border-radius: 4px; }
 }
 .ap-page.fluid .ap-masthead { height: 182px; }
 .ap-page.fluid .ap-portrait { left: 24px; }
 .ap-page.fluid .ap-photo-edit { left: 182px; }
 .ap-page.fluid .ap-joined { top: 120px; left: 24px; right: auto; gap: 12px; font-size: 14px; }
-.ap-page.fluid .ap-content { margin: 0 24px 60px; }
+.ap-page.fluid .ap-content { margin: 0 24px 40px; }
 .ap-page.fluid .ap-columns { grid-template-columns: minmax(0, 1fr); gap: 48px; }
 .ap-page.fluid .ap-identity-row { flex-wrap: wrap; }
 .ap-page.fluid .ap-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }

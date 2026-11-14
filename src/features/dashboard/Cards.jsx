@@ -77,7 +77,7 @@ function ExecCard() {
   return (
     <section className="exec" data-card="exec">
       <div className="top"><h2 className="h2" style={{ color: '#fff' }}>Executive summary</h2>
-        <button className="btn-select on-dark" aria-haspopup="menu" onClick={openMenu}>{PERIOD_LABEL[D.execPeriod]} <Icon name="plus" size={16} /></button></div>
+        <button className="btn-select on-dark" aria-haspopup="menu" onClick={openMenu}>{PERIOD_LABEL[D.execPeriod]} <Icon name="chev" size={16} /></button></div>
       <p id="execText" ref={textRef}>{EXEC[shown]}</p>
       <button className="link" aria-expanded={D.execOpen} aria-controls="execMore" onClick={() => { D.execOpen = !D.execOpen; bump(); }}>View recommended action items <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.execOpen ? 'open' : ''}`} id="execMore"><div><ul className="actions-list">
@@ -131,7 +131,7 @@ function ChartCard() {
   return (
     <section className="card chart-card" data-card="chart">
       <div className="chart-head"><div><h2 className="h2">Average hours over time</h2><div className="trend" id="chartNote"><Icon name="trend" size={14} /> {h.note}</div></div>
-        <button className="btn-select" aria-haspopup="menu" onClick={openMenu}>{RANGE_LABEL[D.range]} <Icon name="plus" size={16} /></button></div>
+        <button className="btn-select" aria-haspopup="menu" onClick={openMenu}>{RANGE_LABEL[D.range]} <Icon name="chev" size={16} /></button></div>
       <LineChart key={D.range} labels={h.labels} values={h.values} unit="hours" animate={anim} className="chart" id="hoursChart" />
     </section>
   );

@@ -15,6 +15,6 @@ export function navigate(to) {
   else location.hash = to;
 }
 
-// The volunteer portal is a second Vite page (volunteer.html); the manager app is index.html
+// The volunteer portal is a separate Vite page (volunteer.html); the manager app is manager.html
 export const VOLUNTEER_URL = 'volunteer.html';
-export const MANAGER_URL = './';
+export const MANAGER_URL = 'manager.html';

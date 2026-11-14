@@ -1,0 +1,206 @@
+.sb-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sb-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+.sb-status--closed { background: var(--red-light-red); color: var(--red-dark-red); }
+.sb-status--open { background: var(--green-light-green); color: var(--green-dark-green); }
+.sb-status__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.sb {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.sb__field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sb__field .field-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* "Assign event" select is tinted purple in Figma */
+.sb__event.field {
+  background: var(--primary-lightest-purple);
+  border-radius: 18px;
+}
+.sb__event select {
+  color: var(--primary-darkest-purple);
+}
+
+.sb__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sb__add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px dashed var(--neutral-gray);
+  border-radius: 8px;
+  color: var(--neutral-darker-gray);
+}
+.sb__add:hover {
+  border-color: var(--primary-purple);
+  color: var(--primary-dark-purple);
+}
+
+/* ---- Create question card ---- */
+.qe {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 12px 12px 18px;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 4px;
+}
+
+.qe__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qe__grip {
+  color: var(--neutral-dark-gray);
+  cursor: grab;
+}
+.qe__num {
+  font-size: 14px;
+  color: var(--neutral-darker-gray);
+  white-space: nowrap;
+}
+.qe__prompt {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid var(--neutral-gray);
+  padding: 2px 0 6px;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+}
+.qe__prompt:focus {
+  border-bottom-color: var(--primary-purple);
+}
+.qe__prompt::placeholder {
+  color: var(--neutral-dark-gray);
+}
+
+.qe__remove {
+  display: inline-flex;
+  color: var(--neutral-dark-gray);
+}
+.qe__remove:hover {
+  color: var(--red-dark-red);
+}
+
+.qe__options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 20px;
+}
+.qe__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qe__option .radio__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--neutral-light-gray);
+  flex-shrink: 0;
+}
+.qe__option input {
+  flex: 1;
+  border: 0;
+  padding: 4px 0;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+}
+.qe__option input:focus {
+  box-shadow: inset 0 -1px 0 var(--primary-purple);
+}
+
+.qe__add-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--neutral-very-light-gray);
+  font-size: 14px;
+  color: var(--neutral-darker-gray);
+}
+.qe__add-option:hover {
+  background: var(--neutral-light-gray);
+}
+
+.qe__free {
+  margin-left: 0;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--neutral-very-light-gray);
+  font-size: 14px;
+  color: var(--neutral-dark-gray);
+}
+
+.qe__type {
+  display: flex;
+  justify-content: flex-end;
+}
+.qe__type-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.qe__type-select select {
+  appearance: none;
+  padding: 7px 34px 7px 14px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--neutral-very-light-gray);
+  font: inherit;
+  font-size: 12px;
+  color: var(--neutral-black);
+  cursor: pointer;
+}
+.qe__type-select svg {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+}
+
+.sb-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}

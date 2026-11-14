@@ -51,6 +51,9 @@ export const nextMsgId = () => `m${++msgSeq}`;
 export function ensureIds(c) { c.msgs.forEach((m) => { m.id ||= nextMsgId(); }); }
 CONVOS.forEach(ensureIds);
 
+// Email subject: keep the thread's subject ("Re: …"); otherwise the message's first line. Never "(no subject)".
+export const threadSubject = (c) => { const e = c && [...c.msgs].reverse().find((m) => m.type === 'email' && m.subject); return e ? `Re: ${e.subject.replace(/^Re: /, '')}` : ''; };
+const firstLine = (t) => { const l = (t || '').split('\n')[0].trim(); return l.length > 60 ? `${l.slice(0, 57)}…` : l; };
 export const hasDraft = (d) => !!(d && ((d.body || '').trim() || d.rcpts?.length || d.attach?.length));
 // ----- channels: which route will actually reach people -----
 // A volunteer who never joined the app can only get email; one who hasn't opened it in two weeks
@@ -59,21 +62,28 @@ const APP_STALE_DAYS = 14;
 const joinNames = (ids) => (ids.length === 1 ? firstName(ids[0]) : ids.length === 2 ? `${firstName(ids[0])} and ${firstName(ids[1])}` : `${ids.length} people`);
 const ago = (d) => (d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`);
 const span = (d) => (d >= 14 ? `${Math.floor(d / 7)} weeks` : `${d} days`);
-export function channelAdvice(ids) {
+export function channelAdvice(ids, c = null) {
   if (!ids.length) return null;
   const noApp = ids.filter((w) => VOLS[w].appDays == null);
   const stale = ids.filter((w) => VOLS[w].appDays != null && VOLS[w].appDays >= APP_STALE_DAYS);
   const noEmail = ids.filter((w) => !VOLS[w].email);
   const one = ids.length === 1;
   const has = (list) => (list.length === 1 ? 'hasn’t' : 'haven’t');
-  const inappOff = noApp.length ? `${joinNames(noApp)} ${has(noApp)} joined the app yet, so in-app messages won’t reach ${noApp.length === 1 ? 'them' : 'everyone'}` : null;
+  const allNoApp = noApp.length === ids.length;
+  // In-app only stops working when nobody here has the app; in a mixed group the people without it get an email copy
+  const inappOff = allNoApp ? `${joinNames(noApp)} ${has(noApp)} joined the app yet, so in-app messages won’t reach ${one ? 'them' : 'anyone here'}` : null;
   const emailOff = noEmail.length ? `No email address on file for ${joinNames(noEmail)}` : null;
+  const emailCopies = !allNoApp ? noApp : [];
+  const lastIn = c && [...c.msgs].reverse().find((m) => m.type !== 'divider' && m.from !== 'me');
   let ch = 'inapp', reason;
-  if (noApp.length) { ch = 'email'; reason = `${joinNames(noApp)} ${has(noApp)} joined the app, so this goes by email`; }
-  else if (stale.length) { ch = 'email'; reason = one ? `${firstName(ids[0])} hasn’t opened the app in ${span(VOLS[ids[0]].appDays)}` : `${joinNames(stale)} ${has(stale)} opened the app in a while`; }
+  if (allNoApp) { ch = 'email'; reason = `${joinNames(noApp)} ${has(noApp)} joined the app, so this goes by email`; }
+  else if (lastIn?.type === 'email') { ch = 'email'; reason = `${one ? firstName(ids[0]) : 'They'} replied by email, so this goes by email`; }
+  else if (one && stale.length) { ch = 'email'; reason = `${firstName(ids[0])} hasn’t opened the app in ${span(VOLS[ids[0]].appDays)}`; }
+  else if (emailCopies.length) { const inApp = ids.filter((w) => !emailCopies.includes(w)); reason = `${joinNames(inApp)} ${inApp.length === 1 ? 'gets' : 'get'} this in the app. ${joinNames(emailCopies)} ${emailCopies.length === 1 ? 'gets' : 'get'} an email copy`; }
+  else if (stale.length) reason = `${joinNames(stale)} ${has(stale)} opened the app in a while`;
   else reason = one ? `${firstName(ids[0])} was active in the app ${ago(VOLS[ids[0]].appDays)}` : 'Everyone here has used the app this week';
   if (ch === 'email' && emailOff) ch = 'inapp';
-  return { ch, reason, inappOff, emailOff };
+  return { ch, reason, inappOff, emailOff, emailCopies };
 }
 export const currentRecipients = () => (M.composing
   ? [...new Set(M.rcpts.flatMap((r) => (r.kind === 'group' ? group(r.id).members : [r.id])))]
@@ -81,7 +91,7 @@ export const currentRecipients = () => (M.composing
 // The composer's channel: what the manager picked for this draft, else the suggestion; never a route that can't work
 export function syncChannel() {
   if (M.tab !== 'message') { M.channel = 'inapp'; return; }
-  const adv = channelAdvice(currentRecipients());
+  const adv = channelAdvice(currentRecipients(), !M.composing ? convo(M.active) : null);
   let ch = draft().channel || adv?.ch || 'inapp';
   if (ch === 'inapp' && adv?.inappOff) ch = 'email';
   if (ch === 'email' && adv?.emailOff) ch = 'inapp';
@@ -95,7 +105,7 @@ export const EMAIL_RULES = {
   off: ['Don’t email', 'Only people with the app get it.'],
 };
 export const REPLY_MODES = {
-  thread: ['In the thread', 'Replies are visible to the whole group.'],
+  thread: ['In the thread', 'Replies are visible to the whole group. People reading by email reply to you privately.'],
   private: ['Privately to me', 'Replies come to you as direct messages in Message.'],
 };
 export const annRule = (a) => a.emailRule || (a.emailed ? 'now' : 'unseen');
@@ -268,8 +278,10 @@ export function send() {
     if (!c) { c = { id: `n${Date.now()}`, who: uniq, unread: 0, time: 'Just now', channel: M.channel, msgs: [] }; CONVOS.unshift(c); M.fresh.convo = c.id; }
   } else c = convo(M.active);
   const m = email
-    ? { id: nextMsgId(), from: 'me', type: 'email', subject: subject || '(no subject)', text: body, attach, time: 'Just now', status: 'sending' }
+    ? { id: nextMsgId(), from: 'me', type: 'email', subject: subject || threadSubject(c) || firstLine(body), text: body, attach, time: 'Just now', status: 'sending' }
     : { id: nextMsgId(), from: 'me', text: body, attach, time: 'Just now', status: 'sending' };
+  // In-app to a mixed group: people without the app get an email copy
+  if (!email) { const copies = channelAdvice(c.who)?.emailCopies || []; if (copies.length) m.emailCopies = copies; }
   c.msgs.push(m);
   c.time = 'Just now';
   c.channel = M.channel;
@@ -322,7 +334,7 @@ function fakeReply(c, sent, email = false) {
     const m = email
       ? { id: nextMsgId(), from: 'them', type: 'email', subject: `Re: ${sent.subject.replace(/^Re: /, '')}`, text, time: nowTime() }
       : { id: nextMsgId(), from: 'them', text, time: nowTime() };
-    c.msgs.push(m); c.time = 'Just now';
+    c.msgs.push(m); c.time = 'Just now'; c.channel = email ? 'email' : 'inapp';
     const name = VOLS[c.who[0]].name;
     if (viewingNow()) {
       const s = document.getElementById('stream');
@@ -415,12 +427,12 @@ function annReply(g, a, mode) {
     const who = g.members.find((w) => VOLS[w].appDays == null) || g.members[0];
     const byEmail = VOLS[who].appDays == null;
     let c = CONVOS.find((x) => x.who.length === 1 && x.who[0] === who);
-    if (!c) { c = { id: `n${Date.now()}`, who: [who], unread: 0, time: 'Just now', msgs: [] }; CONVOS.unshift(c); }
+    if (!c) { c = { id: `n${Date.now()}`, who: [who], unread: 0, time: 'Just now', channel: 'inapp', msgs: [] }; CONVOS.unshift(c); }
     const text = 'Thanks for the heads-up. Is there anything we should bring?';
     const m = byEmail
       ? { id: nextMsgId(), from: 'them', type: 'email', subject: `Re: ${a.title}`, text, time: nowTime(), reAnn: a.title }
       : { id: nextMsgId(), from: 'them', text, time: nowTime(), reAnn: a.title };
-    c.msgs.push(m); c.time = 'Just now';
+    c.msgs.push(m); c.time = 'Just now'; c.channel = byEmail ? 'email' : 'inapp';
     CONVOS.splice(CONVOS.indexOf(c), 1); CONVOS.unshift(c);
     const viewing = onMessages() && M.tab === 'message' && !M.composing && M.active === c.id;
     if (viewing) { M.fresh.msg = m; M.scroll = 'smooth'; } else c.unread += 1;

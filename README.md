@@ -11,10 +11,11 @@ npm install
 npm run dev
 ```
 
-- Manager app (Bridget): http://localhost:5173/ — Dashboard, Messages, Report composer
+- Component-library prototype (React Router, admin/volunteer role switch): http://localhost:5173/
+- Manager app (Bridget): http://localhost:5173/manager.html — Dashboard, Messages, Report composer
 - Volunteer portal (Maureen): http://localhost:5173/volunteer.html
 
-`npm run build` outputs both pages to `dist/`.
+`npm run build` outputs all three pages to `dist/`.
 
 ## What's inside
 

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../components/Icon.jsx';
+import CalendarKey from '../components/CalendarKey/CalendarKey.jsx';
 import SlidingTabs from '../components/SlidingTabs.jsx';
 import { hideTip, useFitZoom, usePop, usePopClose } from '../components/ui.jsx';
 import { TODAY } from '../data.js';
 import { useStore } from '../lib/store.js';
 import { navigate } from '../lib/router.js';
 import EventAsset from '../features/events/EventAsset.jsx';
-import { CancelConfirm } from './Calendar.jsx';
 import { Modal } from './Modal.jsx';
 import { AnnouncementModal } from './Modals.jsx';
 import EventActions from './EventActions.jsx';
@@ -43,12 +43,12 @@ function CardDate({ event }) {
   return <div className="ve-card-date"><span>{event.mon}</span><b>{event.day}</b><small>{shortTime(event.time)}</small></div>;
 }
 
-export function EventCard({ event, registered, saved, onSave, onRegister, onOpen, layout = 'list' }) {
+export function EventCard({ event, registered, saved, onSave, onRegister, onOpen, layout = 'list', flag }) {
   const actions = <EventActions {...{ event, registered, saved, onSave, onRegister }} />;
   return <article className="ve-event-card" data-event-id={event.id}>
     <button className="ve-card-open" aria-label={`Open ${event.title}, ${eventDateLabel(event.date)}`} onClick={click => onOpen(event, click.currentTarget)} />
     {layout === 'grid' ? <div className="ve-grid-heading"><CardDate event={event} />{actions}</div> : <CardDate event={event} />}
-    <div className="ve-card-body"><header><div className="ve-card-title"><h2>{event.title}</h2>{event.recommendation && <span className="ve-recommend" data-tip={event.recommendation.why}>Recommend</span>}</div>{layout !== 'grid' && actions}</header>
+    <div className="ve-card-body"><header><div className="ve-card-title"><h2>{event.title}</h2>{flag && <span className="ve-new">{flag}</span>}{event.recommendation && <span className="ve-recommend" data-tip={event.recommendation.why}>Recommend</span>}</div>{layout !== 'grid' && actions}</header>
       <div className="ve-card-location"><span>{event.addr}</span>{event.recommendation && <><EventAsset name="list-dot" /><span>{event.recommendation.dist} from you</span></>}</div>
       <p>{event.desc}</p><div className="ve-card-tags">{event.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
     </div>
@@ -63,12 +63,12 @@ function EmptyEvents({ tab, filtered, onClear }) {
 function Calendar({ month, onMonth, events, registered, selected, onSelect }) {
   const year = month.getFullYear(), index = month.getMonth(), days = new Date(year, index + 1, 0).getDate(), offset = new Date(year, index, 1).getDay();
   const dates = new Set(events.map(event => event.date)), mine = new Set(events.filter(event => registered.has(event.id)).map(event => event.date));
-  return <section className="ve-calendar" aria-label="Event calendar"><div className="ve-month"><button aria-label="Previous month" onClick={() => onMonth(-1)}><EventAsset name="list-chevron-right" className="ve-left" /></button><h2 aria-live="polite">{monthName(month)}</h2><button aria-label="Next month" onClick={() => onMonth(1)}><EventAsset name="list-chevron-right1" /></button></div>
-    <div className="ve-legend"><span><i />All Events</span><span><i />Registered Events</span></div>
-    <div className="ve-weekdays">{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => <span key={day}>{day}</span>)}</div>
-    <div className="ve-days" style={{ '--weeks': Math.ceil((days + offset) / 7) }}>{Array.from({ length: offset }, (_, i) => <span key={`blank-${i}`} />)}{Array.from({ length: days }, (_, i) => {
+  // Same calendar design as the dashboard CalendarCard (.cal), framed as a rail card
+  return <section className="cal ve-calendar" aria-label="Event calendar"><div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => onMonth(-1)}><Icon name="chev-r" size={22} /></button><div className="calendar-title"><h2 aria-live="polite">{monthName(month)}</h2><CalendarKey><span><i className="dot needs" /> Registered Events</span><span><i className="dot" /> All Events</span></CalendarKey></div><button className="icon-btn plain" aria-label="Next month" onClick={() => onMonth(1)}><Icon name="chev-r" size={22} /></button></div>
+    <div className="cal-grid cal-dow">{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => <span key={day}>{day}</span>)}</div>
+    <div className="cal-grid">{Array.from({ length: offset }, (_, i) => <span key={`blank-${i}`} />)}{Array.from({ length: days }, (_, i) => {
       const day = i + 1, date = isoDay(year, index, day);
-      return <button key={date} className={`${date === TODAY ? 'today' : ''} ${date === selected ? 'selected' : ''}`} aria-label={eventDateLabel(date)} aria-pressed={date === selected} onClick={() => onSelect(date === selected ? '' : date)}>{day}{dates.has(date) && <i className={mine.has(date) ? 'registered' : ''} />}</button>;
+      return <button key={date} className={`cal-day ${date === TODAY ? 'today' : ''} ${date === selected ? 'sel' : ''} ${date < TODAY ? 'past' : ''}`} aria-label={eventDateLabel(date)} aria-pressed={date === selected} onClick={() => onSelect(date === selected ? '' : date)}>{day}{dates.has(date) && <i className={`dot ${mine.has(date) ? 'needs' : ''}`} />}</button>;
     })}</div>
   </section>;
 }
@@ -90,7 +90,7 @@ function Activity({ events, registered }) {
 export default function VolunteerEvents({ registered, setRegistered, saved, setSaved, eventId = null }) {
   useStore();
   const page = useRef(null), pop = usePop();
-  const { onSave, onRegister } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved, confirmation: (id, cancel) => <CancelConfirm id={id} onConfirm={cancel} /> });
+  const { onSave, onRegister } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved });
   useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
   const [tab, setTab] = useState('Upcoming'), [query, setQuery] = useState(''), [selected, setSelected] = useState(''), [layout, setLayout] = useState('list');
   const [month, setMonth] = useState(() => new Date(eventDate(TODAY).getFullYear(), eventDate(TODAY).getMonth(), 1));
@@ -114,7 +114,35 @@ export default function VolunteerEvents({ registered, setRegistered, saved, setS
     return () => cancelAnimationFrame(frame);
   }, [eventId]);
   const events = volunteerEvents(), all = [...events, ...ATTENDED_EVENTS];
-  const changeTab = value => { pop.close(null, true); hideTip(); setTab(value); setSelected(''); };
+  /* "New" markers: saving / registering puts a dot on the Saved / Registered tab (it
+     pulses again for each further addition). Opening that tab clears the dot and tags
+     those cards "Newly saved" / "Newly registered" until the user switches tabs.
+     Unsaving / cancelling drops the event from both. */
+  const [unseen, setUnseen] = useState({ Saved: [], Registered: [] }), [fresh, setFresh] = useState({ tab: 'Upcoming', ids: [] });
+  const prevLists = useRef({ Saved: saved, Registered: registered });
+  useEffect(() => {
+    const prev = prevLists.current, now = { Saved: saved, Registered: registered };
+    prevLists.current = now;
+    setUnseen(current => {
+      const next = {};
+      for (const key of ['Saved', 'Registered']) {
+        const added = key === tab ? [] : [...now[key]].filter(id => !prev[key].has(id) && !current[key].includes(id));
+        next[key] = [...current[key], ...added].filter(id => now[key].has(id));
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saved, registered]);
+  const flagFor = event => {
+    if (fresh.tab !== tab || !fresh.ids.includes(event.id)) return undefined;
+    if (tab === 'Saved') return saved.has(event.id) ? 'Newly saved' : undefined;
+    return tab === 'Registered' && registered.has(event.id) ? 'Newly registered' : undefined;
+  };
+  const changeTab = value => {
+    pop.close(null, true); hideTip();
+    if (value !== tab) { setFresh({ tab: value, ids: unseen[value] || [] }); setUnseen(current => (current[value]?.length ? { ...current, [value]: [] } : current)); }
+    setTab(value); setSelected('');
+  };
   const pool = tab === 'Saved' ? all.filter(event => saved.has(event.id)) : tab === 'Registered' ? events.filter(event => registered.has(event.id)) : tab === 'Attended' ? ATTENDED_EVENTS : events.filter(event => event.date >= TODAY);
   const filtered = Boolean(query.trim() || selected);
   const visible = pool.filter(event => (!selected || selected === event.date) && `${event.title} ${event.addr} ${event.desc} ${event.tags.join(' ')}`.toLowerCase().includes(query.trim().toLowerCase())).sort((a, b) => Number(Boolean(b.recommendation)) - Number(Boolean(a.recommendation)) || a.date.localeCompare(b.date));
@@ -131,11 +159,11 @@ export default function VolunteerEvents({ registered, setRegistered, saved, setS
   return <div className="ve-page ae-page" ref={page}>
     <VolunteerTopNav onAnnouncement={() => setModal({ kind: 'announcement' })} />
     <div hidden={eventId !== null}><div className="ve-workspace"><header className="ve-heading"><h1>Your events</h1><p>Explore and register to volunteer at events</p></header>
-      <SlidingTabs value={tab} onChange={changeTab} items={TABS} label="Volunteer event status" panelId="volunteer-events-panel" className="ve-tabs" lineClassName="ve-tab-line" />
+      <SlidingTabs value={tab} onChange={changeTab} items={TABS} label="Volunteer event status" panelId="volunteer-events-panel" className="ve-tabs" lineClassName="ve-tab-line" marks={{ Saved: unseen.Saved.length, Registered: unseen.Registered.length }} />
       <div className="ve-layout"><section className="ve-list" id="volunteer-events-panel" role="tabpanel" aria-label={`${tab} volunteer events`}>
         <div className="ve-toolbar"><label className="ve-search"><EventAsset name="list-vector" /><input aria-label="Search events" placeholder="Search" value={query} onChange={event => setQuery(event.target.value)} /></label><button className={`ve-filter ${selected ? 'on' : ''}`} aria-label="Filter events by date" aria-haspopup="dialog" onClick={event => pop.toggle(event.currentTarget, <DateFilter selected={selected} onApply={selectDate} />, { align: 'end' })}><EventAsset name="list-list-filter" />Date</button><div className="ve-views" role="group" aria-label="Event layout"><button aria-label="Grid view" aria-pressed={layout === 'grid'} className={layout === 'grid' ? 'on' : ''} onClick={() => setLayout('grid')}><EventAsset name="list-grip" /></button><button aria-label="List view" aria-pressed={layout === 'list'} className={layout === 'list' ? 'on' : ''} onClick={() => setLayout('list')}><EventAsset name="list-layout-list" /></button></div></div>
         {selected && <button className="ve-active-filter" onClick={() => setSelected('')}>{eventDateLabel(selected)} <Icon name="x" size={14} /><span className="sr">Clear date filter</span></button>}
-        <div className="ve-groups">{groups.filter(([, items]) => items.length).map(([name, items]) => <section key={name} className="ve-group"><header><h2>{name}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ve-cards ${layout}`}>{items.map(event => <EventCard key={event.id} {...{ event, onSave, onRegister, layout }} registered={registered.has(event.id)} saved={saved.has(event.id)} onOpen={openEvent} />)}</div></section>)}{!visible.length && <section className="ve-group"><header><h2>{tab} Events</h2><span>0 Events</span></header><EmptyEvents tab={tab} filtered={filtered} onClear={() => { setQuery(''); setSelected(''); }} /></section>}</div>
+        <div className="ve-groups">{groups.filter(([, items]) => items.length).map(([name, items]) => <section key={name} className="ve-group"><header><h2>{name}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ve-cards ${layout}`}>{items.map(event => <EventCard key={event.id} {...{ event, onSave, onRegister, layout }} registered={registered.has(event.id)} saved={saved.has(event.id)} flag={flagFor(event)} onOpen={openEvent} />)}</div></section>)}{!visible.length && <section className="ve-group"><header><h2>{tab} Events</h2><span>0 Events</span></header><EmptyEvents tab={tab} filtered={filtered} onClear={() => { setQuery(''); setSelected(''); }} /></section>}</div>
       </section><aside className="ve-rail"><Calendar month={month} onMonth={direction => setMonth(current => new Date(current.getFullYear(), current.getMonth() + direction, 1))} events={events} registered={registered} selected={selected} onSelect={selectDate} /><Activity events={events} registered={registered} /></aside></div>
     </div></div>
     {eventId !== null && <VolunteerEventDetail key={eventId} event={activeEvent} registered={registered.has(eventId)} saved={saved.has(eventId)} {...{ onSave, onRegister }} onBack={() => navigate('events')} />}

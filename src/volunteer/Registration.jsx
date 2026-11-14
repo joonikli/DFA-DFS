@@ -8,6 +8,7 @@ import { Modal } from './Modal.jsx';
 import { eventDate, volunteerEvents } from './eventData.js';
 import { shiftTimes } from './calendarExport.js';
 import { vol } from './shared.js';
+import { useEventNotice } from './EventNotice.jsx';
 import './registration.css';
 
 const RegistrationContext = createContext(null);
@@ -52,7 +53,7 @@ function RegistrationForm({ event, initial, editing, onSubmit, close }) {
         <label className="vr-field">Preferred Contact<span className="vr-select"><select aria-label="Preferred Contact" value={values.contact} onChange={e => update('contact', e.target.value)}><option value="phone">Phone ({vol.phone})</option><option value="email">Email ({vol.email})</option></select><EventAsset name="registration-chevron" /></span></label>
       </div>
       <fieldset className="vr-availability"><legend>What time will you be available out of <b>{event.time}</b>? You can change this at any time.<span className="vr-required" aria-hidden="true">*</span></legend>
-        <div className="vr-times">{['start', 'end'].map((key, index) => <span className="vr-time-pair" key={key}>{index === 1 && <EventAsset name="registration-separator" />}<label className="vr-time"><EventAsset name="registration-clock" /><span className="sr">Availability {key} time</span><input type="time" name={key} aria-label={`Availability ${key} time`} required min={earliest} max={latest} step="60" value={values[key]} onChange={e => update(key, e.target.value)} aria-invalid={Boolean(error)} aria-describedby={error ? 'vr-error' : undefined} /></label></span>)}</div>
+        <div className="vr-times">{['start', 'end'].map((key, index) => <span className="vr-time-pair" key={key}>{index === 1 && <EventAsset name="registration-separator" />}<label className="vr-time"><span className="sr">Availability {key} time</span><input type="time" name={key} aria-label={`Availability ${key} time`} required min={earliest} max={latest} step="60" value={values[key]} onChange={e => update(key, e.target.value)} aria-invalid={Boolean(error)} aria-describedby={error ? 'vr-error' : undefined} /></label></span>)}</div>
       </fieldset>
       <label className="vr-question"><span>Any notes?</span><textarea aria-label="Any notes?" rows="1" value={values.notes} onChange={e => update('notes', e.target.value)} /></label>
       <fieldset className="vr-notify"><legend>Notify me of future events like this.</legend><label><input type="checkbox" checked={values.notify} onChange={e => update('notify', e.target.checked)} />Yes</label></fieldset>
@@ -62,8 +63,33 @@ function RegistrationForm({ event, initial, editing, onSubmit, close }) {
   </form>;
 }
 
+// Cancel-registration / unsave confirms. No Figma frame for them, so they reuse the
+// registration popup's shell, header and footer (light "keep" button left, dark action right).
+// The close (×) is marked close-modal so Modal focuses the "Keep …" button first.
+const CONFIRM_COPY = {
+  cancel: { title: 'Cancel your registration?', lead: 'You’re registered for ', note: 'Your spot will open up for another volunteer. You can register again while spots are available.', keep: 'Keep registration', act: 'Cancel registration', label: 'Cancel registration for' },
+  unsave: { title: 'Remove from saved?', lead: '', note: 'It will no longer appear in your Saved events. You can save it again anytime.', keep: 'Keep saved', act: 'Remove from saved', label: 'Remove from saved:' },
+};
+function ConfirmForm({ kind, event, onConfirm, close }) {
+  const copy = CONFIRM_COPY[kind];
+  const box = useRef(null);
+  return <div className="vr-dialog vr-confirm" ref={box} onKeyDown={e => {
+    if (e.key !== 'Tab') return;
+    const controls = [...box.current.querySelectorAll('button')];
+    const first = controls[0], last = controls.at(-1);
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }}>
+    <header className="vr-header"><div><h2>{copy.title}</h2><button type="button" data-act="close-modal" aria-label="Close" onClick={() => close()}><EventAsset name="registration-close" /></button></div>
+      <p>{copy.lead}<strong>{event.title}</strong> on <strong>{eventDate(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}, {event.time}</strong>.</p>
+    </header>
+    <p className="vr-confirm-note">{copy.note}</p>
+    <footer><button type="button" className="btn vr-cancel" onClick={() => close()}>{copy.keep}</button><button type="button" className="btn btn-dark" onClick={() => { onConfirm(); close(); }}>{copy.act}</button></footer>
+  </div>;
+}
+
 export function RegistrationProvider({ registered, setRegistered, children }) {
-  const toast = useToast(), pop = usePop(), { hash } = useRoute();
+  const toast = useToast(), notice = useEventNotice(), pop = usePop(), { hash } = useRoute();
   const [records, setRecords] = useState({}), [pending, setPending] = useState(null);
   const registeredRef = useRef(registered); registeredRef.current = registered;
   const background = useRef(null), previousHash = useRef(hash);
@@ -91,6 +117,18 @@ export function RegistrationProvider({ registered, setRegistered, children }) {
     pop.close(null, true); hideTip();
     setPending({ id, anchor, editing: registeredRef.current.has(id) });
   };
+  // onConfirm performs the cancellation (and its notification); this only asks first.
+  const openCancel = (id, anchor, onConfirm) => {
+    if (!SHIFTS[id] || !registeredRef.current.has(id)) return;
+    pop.close(null, true); hideTip();
+    setPending({ id, anchor, confirm: { kind: 'cancel', onConfirm } });
+  };
+  // Same popup, asking before an event is removed from Saved.
+  const openUnsave = (id, anchor, onConfirm) => {
+    if (!SHIFTS[id]) return;
+    pop.close(null, true); hideTip();
+    setPending({ id, anchor, confirm: { kind: 'unsave', onConfirm } });
+  };
   const event = pending && volunteerEvents().find(item => item.id === pending.id);
   const finish = values => {
     const id = pending.id, shift = SHIFTS[id];
@@ -98,18 +136,19 @@ export function RegistrationProvider({ registered, setRegistered, children }) {
     if (!pending.editing && shift.filled >= shift.cap) return 'This event is now full. No spot has been reserved.';
     const previous = records[id];
     setRecords(current => ({ ...current, [id]: values }));
-    if (pending.editing) { toast('Registration updated', { ic: 'check' }); return null; }
+    if (pending.editing) { notice({ variant: 'success', parts: [['Registration updated', true]], preview: `${shift.title} on ${shift.mon} ${shift.day}` }); return null; }
     registeredRef.current = new Set(registeredRef.current).add(id);
     setRegistered(registeredRef.current); shift.filled += 1; emit();
-    toast(`You’re registered for ${shift.title} on ${shift.mon} ${shift.day}`, { ic: 'check', action: 'Undo', onAction: () => {
+    notice({ variant: 'success', parts: [['Registered!', true]], preview: `${shift.title} is now in your Registered events.`, action: { label: 'Undo', onClick: () => {
       if (!registeredRef.current.has(id)) return;
       const next = new Set(registeredRef.current); next.delete(id); registeredRef.current = next;
       setRegistered(next); shift.filled = Math.max(0, shift.filled - 1); emit();
       setRecords(current => { const result = { ...current }; if (previous) result[id] = previous; else delete result[id]; return result; });
-    } });
+    } } });
     return null;
   };
-  return <RegistrationContext.Provider value={{ records, openRegistration }}><div ref={background}>{children}</div>
-    {event && <Modal key={event.id} label={`${event.title} Registration`} onClosed={() => setPending(null)}>{close => <RegistrationForm event={event} initial={records[event.id]} editing={pending.editing} onSubmit={finish} close={close} />}</Modal>}
+  return <RegistrationContext.Provider value={{ records, openRegistration, openCancel, openUnsave }}><div ref={background}>{children}</div>
+    {event && pending.confirm && <Modal key={`${pending.confirm.kind}-${event.id}`} label={`${CONFIRM_COPY[pending.confirm.kind].label} ${event.title}`} onClosed={() => setPending(null)}>{close => <ConfirmForm kind={pending.confirm.kind} event={event} onConfirm={pending.confirm.onConfirm} close={close} />}</Modal>}
+    {event && !pending.confirm && <Modal key={event.id} label={`${event.title} Registration`} onClosed={() => setPending(null)}>{close => <RegistrationForm event={event} initial={records[event.id]} editing={pending.editing} onSubmit={finish} close={close} />}</Modal>}
   </RegistrationContext.Provider>;
 }

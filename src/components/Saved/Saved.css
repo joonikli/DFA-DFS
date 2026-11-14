@@ -1,0 +1,30 @@
+.saved {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--neutral-light-gray);
+  color: var(--neutral-dark-gray);
+  background: var(--neutral-white);
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.saved:hover {
+  background: var(--primary-lightest-purple);
+  border-color: var(--primary-light-purple);
+  color: var(--primary-dark-purple);
+}
+
+.saved--selected {
+  background: var(--neutral-black);
+  border-color: var(--neutral-gray);
+  color: var(--neutral-white);
+}
+.saved--selected:hover {
+  background: var(--primary-dark-purple);
+  border-color: var(--primary-dark-purple);
+  color: var(--neutral-white);
+}

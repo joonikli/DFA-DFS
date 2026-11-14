@@ -1,0 +1,63 @@
+/* Global base styles. Color tokens come from src/tokens/tokens.css
+   (generated from Figma variables via `npm run tokens`). */
+@import './styles/typography.css';
+
+:root {
+  --radius-card: 18px;
+  --radius-pill: 48px;
+  --shadow-card: 0 2px 3px rgb(239 242 245 / 0.8);
+  --shadow-card-hover: 0 4px 4px #e6ebef;
+  --sidebar-width: 240px;
+
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--neutral-black);
+  background: var(--neutral-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--neutral-white);
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-purple);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

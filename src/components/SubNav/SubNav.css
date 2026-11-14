@@ -1,0 +1,35 @@
+.sub-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sub-nav__wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sub-nav__item {
+  min-width: 90px;
+  height: 32px;
+  padding: 6px 18px;
+  border-radius: 12px;
+  color: var(--neutral-darker-gray);
+  white-space: nowrap;
+}
+.sub-nav__item:hover {
+  color: var(--neutral-black);
+}
+
+.sub-nav__item--selected,
+.sub-nav__item--selected:hover {
+  background: var(--neutral-light-gray);
+  color: var(--neutral-black);
+}
+
+.sub-nav__divider {
+  width: 1px;
+  height: 17.5px;
+  margin: 0 4px;
+  background: var(--neutral-dark-gray);
+}

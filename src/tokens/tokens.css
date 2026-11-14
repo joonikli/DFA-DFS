@@ -1,0 +1,37 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --neutral-white: #ffffff;
+  --neutral-very-light-gray: #f8f9fa;
+  --neutral-light-gray: #eff2f5;
+  --neutral-gray: #dde4e9;
+  --neutral-dark-gray: #a1a6aa;
+  --neutral-darker-gray: #7a7f84;
+  --neutral-black: #3a393a;
+  --neutral-drop-shadow: rgb(60 57 64 / 0.04);
+  --primary-lightest-purple: #edefff;
+  --primary-light-purple: #cdd2fd;
+  --primary-purple: #6078f1;
+  --primary-dark-purple: #4b50e0;
+  --primary-darkest-purple: #3a3ea9;
+  --lime-light-lime: #e5f6d4;
+  --lime-lime: #b2e083;
+  --lime-dark-lime: #516f31;
+  --pink-light-pink: #ffddee;
+  --pink-pink: #ff79bc;
+  --pink-dark-pink: #d22c7f;
+  --green-light-green: #daf9df;
+  --green-green: #92e8b2;
+  --green-dark-green: #2b7b64;
+  --blue-light-blue: #d6e6ff;
+  --blue-blue: #92beff;
+  --blue-dark-blue: #2f6bc4;
+  --red-light-red: #ffdcdc;
+  --red-red: #f46565;
+  --red-dark-red: #c2191c;
+  --yellow-light-yellow: #fffad6;
+  --yellow-yellow: #fae977;
+  --yellow-dark-yellow: #bb7a34;
+}

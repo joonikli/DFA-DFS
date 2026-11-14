@@ -1,7 +1,7 @@
 // Calendar + "Upcoming events" card (month nav, day filter, legend, Add to calendar, Can't make it)
 import { Fragment } from 'react';
 import { Icon } from '../components/Icon.jsx';
-import { usePopClose } from '../components/ui.jsx';
+import CalendarKey from '../components/CalendarKey/CalendarKey.jsx';
 import { SHIFTS, SHIFT_DATES, TODAY } from '../data.js';
 import { registrationTime, useRegistration } from './Registration.jsx';
 
@@ -12,21 +12,7 @@ export function myShifts(registered) {
   return [...registered].filter((id) => SHIFT_DATES[id] >= TODAY).sort((a, b) => SHIFT_DATES[a].localeCompare(SHIFT_DATES[b]));
 }
 
-// "Can't make it" confirm popover content
-export function CancelConfirm({ id, onConfirm }) {
-  const close = usePopClose();
-  const s = SHIFTS[id];
-  return (
-    <div className="vp-confirm">
-      <h4>Cancel {s.title}?</h4>
-      <p>Your spot on {s.mon} {s.day} opens up for someone else, and Bridget gets a heads-up.</p>
-      <div className="vp-confirm-acts">
-        <button className="btn btn-outline btn-sm" data-act="close-pop" onClick={() => close()}>Keep my spot</button>
-        <button className="btn btn-dark btn-sm" data-act="confirm-cancel" data-id={id} onClick={() => { close(true); onConfirm(id); }}>Cancel shift</button>
-      </div>
-    </div>
-  );
-}
+// "Can't make it" now asks via the cancel-registration popup (Registration.jsx › openCancel).
 
 function EvItem({ id, flash, onAddCal, onCancel }) {
   const s = SHIFTS[id];
@@ -89,12 +75,14 @@ export function CalendarCard({ cal, registered, recommended, flash, onNav, onDay
       <div className="cal">
         <div className="cal-head">
           <button className="icon-btn plain" data-act="cal-nav" data-v="-1" aria-label="Previous month" onClick={() => onNav(-1)}><Icon name="chev-r" size={22} /></button>
-          <span>{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
+          <span className="calendar-title">
+            <span>{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
+            <CalendarKey><span><i className="dot needs" /> Signed up</span><span><i className="dot" /> Recommended</span></CalendarKey>
+          </span>
           <button className="icon-btn plain" data-act="cal-nav" data-v="1" aria-label="Next month" onClick={() => onNav(1)}><Icon name="chev-r" size={22} /></button>
         </div>
         <div className="cal-grid cal-dow">{DOW.map((d) => <span key={d}>{d}</span>)}</div>
         <div className="cal-grid">{cells}</div>
-        <div className="cal-legend"><span><i className="dot needs" /> Signed up</span><span><i className="dot" /> Recommended</span></div>
       </div>
       <div className="ev">
         <div className="ev-head">

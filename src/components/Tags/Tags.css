@@ -1,0 +1,24 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.tag--green  { background: var(--green-light-green);   color: var(--green-dark-green); }
+.tag--purple { background: var(--primary-lightest-purple); color: var(--primary-purple); }
+.tag--pink   { background: var(--pink-light-pink);     color: var(--pink-pink); }
+.tag--blue   { background: var(--blue-light-blue);     color: var(--blue-dark-blue); }
+.tag--yellow { background: var(--yellow-light-yellow); color: var(--yellow-dark-yellow); }
+.tag--gray   { background: var(--neutral-light-gray);  color: var(--neutral-dark-gray); }
+
+.tag__remove {
+  display: inline-flex;
+  color: inherit;
+  opacity: 0.8;
+}
+.tag__remove:hover {
+  opacity: 1;
+}
