@@ -1859,9 +1859,10 @@ a { color: inherit; }
 .convo-muted { display: inline-flex; margin-left: 6px; color: var(--dark-gray); vertical-align: -1px; }
 
 /* Compose suggestions for shifts: design-system Small events card (2044:26625, SmallEventCard.css) */
-.sec-card { display: flex; align-items: stretch; gap: 8px; width: 100%; padding: 12px 16px; background: var(--white); border: 1px solid var(--gray); border-radius: 12px; text-align: left; color: var(--black); transition: border-color var(--dur-micro) ease, box-shadow var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
+.sec-card { display: flex; align-items: stretch; gap: 8px; width: 100%; padding: 12px 16px; background: var(--white); border: 1px solid var(--gray); border-radius: 12px; text-align: left; color: var(--black); transition: border-color var(--dur-micro) ease, background-color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
 .sec-card:active { transform: scale(.99); }
-@media (hover: hover) and (pointer: fine) { .sec-card:hover { border-color: var(--purple-light); box-shadow: 0 4px 4px #e6ebef; } .sec-card:hover .sec-card__actions > .ic { color: var(--purple-dark); } }
+/* Same hover as the other option cards (.cmp-opt, .mini-shift): light purple border + very light fill */
+@media (hover: hover) and (pointer: fine) { .sec-card:hover { border-color: var(--purple-light); background: var(--vlight); } .sec-card:hover .sec-card__actions > .ic { color: var(--purple-dark); } }
 .sec-card__date { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 44px; padding-right: 20px; border-right: 1px solid var(--gray); box-sizing: content-box; }
 .sec-card__mon { font: 600 14px/normal var(--sans); }
 .sec-card__day { font: 600 36px/1 var(--serif); }
