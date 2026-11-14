@@ -2034,3 +2034,12 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .fill-pill { font: 500 14px/normal var(--sans) !important; padding: 4px 8px !important; border-radius: 8px !important; }
 .vp-act { font: 400 16px/20px var(--sans) !important; }
 .lbl { font: 400 16px/normal var(--sans) !important; }
+/* "Sent via" dropdown: outline pill (Button secondary look), same 14px scale as the filters */
+.list-head .filters { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.list-head .pill-select { height: 30px; padding: 0 10px 0 12px; gap: 4px; border-radius: 48px; border: 1px solid var(--primary-dark-purple); color: var(--primary-dark-purple); background: var(--neutral-white); font: 600 14px/normal var(--sans); white-space: nowrap; flex: none; }
+.list-head .pill-select .muted-label { font-weight: 500; color: var(--neutral-darker-gray); }
+@media (hover: hover) and (pointer: fine) { .list-head .pill-select:hover { background: var(--primary-lightest-purple); } }
+.list-head .sub-nav { gap: 0; min-width: 0; }
+.list-head .sub-nav__item { padding: 6px 10px; }
+.list-head .pill-select { padding: 0 8px 0 10px; }
+.list-head .pill-select .muted-label { color: var(--primary-dark-purple); }

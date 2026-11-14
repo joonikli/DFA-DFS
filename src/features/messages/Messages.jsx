@@ -11,10 +11,11 @@ import SearchBar from '../../components/SearchBar/SearchBar.jsx';
 import SubNav from '../../components/SubNav/SubNav.jsx';
 import Button from '../../components/Button/Button.jsx';
 import {
-  M, UI, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel,
+  M, UI, CH_LABEL, convo, convoName, draft, firstName, group, hasDraft, lastPreview, syncChannel,
   markCurrentRead, rerender, scrollBehavior, startShiftCompose, unreadIn,
 } from './state.js';
 import { compose, openConvo, openGroup, setTab } from './actions.js';
+import { ChannelFilterMenu } from './pops.jsx';
 import { ConvoView } from './ConvoView.jsx';
 import { GroupView } from './GroupView.jsx';
 import { ComposeView } from './ComposeView.jsx';
@@ -40,7 +41,7 @@ function ListItems() {
   const q = M.q.toLowerCase();
   let items;
   if (M.tab === 'message') {
-    const chOk = (c) => M.filter !== 'email' || c.channel === 'email';
+    const chOk = (c) => M.channelFilter === 'all' || (c.channel || 'inapp') === M.channelFilter;
     items = CONVOS.filter((c) => (M.filter !== 'unread' || c.unread || (!M.composing && c.id === M.active)) && (M.filter !== 'direct' || c.who.length === 1) && chOk(c))
       .filter((c) => !q || convoName(c).toLowerCase().includes(q) || lastPreview(c).toLowerCase().includes(q))
       .map((c) => {
@@ -126,7 +127,7 @@ export default function Messages() {
   useEffect(() => () => { M.rcptPop = null; }, []);
 
   // One row of chips; "Email" = conversations whose latest message went by email
-  const filters = M.tab === 'message' ? ['all', 'unread', 'direct', 'email'] : ['all', 'unread'];
+  const filters = M.tab === 'message' ? ['all', 'unread', 'direct'] : ['all', 'unread'];
   return (
     <div className="msgs">
       <section className="list-col">
@@ -136,6 +137,11 @@ export default function Messages() {
           <SearchBar value={M.q} onChange={(v) => { M.q = v; rerender(); }} placeholder="Search" label="Search conversations" />
           <div className="filters">
             <SubNav label="Filter conversations" value={M.filter} onChange={(f) => { M.filter = f; rerender(); }} items={filters.map((f) => ({ value: f, label: f[0].toUpperCase() + f.slice(1) }))} />
+            {M.tab === 'message' && (
+              <button className="pill-select" id="channelBtn" onClick={(e) => UI.pop.toggle(e.currentTarget, <ChannelFilterMenu />, { align: 'end' })} aria-expanded="false" aria-haspopup="menu" data-tip="Filters by how the latest message in each conversation travelled">
+                <span className="muted-label">Sent via:</span> {CH_LABEL[M.channelFilter]} <Icon name="chev" size={14} />
+              </button>
+            )}
           </div>
         </div>
         <ul className="convos" id="convList"><ListItems /></ul>
