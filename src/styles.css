@@ -1881,14 +1881,14 @@ a { color: inherit; }
 .sec-card__logistics > span > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sec-card__logistics .ic { flex: none; }
 
-/* Recipient chips = design-system "tag with x" (Tags 863:21544, purple): 4×8 padding, 8px radius,
+/* Recipient chips = design-system "tag with x" (Tags 863:21544, gray): 4×8 padding, 8px radius,
    Label 2 text, 4px gap, 15px × — plus the person's photo */
 .to-chips { gap: 6px; }
-.to-chip { height: auto; gap: 4px; padding: 4px 8px; border-radius: 8px; background: var(--purple-lightest); color: var(--purple); font: 500 14px/normal var(--sans); white-space: nowrap; }
+.to-chip { height: auto; gap: 4px; padding: 4px 8px; border-radius: 8px; background: var(--light-gray); color: var(--black); font: 500 14px/normal var(--sans); white-space: nowrap; }
 .to-chip .av { width: 20px; height: 20px; font-size: 8px; margin: -1px 2px -1px -4px; flex: none; }
 .to-chip .ic { flex: none; }
-.to-chip button { width: auto; height: auto; color: inherit; opacity: .8; border-radius: 4px; transition: opacity var(--dur-micro) ease; }
-@media (hover: hover) and (pointer: fine) { .to-chip button:hover { opacity: 1; } }
-.to-chip .em { color: var(--purple); opacity: .7; }
-.to-chip.more { padding: 4px 8px; font-weight: 500; color: var(--purple); }
+.to-chip button { width: auto; height: auto; color: var(--darker-gray); opacity: 1; border-radius: 4px; transition: opacity var(--dur-micro) ease; }
+@media (hover: hover) and (pointer: fine) { .to-chip button:hover { color: var(--black); } }
+.to-chip .em { color: var(--darker-gray); opacity: 1; }
+.to-chip.more { padding: 4px 8px; font-weight: 500; background: var(--light-gray); color: var(--darker-gray); }
 .to-count { font: 500 14px/normal var(--sans); }
