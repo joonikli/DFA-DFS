@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="bookmark">
+<mask id="mask0_0_833" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="16" height="16">
+<rect id="Bounding box" x="0.5" y="0.5" width="15" height="15" fill="#7A7F84" stroke="#DDE4E9"/>
+</mask>
+<g mask="url(#mask0_0_833)">
+<mask id="stroke0_0_833" fill="white">
+<path d="M3 15V3.44444C3 3.04722 3.13988 2.70718 3.41964 2.42431C3.6994 2.14144 4.03571 2 4.42857 2H11.5714C11.9643 2 12.3006 2.14144 12.5804 2.42431C12.8601 2.70718 13 3.04722 13 3.44444V15L8 12.8333L3 15Z"/>
+</mask>
+<path id="bookmark_2" d="M3 15V3.44444C3 3.04722 3.13988 2.70718 3.41964 2.42431C3.6994 2.14144 4.03571 2 4.42857 2H11.5714C11.9643 2 12.3006 2.14144 12.5804 2.42431C12.8601 2.70718 13 3.04722 13 3.44444V15L8 12.8333L3 15Z" stroke-width="2" stroke="#A1A6AA" mask="url(#stroke0_0_833)"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,127 @@
+/* Final / Profiles. Shared event controls, fonts and modal primitives are reused. */
+.ap-page { color: var(--black); }
+.ap-asset { display: block; object-fit: contain; flex-shrink: 0; }
+.ap-top-nav.top-nav { margin: 0; height: 73px; padding: 16px 56px; gap: 24px; }
+.ap-cover { height: 197px; background: var(--purple-light); }
+.ap-masthead { position: relative; height: 142px; }
+.ap-portrait { position: absolute; top: -100px; left: 52px; width: 200px; height: 200px; border-radius: 50%; overflow: hidden; background: var(--placeholder); }
+.ap-portrait > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ap-portrait > span { display: grid; place-items: center; width: 100%; height: 100%; font: 600 64px/1 var(--sans); color: var(--darker-gray); }
+.ap-photo-edit { position: absolute; left: 210px; top: 57px; display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--white); border-radius: 20px; background: var(--purple); }
+.ap-joined { position: absolute; top: 23px; right: 58px; display: flex; gap: 35px; font: 600 16px/19px var(--sans); color: var(--dark-gray); }
+.ap-own-admin .ap-joined { top: 30px; right: 91px; gap: 24px; font-weight: 400; }
+.ap-content { margin: 0 46px 70px 52px; }
+.ap-own-admin .ap-content { margin-left: 78px; margin-right: 91px; }
+.ap-columns { display: grid; grid-template-columns: 849px 371px; gap: 170px; align-items: start; }
+.ap-own-admin .ap-columns { grid-template-columns: 849px 300px; }
+.ap-primary, .ap-aside { min-width: 0; }
+.ap-intro { min-height: 144px; }
+.ap-identity-row { display: flex; align-items: flex-end; gap: 24px; }
+.ap-identity-row > div { min-width: 0; }
+.ap-name { display: flex; align-items: flex-start; gap: 6px; }
+.ap-name h1 { margin: 0; font: 600 36px/40px var(--serif); overflow-wrap: anywhere; min-width: 0; }
+.ap-subtitle { margin: 4px 0 0; color: var(--dark-gray); font: 400 16px/19px var(--sans); }
+.ap-bio { margin: 24px 0 0; min-height: 57px; font: 400 16px/19px var(--sans); white-space: pre-wrap; overflow-wrap: anywhere; }
+.ap-edit-profile.btn { flex-shrink: 0; }
+.ap-activity { margin-top: 56px; }
+.ap-year { position: relative; display: block; width: 65px; height: 24px; margin-bottom: 11px; }
+.ap-year select { width: 100%; height: 24px; padding: 0 25px 0 0; appearance: none; border: 0; background: transparent; color: var(--darker-gray); font: 400 16px/19px var(--sans); cursor: pointer; }
+.ap-year > .ap-asset { position: absolute; top: 0; right: 0; transform: rotate(180deg); pointer-events: none; }
+.ap-stat-grid { display: grid; grid-template-columns: 281px 282px 230px; gap: 27px; }
+.ap-stat { position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 0; height: 150px; padding: 18px 29px; border: 1px solid var(--gray); border-radius: 12px; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
+.ap-stat p { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin: 16px 0 0; }
+.ap-stat p b { color: var(--black); font: 600 36px/40px var(--serif); }
+.ap-stat p > span { padding: 4px 0; font: 500 14px/17px var(--sans); }
+.ap-stat-info { position: absolute; top: 11px; right: 15px; width: 16px; height: 16px; }
+.ap-info-pop { max-width: 300px; padding: 18px; font: 400 14px/20px var(--sans); }
+.ap-missing-history { margin: 12px 0 0; color: var(--darker-gray); font: 400 14px/19px var(--sans); }
+.ap-events { margin-top: 56px; }
+.ap-events > h2, .ap-contact > h2, .ap-notes h2 { margin: 0; font: 600 28px/31px var(--serif); }
+.ap-events > h2 { margin-bottom: 32px; }
+.ap-tabs.ae-tabs { height: 29px; }
+.ap-tabs.ae-tabs button { height: 28px; padding-bottom: 10px; }
+.ap-events-panel { padding-top: 25px; }
+.ap-events-panel > header { display: flex; align-items: center; justify-content: space-between; min-height: 23px; padding: 2px 8px; margin-bottom: 8px; font: 400 16px/19px var(--sans); color: var(--darker-gray); }
+.ap-page .ae-event-card { border-radius: 18px; box-shadow: 0 2px 3px rgba(239, 242, 245, .8); }
+.ap-page .ae-card-tall { min-height: 208px; }
+.ap-contact > h2 { margin-bottom: 20px; }
+.ap-contact dl { display: flex; flex-direction: column; gap: 15px; margin: 0; }
+.ap-contact dl > div { display: flex; align-items: center; gap: 21px; min-height: 24px; }
+.ap-contact dt { flex: 0 0 24px; }
+.ap-contact dd { min-width: 0; margin: 0; font: 400 16px/19px var(--sans); overflow-wrap: anywhere; }
+.ap-contact dd a { color: inherit; text-decoration: none; }
+.ap-contact dl > div:has(.ap-contact-tags) { align-items: flex-start; margin-top: -2px; }
+.ap-contact-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.ap-contact-tags > span { padding: 4px 8px; border-radius: 8px; font: 500 14px/17px var(--sans); color: var(--blue-dark); background: var(--blue-light); }
+.ap-notes { margin-top: 75px; }
+.ap-notes > header { display: flex; align-items: center; justify-content: space-between; padding-right: 16px; margin-bottom: 11px; }
+.ap-notes-edit { display: grid; place-items: center; width: 24px; height: 24px; }
+.ap-notes-box { min-height: 268px; padding: 28px 24px; border: 1px solid var(--gray); border-radius: 20px; background: var(--white); color: var(--darker-gray); font: 400 16px/19px var(--sans); }
+.ap-notes-box p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ap-notes-box.editing { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+.ap-notes-box textarea { width: 100%; flex: 1; min-height: 140px; border: 0; resize: vertical; background: var(--vlight); border-radius: 8px; padding: 10px; font: 400 16px/19px var(--sans); color: var(--black); }
+.ap-notes-box.editing > div { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.ap-notes-box .btn { height: 39px; font-size: 14px; }
+.ap-awards { width: 1199px; max-width: 100%; margin-top: 27px; padding: 24px; display: flex; flex-direction: column; gap: 36px; background: var(--vlight); border-radius: 24px; }
+.ap-awards h3 { margin: 0 0 24px; color: #000; font: 600 16px/19px var(--sans); }
+.ap-award-grid { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+.ap-award-grid figure { margin: 0; text-align: center; }
+.ap-award-badges figure { width: 114px; }
+.ap-award-titles { display: grid; grid-template-columns: repeat(3, minmax(0, 357px)); }
+.ap-badge-art { width: 114px; height: 114px; }
+.ap-badge-art img { display: block; width: 114px; height: 114px; }
+.ap-title-art { position: relative; width: 100%; aspect-ratio: 357 / 100; }
+/* Figma's title-art exports include the 6px outer stroke on every edge. */
+.ap-title-art img { position: absolute; left: -1.680672%; top: -6%; width: 103.361344%; height: 112%; }
+.ap-award-grid figcaption { margin-top: 17px; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
+.ap-award-titles figcaption { margin-top: 24px; }
+.ap-empty p { max-width: 300px; }
+.ap-content > [role="tabpanel"] > .ap-empty { width: 849px; max-width: 100%; margin-top: 27px; }
+.ap-not-found { padding: 50px; }
+.ap-not-found h1 { font: 600 36px/40px var(--serif); }
+.ae-dialog.ap-profile-dialog { width: min(720px, calc(100vw - 32px)); max-height: inherit; overflow-y: auto; }
+.modal-panel:has(.ap-profile-dialog) { overflow: hidden; border-radius: 16px; }
+.ap-profile-editor { display: flex; flex-direction: column; gap: 24px; padding: 28px; }
+.ap-field { display: flex; flex-direction: column; gap: 10px; min-width: 0; font: 400 16px/19px var(--sans); }
+.ap-field input, .ap-field textarea { min-width: 0; width: 100%; border: 1px solid transparent; border-radius: 8px; padding: 10px; background: var(--vlight); color: var(--black); font: 400 16px/20px var(--sans); }
+.ap-field textarea { resize: vertical; }
+.ap-field input:focus, .ap-field textarea:focus { outline: 2px solid var(--purple-dark); outline-offset: 1px; }
+.ap-field small { color: var(--darker-gray); font-size: 13px; line-height: 18px; }
+.ap-edit-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ap-photo-preview { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+.ap-profile-editor > footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 16px; padding-top: 20px; border-top: 1px solid var(--gray); }
+.ap-page button:focus-visible, .ap-page a:focus-visible, .ap-page select:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
+.ae-roster-person a { color: inherit; text-decoration: none; }
+.ae-roster-profile { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; }
+.ae-roster-profile > .av { width: 36px; height: 36px; }
+@media (hover: hover) and (pointer: fine) {
+  .ap-contact dd a:hover, .ae-roster-person a:hover { color: var(--purple-dark); text-decoration: underline; }
+  .ap-notes-edit:hover { background: var(--vlight); border-radius: 4px; }
+}
+.ap-page.fluid .ap-masthead { height: 182px; }
+.ap-page.fluid .ap-portrait { left: 24px; }
+.ap-page.fluid .ap-photo-edit { left: 182px; }
+.ap-page.fluid .ap-joined { top: 120px; left: 24px; right: auto; gap: 12px; font-size: 14px; }
+.ap-page.fluid .ap-content { margin: 0 24px 60px; }
+.ap-page.fluid .ap-columns { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+.ap-page.fluid .ap-identity-row { flex-wrap: wrap; }
+.ap-page.fluid .ap-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ap-page.fluid .ap-stat { padding: 18px; }
+.ap-page.fluid .ap-content > [role="tabpanel"] > .ap-empty { width: 100%; }
+.ap-page.fluid .ap-award-titles { grid-template-columns: repeat(2, minmax(0, 357px)); }
+.ap-page.fluid[data-awards-active="true"] .ap-content { display: flex; flex-direction: column; gap: 32px; }
+.ap-page.fluid[data-awards-active="true"] .ap-columns { display: contents; }
+.ap-page.fluid[data-awards-active="true"] .ap-aside { order: 2; }
+.ap-page.fluid[data-awards-active="true"] .ap-content > [role="tabpanel"] { order: 1; }
+.ap-page.fluid[data-awards-active="true"] .ap-awards { margin-top: 0; }
+@media (max-width: 600px) {
+  .ap-top-nav.top-nav { padding: 16px 24px; }
+  .ap-page.fluid .ap-content { margin-left: 16px; margin-right: 16px; }
+  .ap-page.fluid .ap-name h1 { font-size: 28px; line-height: 31px; }
+  .ap-page.fluid .ap-stat-grid { grid-template-columns: 1fr; }
+  .ap-page.fluid .ap-award-titles { grid-template-columns: minmax(0, 1fr); }
+  .ap-page.fluid .ap-awards { padding: 20px; }
+  .ap-page.fluid .ap-events-panel > header { font-size: 14px; }
+  .ap-edit-pair { grid-template-columns: 1fr; }
+  .ap-profile-editor { padding: 20px; }
+}

@@ -1,0 +1,11 @@
+/* Reuse Final / Profiles geometry, with the volunteer's existing event controls. */
+.vop-account-menu .me-head { width: 100%; text-align: left; }
+.vop-account-menu .me-head > span:last-child { min-width: 0; }
+.vop-account-menu .me-head b { overflow-wrap: anywhere; }
+.vop-page .ap-events-panel .ve-event-card { border-radius: 18px; }
+.vop-history-note { margin: 16px 8px 0; color: var(--darker-gray); font: 400 14px/19px var(--sans); }
+.vop-exit { min-height: 100dvh; display: grid; place-items: center; padding: 32px 24px; background: var(--vlight); }
+.vop-exit > section { width: min(100%, 480px); padding: 32px; border: 1px solid var(--gray); border-radius: 16px; background: var(--white); }
+.vop-exit h1 { margin: 0 0 20px; font: 600 28px/31px var(--serif); }
+.vop-exit p { margin: 0 0 24px; font: 400 16px/24px var(--sans); color: var(--darker-gray); }
+.vop-exit .btn { height: auto; min-height: 39px; padding: 10px 18px; }
