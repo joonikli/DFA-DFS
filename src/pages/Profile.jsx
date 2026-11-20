@@ -7,6 +7,8 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { BadgeCheck, ChevronDown, Handshake, Mail, Pencil, Phone, Star, Tag } from 'lucide-react'
 import TabNav from '../components/TabNav/TabNav.jsx'
+import SurveyWarning from '../components/SurveyWarning.jsx'
+import StatusBadge from '../components/StatusBadge/StatusBadge.jsx'
 import Tags from '../components/Tags/Tags.jsx'
 import Modal from '../components/Modal/Modal.jsx'
 import Button from '../components/Button/Button.jsx'
@@ -17,6 +19,7 @@ import EventCard, { EventCardEmpty } from '../components/EventCard/EventCard.jsx
 import EventCta from '../components/EventCta/EventCta.jsx'
 import { FieldLabel, TextField } from '../components/Field/Field.jsx'
 import { AdminEventCta } from '../features/admin/AdminBits.jsx'
+import { EditButton } from '../features/admin/EventOverview.jsx'
 import { useAdminEvents } from '../features/admin/useAdminEvents.js'
 import { useEventFlows } from '../features/events/EventFlows.jsx'
 import { events, eventsById, volunteerHistory } from '../mock/events.js'
@@ -156,10 +159,12 @@ export default function Profile() {
   }, [mode, v, id, role, profiles])
 
   const isVolunteerLayout = mode !== 'admin-self'
+  const missingSurveyIds = new Set(mode === 'admin-view' ? adminEvents.filter((event) => event.hasSurvey && event.surveyMissing?.includes(id)).map((event) => event.id) : [])
+  const hasMissingSurvey = missingSurveyIds.size > 0
   const tabs = isVolunteerLayout
     ? [
         { value: 'upcoming', label: 'Upcoming' },
-        { value: 'attended', label: 'Attended' },
+        { value: 'attended', label: <>Attended{hasMissingSurvey && <SurveyWarning />}</> },
         { value: 'awards', label: 'Awards' },
       ]
     : [
@@ -185,10 +190,11 @@ export default function Profile() {
       }
     }
     if (mode === 'admin-view') {
-      const mine = adminEvents.filter((e) => e.signups.includes(id) && e.status !== 'cancelled')
+      const missingSurvey = (e) => e.hasSurvey && e.surveyMissing?.includes(id)
+      const mine = adminEvents.filter((e) => (e.signups.includes(id) && e.status !== 'cancelled') || missingSurvey(e))
       return {
         upcoming: mine.filter((e) => e.start >= TODAY),
-        past: mine.filter((e) => e.start < TODAY).sort((a, b) => b.start - a.start),
+        past: mine.filter((e) => e.start < TODAY || missingSurvey(e)).sort((a, b) => b.start - a.start),
         stats: v ? { hours: v.hours, events: v.eventsAttended, rate: v.attendanceRate } : null,
       }
     }
@@ -220,7 +226,7 @@ export default function Profile() {
         key={e.id}
         event={{ ...e, title: e.name ?? e.title }}
         onOpen={() => navigate(`/events/${e.id}`)}
-        cta={<AdminEventCta count={e.signups.length} saved={admin.saved.includes(e.id)} onToggleSaved={() => adminToggleSaved(e.id)} />}
+        cta={<AdminEventCta count={e.signups.length} saved={admin.saved.includes(e.id)} onToggleSaved={() => adminToggleSaved(e.id)} badge={tab === 'attended' && missingSurveyIds.has(e.id) ? <StatusBadge color="red">Survey missing</StatusBadge> : null} />}
       />
     )
   }
@@ -321,9 +327,13 @@ export default function Profile() {
             <section className="profile__notes">
               <div className="profile__notes-head">
                 <h2 className="text-heading-2">Admin Notes</h2>
-                <button type="button" aria-label={editingNote ? 'Done editing notes' : 'Edit notes'} onClick={() => setEditingNote((x) => !x)}>
-                  <Pencil size={20} strokeWidth={1.5} />
-                </button>
+                <EditButton
+                  label={editingNote ? 'Done' : 'Edit'}
+                  aria-label={editingNote ? 'Done editing notes' : 'Edit admin notes'}
+                  aria-expanded={editingNote}
+                  onMouseDown={(event) => { if (editingNote) event.preventDefault() }}
+                  onClick={() => setEditingNote((x) => !x)}
+                />
               </div>
               {editingNote ? (
                 <textarea

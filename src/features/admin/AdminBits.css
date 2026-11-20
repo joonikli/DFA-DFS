@@ -13,6 +13,7 @@
 }
 
 /* Color7 variant: bookmark ring is dark gray */
+.admin-cta__save { display: inline-flex; align-items: center; gap: 8px; }
 .admin-cta__save .saved:not(.saved--selected) {
   border-color: var(--neutral-dark-gray);
 }

@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef } from 'react';
 // Shared layout-based indicator used by both admin and volunteer event tabs.
 // `marks` (optional): item → count of unseen additions. A count > 0 shows a dot on
 // that tab (style `.tab-mark` per page); each increase remounts it to replay its pulse.
-export default function SlidingTabs({ value, onChange, items, label, panelId, className, lineClassName, marks = {} }) {
+export default function SlidingTabs({ value, onChange, items, label, panelId, className, lineClassName, marks = {}, badges = {} }) {
   const ref = useRef(null);
   const positionIndicator = (instant = false) => {
     const tabs = ref.current, selected = tabs?.querySelector('[aria-selected="true"]'), line = tabs?.lastElementChild;
@@ -25,7 +25,7 @@ export default function SlidingTabs({ value, onChange, items, label, panelId, cl
     {items.map(item => {
       const mark = item !== value ? marks[item] || 0 : 0;
       return <button key={item} role="tab" aria-selected={value === item} aria-controls={panelId} className={value === item ? 'on' : ''} onClick={() => onChange(item)}>
-        <span className="tab-label">{mark > 0 && <span key={mark} className="tab-mark" aria-hidden="true" />}{item}</span>{mark > 0 && <span className="sr">, new events added</span>}
+        <span className="tab-label">{mark > 0 && <span key={mark} className="tab-mark" aria-hidden="true" />}{item}{badges[item]}</span>{mark > 0 && <span className="sr">, new events added</span>}
       </button>;
     })}
     <span className={lineClassName} aria-hidden="true" />

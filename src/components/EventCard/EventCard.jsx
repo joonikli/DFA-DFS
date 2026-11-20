@@ -14,9 +14,9 @@ import './EventCard.css'
  * @param {number}   [registeredCount] renders the admin-view "N Registered" pill instead of `cta`
  * @param {string}   [flag]      short tag beside the title, e.g. "Newly saved"
  */
-export default function EventCard({ event, cta, layout = 'list', registeredCount, onOpen, flag }) {
+export default function EventCard({ event, cta, layout = 'list', registeredCount, onOpen, flag, notice }) {
   const { start, end } = event
-  if (layout === 'grid') return <GridCard {...{ event, cta, registeredCount, onOpen, flag }} />
+  if (layout === 'grid') return <GridCard {...{ event, cta, registeredCount, onOpen, flag, notice }} />
   return (
     <article
       className={`event-card event-card--${layout} ${onOpen ? 'event-card--clickable' : ''}`}
@@ -71,6 +71,7 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
               </Tags>
             ))}
           </div>
+          {notice && <div>{notice}</div>}
         </div>
       </div>
     </article>
@@ -84,7 +85,7 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
  * 2-line description → actions pinned to the bottom (primary left, save right).
  * Styling (type, tags, CTAs, border, shadow) comes from the final Event card.
  */
-function GridCard({ event, cta, registeredCount, onOpen, flag }) {
+function GridCard({ event, cta, registeredCount, onOpen, flag, notice }) {
   const { start, end } = event
   return (
     <article className={`event-card event-card--grid ${onOpen ? 'event-card--clickable' : ''}`} onClick={onOpen}>
@@ -122,6 +123,7 @@ function GridCard({ event, cta, registeredCount, onOpen, flag }) {
       </div>
 
       <p className="event-card__desc text-body">{event.description}</p>
+      {notice && <div>{notice}</div>}
 
       {/* stopPropagation so CTA clicks don't also open the card */}
       <div className="event-card__actions" onClick={(e) => e.stopPropagation()}>

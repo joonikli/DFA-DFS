@@ -15,9 +15,9 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const t12 = (d) => `${d.getHours() % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')}${d.getHours() < 12 ? 'am' : 'pm'}`
 
-export function EditButton({ onClick, label = 'Edit' }) {
+export function EditButton({ onClick, label = 'Edit', ...props }) {
   return (
-    <button type="button" className="edit-btn" onClick={onClick}>
+    <button type="button" className="edit-btn" onClick={onClick} {...props}>
       <Pencil size={14} strokeWidth={1.75} aria-hidden="true" />
       {label}
     </button>

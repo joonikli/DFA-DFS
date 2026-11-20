@@ -7,7 +7,7 @@ export function ownVolunteerProfile() {
   // These summary totals already appear on the volunteer dashboard. The four
   // detailed past shifts are a subset, not a replacement for the summary total.
   const person = getProfile('volunteer', VOL);
-  return { ...person, bio: biography ?? person.bio, attended: 14, attendance: 92 };
+  return { ...person, bio: biography ?? person.bio, attended: 14, attendance: 92, awards: [...new Set([...person.awards, 'top-15'])] };
 }
 
 export function saveOwnVolunteerProfile(form) {

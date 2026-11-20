@@ -54,8 +54,7 @@
 .ap-contact-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .ap-contact-tags > span { padding: 4px 8px; border-radius: 8px; font: 500 14px/17px var(--sans); color: var(--blue-dark); background: var(--blue-light); }
 .ap-notes { margin-top: 75px; }
-.ap-notes > header { display: flex; align-items: center; justify-content: space-between; padding-right: 16px; margin-bottom: 11px; }
-.ap-notes-edit { display: grid; place-items: center; width: 24px; height: 24px; }
+.ap-notes > header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
 .ap-notes-box { min-height: 268px; padding: 28px 24px; border: 1px solid var(--gray); border-radius: 20px; background: var(--white); color: var(--darker-gray); font: 400 16px/19px var(--sans); }
 .ap-notes-box p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ap-notes-box.editing { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
@@ -96,7 +95,6 @@
 .ae-roster-profile > .av { width: 36px; height: 36px; }
 @media (hover: hover) and (pointer: fine) {
   .ap-contact dd a:hover, .ae-roster-person a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .ap-notes-edit:hover { background: var(--light-gray); border-radius: 4px; }
 }
 .ap-page.fluid .ap-masthead { height: 182px; }
 .ap-page.fluid .ap-portrait { left: 24px; }

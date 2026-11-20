@@ -9,6 +9,7 @@ import { MANAGER_URL, navigate, useRoute } from '../lib/router.js';
 import VolunteerEvents from './Events.jsx';
 import VolunteerProfile from './Profile.jsx';
 import VolunteerTopNav from './TopNav.jsx';
+import VolunteerAwardPopup from './AwardPopup.jsx';
 import { RegistrationProvider, useRegistration } from './Registration.jsx';
 import { EventNoticeProvider, useEventNotice } from './EventNotice.jsx';
 import { useVolunteerEventActions } from './useEventActions.js';
@@ -156,6 +157,8 @@ function Portal() {
   // 'events-d' = TEST copy of Events with a D / E card switch ('events-e' opens it on E). Not linked in the nav.
   const TEST_CARDS = { 'events-d': 'd', 'events-e': 'e' };
   const active = ['events', 'profile', 'logged-out', ...Object.keys(TEST_CARDS)].includes(route) ? route : 'dashboard';
+  const [showAward, setShowAward] = useState(active === 'dashboard');
+  useEffect(() => { setShowAward(active === 'dashboard'); }, [active]);
   const [registered, setRegistered] = useState(() => new Set(vol.upcoming));
   const [saved, setSaved] = useState(() => new Set());
   useEffect(() => {
@@ -177,6 +180,7 @@ function Portal() {
         {active === 'events' && <VolunteerEvents {...{ registered, setRegistered, saved, setSaved }} eventId={params.get('id')} />}
         {TEST_CARDS[active] && <VolunteerEvents key={active} {...{ registered, setRegistered, saved, setSaved }} eventId={params.get('id')} route={active} cardStyle={TEST_CARDS[active]} />}
         {active === 'profile' && <VolunteerProfile {...{ registered, setRegistered, saved, setSaved }} />}
+        {active === 'dashboard' && showAward && <VolunteerAwardPopup onClosed={() => setShowAward(false)} />}
       </Shell>}
       </RegistrationProvider>
     </div>

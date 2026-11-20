@@ -6,7 +6,7 @@ import Tags from '../../components/Tags/Tags.jsx'
 import './AdminBits.css'
 
 /** Figma: Event card › Color=Color7 — "👥 15 Registered" + outlined bookmark */
-export function AdminEventCta({ count, saved, onToggleSaved }) {
+export function AdminEventCta({ count, saved, onToggleSaved, badge }) {
   return (
     <div className="admin-cta">
       <span className="admin-cta__count text-label-2">
@@ -14,6 +14,7 @@ export function AdminEventCta({ count, saved, onToggleSaved }) {
         {count} Registered
       </span>
       <span className="admin-cta__save">
+        {badge}
         <Saved selected={saved} onClick={onToggleSaved} />
       </span>
     </div>

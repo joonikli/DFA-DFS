@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { hideTip, useFitZoom, usePop, useToast } from '../components/ui.jsx';
-import { navigate } from '../lib/router.js';
+import { navigate, useRoute } from '../lib/router.js';
 import { useStore } from '../lib/store.js';
 import { EventTabs } from '../features/events/Events.jsx';
 import EventAsset from '../features/events/EventAsset.jsx';
@@ -18,10 +18,11 @@ import './profile.css';
 export default function VolunteerProfile({ registered, setRegistered, saved, setSaved }) {
   useStore();
   const person = ownVolunteerProfile();
+  const { params } = useRoute();
   const page = useRef(null), pop = usePop(), toast = useToast();
   const popRef = useRef(pop); popRef.current = pop;
   useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
-  const [tab, setTab] = useState('Upcoming'), [year, setYear] = useState(PROFILE_YEAR);
+  const [tab, setTab] = useState(params.get('tab') === 'awards' ? 'Awards' : 'Upcoming'), [year, setYear] = useState(PROFILE_YEAR);
   const [editor, setEditor] = useState(null), [announcement, setAnnouncement] = useState(false);
   const { onSave, onRegister } = useVolunteerEventActions({ registered, setRegistered, saved, setSaved });
   useEffect(() => () => { popRef.current.close(null, true); hideTip(); }, []);

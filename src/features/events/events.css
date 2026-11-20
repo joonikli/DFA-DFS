@@ -59,6 +59,7 @@
 .ae-card-title h2 { padding-top: 4px; }
 .ae-card-title h2 { margin: 0; font: 600 24px/27px var(--serif); }
 .ae-card-actions { display: flex; align-items: center; gap: 18px; flex-shrink: 0; min-height: 37px; }
+.ae-card-save-actions { display: inline-flex; align-items: center; gap: 18px; flex-shrink: 0; }
 .ae-registered { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--darker-gray); white-space: nowrap; }
 .ae-bookmark { position: relative; z-index: 2; display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border: 1px solid var(--dark-gray); border-radius: 50%; background: var(--white); transition: background-color var(--dur-micro), border-color var(--dur-micro), color var(--dur-micro), transform var(--dur-press); }
 .ae-bookmark:active { transform: scale(.97); }
@@ -293,10 +294,6 @@
 .ae-roster-person b { font: 600 16px/19px var(--sans); overflow-wrap: anywhere; }
 .ae-roster-person > span { font: 500 14px/17px var(--sans); }
 .ae-roster-actions { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
-.ae-survey-status { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; font: 500 14px/17px var(--sans); white-space: nowrap; }
-.ae-survey-status.missing { color: #c2191c; background: #ffdcdc; }
-.ae-survey-status.complete { color: #516f31; background: #e5f6d4; gap: 12px; }
-.ae-survey-status.pending, .ae-survey-status.unassigned { color: var(--darker-gray); background: var(--light-gray); }
 .ae-roster-message { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 4px; }
 .ae-roster-note { margin: 2px 0 0; font: 400 14px/19px var(--sans); color: var(--darker-gray); }
 .ae-detail-aside { min-width: 0; }

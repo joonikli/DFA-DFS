@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../../components/Icon.jsx';
+import SurveyWarning from '../../components/SurveyWarning.jsx';
+import SurveyStatus from '../events/SurveyStatus.jsx';
 import { hideTip, useFitZoom, usePop, useToast } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
 import { initials, useStore } from '../../lib/store.js';
@@ -40,7 +42,7 @@ function Notes({ person }) {
   const edit = useRef(null);
   const finish = () => { setEditing(false); requestAnimationFrame(() => edit.current?.focus()); };
   return <section className="ap-notes" aria-label="Admin notes">
-    <header><h2>Admin Notes</h2><button ref={edit} className="ap-notes-edit" aria-label="Edit admin notes" aria-expanded={editing} onClick={() => { setDraft(person.notes || ''); setEditing(true); }}><ProfileAsset name="notes-pen" /></button></header>
+    <header><h2>Admin Notes</h2><button ref={edit} type="button" className="btn btn-outline ae-edit" aria-label="Edit admin notes" aria-expanded={editing} onClick={() => { setDraft(person.notes || ''); setEditing(true); }}><EventAsset name="detail-pen" />Edit</button></header>
     {editing ? <form className="ap-notes-box editing" onSubmit={(event) => { event.preventDefault(); saveAdminNotes(person.id, draft); finish(); toast('Admin notes saved', { ic: 'check' }); }}>
       <label className="sr" htmlFor="admin-profile-notes">Admin-only notes</label><textarea id="admin-profile-notes" autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); finish(); } }} />
       <div><button type="button" className="btn btn-purple-outline" onClick={finish}>Cancel</button><button type="submit" className="btn btn-dark">Save notes</button></div>
@@ -82,6 +84,8 @@ export default function Profiles({ params }) {
   useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
   const [tab, setTab] = useState('Upcoming'), [year, setYear] = useState(PROFILE_YEAR), [editor, setEditor] = useState(null);
   const [events] = useEventState('events'), [saved, setSaved] = useEventState('saved');
+  const missingSurveyIds = new Set(!admin && person ? events.filter((event) => Boolean(event.surveyDefinition || event.survey) && event.surveyMissingIds?.includes(person.id)).map((event) => event.id) : []);
+  const hasMissingSurvey = missingSurveyIds.size > 0;
   useEffect(() => { document.getElementById('main')?.scrollTo(0, 0); return () => { popRef.current.close(null, true); hideTip(); }; }, []);
   const changeTab = (value) => { pop.close(null, true); hideTip(); setTab(value); };
   const saveToggle = (event) => {
@@ -91,7 +95,7 @@ export default function Profiles({ params }) {
   };
   const related = !person ? [] : events.filter((event) => {
     if (admin) return tab === 'Upcoming' ? event.status === 'Upcoming' && event.group === 'mine' : event.status === 'Completed';
-    if (tab === 'Attended') return person.attendedEvents.includes(event.id);
+    if (tab === 'Attended') return person.attendedEvents.includes(event.id) || missingSurveyIds.has(event.id);
     return event.status === 'Upcoming' && (event.volunteerIds || Object.keys(VOLS).slice(0, event.registered)).includes(person.id);
   });
   const first = person?.name.split(' ')[0];
@@ -105,9 +109,9 @@ export default function Profiles({ params }) {
         <section className="ap-intro"><div className="ap-identity-row"><div><div className="ap-name"><h1>{person.name}</h1>{person.verified && <ProfileAsset name={admin ? 'verified-admin' : 'verified-volunteer'} />}</div><p className="ap-subtitle">{admin ? person.jobTitle : person.kind} | {person.location}</p></div>{admin && <button className="btn btn-outline ae-edit ap-edit-profile" aria-label="Edit profile" onClick={() => setEditor({})}><EventAsset name="detail-pen" />Edit</button>}</div><p className="ap-bio">{person.bio}</p></section>
         {!admin && <Statistics person={person} year={year} onYear={setYear} />}
         <section className="ap-events" aria-label={`${first}’s events`}><h2>{first}’s Events</h2>
-          <EventTabs items={admin ? ['Upcoming', 'Previous'] : ['Upcoming', 'Attended', 'Awards']} value={tab} onChange={changeTab} label="Profile activity" panelId="profile-activity-panel" className="ap-tabs" />
+          <EventTabs items={admin ? ['Upcoming', 'Previous'] : ['Upcoming', 'Attended', 'Awards']} value={tab} onChange={changeTab} label="Profile activity" panelId="profile-activity-panel" className="ap-tabs" badges={hasMissingSurvey ? { Attended: <SurveyWarning /> } : undefined} />
           {tab !== 'Awards' && <div className="ap-events-panel" id="profile-activity-panel" role="tabpanel" aria-label={`${tab} profile events`}>
-            {related.length ? <><header><span>{tab === 'Upcoming' ? 'Upcoming events' : 'Previous events'}</span><span>{related.length} {related.length === 1 ? 'Event' : 'Events'}</span></header><div className="ae-cards">{related.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} showRegistrationCount={false} />)}</div></> : <div className="ae-empty ap-empty"><div className="ae-empty-content"><div className="ae-empty-icon"><EventAsset name="detail-handshake" /></div><p>{tab === 'Upcoming' ? 'No upcoming events are recorded for this profile.' : 'No previous events are recorded for this profile.'}</p></div></div>}
+            {related.length ? <><header><span>{tab === 'Upcoming' ? 'Upcoming events' : tab === 'Attended' ? 'Attended events' : 'Previous events'}</span><span>{related.length} {related.length === 1 ? 'Event' : 'Events'}</span></header><div className="ae-cards">{related.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} showRegistrationCount={false} notice={tab === 'Attended' && missingSurveyIds.has(event.id) ? <SurveyStatus status="missing" /> : null} />)}</div></> : <div className="ae-empty ap-empty"><div className="ae-empty-content"><div className="ae-empty-icon"><EventAsset name="detail-handshake" /></div><p>{tab === 'Upcoming' ? 'No upcoming events are recorded for this profile.' : 'No previous events are recorded for this profile.'}</p></div></div>}
           </div>}
         </section>
       </div><aside className="ap-aside" aria-label="Profile contact information"><section className="ap-contact"><h2>Contact</h2><dl>

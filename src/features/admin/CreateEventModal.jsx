@@ -3,13 +3,15 @@
 //   Preview (2324:46851) → Create event
 import { useCallback, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarDays, CalendarSync, ChevronDown, Clock, MapPin, Maximize2, Tag } from 'lucide-react'
+import { CalendarDays, CalendarSync, ChevronDown, Clock, MapPin, Tag } from 'lucide-react'
 import Modal from '../../components/Modal/Modal.jsx'
 import Button from '../../components/Button/Button.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
 import { FieldLabel, SelectField, TextField, TimeField } from '../../components/Field/Field.jsx'
 import SurveyBuilder from '../surveys/SurveyBuilder.jsx'
-import { EventDetails, EventMain } from './EventOverview.jsx'
+import EventPreview from '../events/EventPreview.jsx'
+import SurveyRemoveButton from '../../components/SurveyRemoveButton.jsx'
+import useSurveyTransition from '../../lib/useSurveyTransition.js'
 import { EVENT_TYPES, TAG_OPTIONS } from '../../mock/adminEvents.js'
 import { PERSONAS, useDemo } from '../../store/DemoStore.jsx'
 import { useDismiss } from '../../lib/useDismiss.js'
@@ -84,6 +86,10 @@ export default function CreateEventModal({ onClose, draft }) {
   const [step, setStep] = useState('form') // form | survey | preview
   const [addingOrganizer, setAddingOrganizer] = useState(false)
   const [error, setError] = useState('')
+  const surveyAttachment = useRef(null)
+  const transitionSurvey = useSurveyTransition()
+  const openSurvey = () => transitionSurvey(() => setStep('survey'), 'forward')
+  const returnToEvent = (instant = false) => transitionSurvey(() => setStep('form'), 'back', instant)
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
   const event = {
@@ -136,49 +142,30 @@ export default function CreateEventModal({ onClose, draft }) {
   if (step === 'survey') {
     return (
       <SurveyBuilder
-        onClose={() => setStep('form')}
+        onClose={() => returnToEvent()}
+        onEscape={() => returnToEvent(true)}
+        transitionName="event-survey-step"
         eventOptions={[{ value: id, label: form.title || 'This event' }]}
         defaultEventId={id}
         defaultTitle={form.title ? `${form.title} Survey` : ''}
-        onCreate={(s) => {
+        onCreate={(s) => transitionSurvey(() => {
           setSurvey(s)
           setStep('form')
-        }}
+        }, 'back')}
       />
     )
   }
 
   if (step === 'preview') {
     return (
-      <Modal open onClose={() => setStep('form')} width={1012} padding="30px 32px 26px">
-        <div className="ce-preview">
-          <EventMain event={event} preview onViewSurvey={() => setStep('survey')} />
-          <EventDetails
-            event={event}
-            action={
-              <button type="button" className="ce-icon-btn" onClick={() => setStep('form')} aria-label="Back to the form">
-                <Maximize2 size={20} strokeWidth={1.75} />
-              </button>
-            }
-          />
-        </div>
-        <div className="modal__footer">
-          <Button color="secondary" onClick={saveDraft}>
-            Save draft
-          </Button>
-          <span style={{ display: 'flex', gap: 16 }}>
-            <Button color="tertiary" onClick={() => setStep('form')}>
-              Close preview
-            </Button>
-            <Button onClick={create}>Create event</Button>
-          </span>
-        </div>
+      <Modal open onClose={() => setStep('form')} width={1345} padding="36px 42px" showClose={false} transitionName="event-survey-step">
+        <EventPreview title={event.name} type={form.type} description={form.description} organizer={form.organizers.map((name) => `${name}${name === PERSONAS.admin.fullName ? ' (Me)' : ''}`).join(', ')} date={event.start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} time={`${event.start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} - ${event.end.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`} location={form.location} tags={form.tags.map((tag) => tag.label)} hasSurvey={Boolean(survey)} onViewSurvey={openSurvey} onClose={() => setStep('form')} onSaveDraft={saveDraft} onCreate={create} />
       </Modal>
     )
   }
 
   return (
-    <Modal open onClose={onClose} width={660} padding="20px 21px 18px" title="Create event">
+    <Modal open onClose={onClose} width={660} padding="20px 21px 18px" title="Create event" transitionName="event-survey-step">
       <div className="ce">
         <div className="ce__field">
           <FieldLabel htmlFor="ce-title">Title</FieldLabel>
@@ -263,15 +250,16 @@ export default function CreateEventModal({ onClose, draft }) {
           <TextField id="ce-desc" multiline className="ce-desc" placeholder="Write event description" value={form.description} onChange={set('description')} />
         </div>
 
-        <div>
+        <div ref={surveyAttachment}>
           {survey ? (
-            <span className="ce-survey-chip text-body">
-              <Tags color="green" onRemove={() => setSurvey(null)}>
+            <span className="ce-survey-chip text-body survey-attachment">
+              <Tags color="green">
                 Survey: {survey.title}
               </Tags>
+              <SurveyRemoveButton onRemove={() => { setSurvey(null); requestAnimationFrame(() => surveyAttachment.current?.querySelector('button')?.focus()) }} />
             </span>
           ) : (
-            <Button color="secondary" size="sm" icon="plus" className="ce-small-btn" onClick={() => setStep('survey')}>
+            <Button data-survey-return color="secondary" size="sm" icon="plus" className="ce-small-btn" onClick={openSurvey}>
               Add survey
             </Button>
           )}

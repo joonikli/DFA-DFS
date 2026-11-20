@@ -18,8 +18,8 @@ import './events.css';
 const TABS = ['Upcoming', 'Drafts', 'Saved', 'Completed', 'Cancelled'];
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export function EventTabs({ value, onChange, items = TABS, label = 'Event status', panelId = 'admin-events-panel', className = '' }) {
-  return <SlidingTabs value={value} onChange={onChange} items={items} label={label} panelId={panelId} className={`ae-tabs ${className}`} lineClassName="ae-tab-line" />;
+export function EventTabs({ value, onChange, items = TABS, label = 'Event status', panelId = 'admin-events-panel', className = '', badges }) {
+  return <SlidingTabs value={value} onChange={onChange} items={items} label={label} panelId={panelId} className={`ae-tabs ${className}`} lineClassName="ae-tab-line" badges={badges} />;
 }
 
 // Time filter: `from` / `to` are <input type="time"> values ('18:00'), compared with each event's start / end
@@ -66,15 +66,15 @@ function Calendar({ month, onMonth, selected, onSelect, events, saved }) {
   </section>;
 }
 
-export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationCount = true, layout = 'list' }) {
-  if (layout === 'grid') return <EventGridCard event={event} saved={saved} onSave={onSave} onEditDraft={onEditDraft} />;
+export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationCount = true, layout = 'list', notice }) {
+  if (layout === 'grid') return <EventGridCard event={event} saved={saved} onSave={onSave} onEditDraft={onEditDraft} notice={notice} />;
   const isDraft = Boolean(onEditDraft);
   const date = event.date ? parseDate(event.date) : null;
   // Direction D "Quiet column": quiet month / day / weekday column; time moves into the icon row below the title
   return <article className="ae-event-card">
     {isDraft ? <button className="ae-card-open" aria-label={`Continue editing ${event.title}`} onClick={onEditDraft} /> : <a className="ae-card-open" href={`#events?event=${event.id}`} aria-label={`Open ${event.title}, ${dateLabel(event.date)}`} />}
     <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'short' }) : 'Date'}</span><b>{date ? date.getDate() : '—'}</b>{date && <small>{date.toLocaleDateString('en-US', { weekday: 'short' })}</small>}</div>
-    <div className="ae-card-body"><div className="ae-card-title"><h2>{event.title}</h2><div className="ae-card-actions">{event.status !== 'Upcoming' && <span className={`ae-status ${event.status.toLowerCase()}`}>{event.status}</span>}{isDraft ? <Icon name="pen" size={16} /> : <>{showRegistrationCount && <span className="ae-registered"><EventAsset name="list-frame" />{event.registered} Registered</span>}<button className={`ae-bookmark ${saved ? 'on' : ''}`} aria-label={`${saved ? 'Unsave' : 'Save'} ${event.title}, ${dateLabel(event.date)}`} aria-pressed={saved} data-tip={saved ? 'Remove from saved' : 'Save event'} onClick={() => onSave(event)}><EventAsset name={saved ? 'list-bookmark-saved' : 'list-bookmark2'} /></button></>}</div></div>
+    <div className="ae-card-body"><div className="ae-card-title"><h2>{event.title}</h2><div className="ae-card-actions">{event.status !== 'Upcoming' && <span className={`ae-status ${event.status.toLowerCase()}`}>{event.status}</span>}{isDraft ? <Icon name="pen" size={16} /> : <>{showRegistrationCount && <span className="ae-registered"><EventAsset name="list-frame" />{event.registered} Registered</span>}<span className="ae-card-save-actions">{notice}<button className={`ae-bookmark ${saved ? 'on' : ''}`} aria-label={`${saved ? 'Unsave' : 'Save'} ${event.title}, ${dateLabel(event.date)}`} aria-pressed={saved} data-tip={saved ? 'Remove from saved' : 'Save event'} onClick={() => onSave(event)}><EventAsset name={saved ? 'list-bookmark-saved' : 'list-bookmark2'} /></button></span></>}</div></div>
       <div className="ae-card-meta">{event.time && <span className="ae-card-time"><Icon name="clock" size={16} sw={1.75} />{event.time}</span>}<span className="ae-card-location"><Icon name="pin" size={16} sw={1.75} /><span>{event.address ? `${event.address} · 0.5 mi from you` : 'Location to be added'}</span></span></div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{event.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
     </div>
   </article>;

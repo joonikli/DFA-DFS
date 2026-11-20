@@ -81,7 +81,7 @@ export default function VolunteerDashboard() {
   const { volunteer, dismissAnnouncement, markPostEventSeen } = useDemo()
   const { openRegistration, openPostEvent, openSurveyResponse, toggleSave } = useEventFlows()
   const [calMonth, setCalMonth] = useState(TODAY)
-  const [showAward, setShowAward] = useState(false)
+  const [showAward, setShowAward] = useState(true)
 
   const attended = useMemo(
     () => volunteer.attended.map((id) => eventsById[id]).sort((a, b) => b.start - a.start),
@@ -104,13 +104,13 @@ export default function VolunteerDashboard() {
   const latest = attended[0]
   const shouldThank = latest && volunteer.postEventSeenFor !== latest.id && !volunteer.surveyResponses[latest.id]
   useEffect(() => {
-    if (!shouldThank) return
+    if (!shouldThank || showAward) return
     const t = setTimeout(() => {
       markPostEventSeen(latest.id) // only once, even across refreshes
       openPostEvent(latest)
     }, 600)
     return () => clearTimeout(t)
-  }, [shouldThank, latest, markPostEventSeen, openPostEvent])
+  }, [shouldThank, showAward, latest, markPostEventSeen, openPostEvent])
 
   // ---- stats ----
   const inMonth = (e, offset) => {

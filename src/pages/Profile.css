@@ -220,10 +220,6 @@
   align-items: center;
   justify-content: space-between;
 }
-.profile__notes-head button {
-  display: inline-flex;
-  color: var(--neutral-black);
-}
 .profile__notes-box {
   min-height: 200px;
   margin: 0;

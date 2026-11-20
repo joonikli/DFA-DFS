@@ -1,0 +1,4 @@
+.ae-survey-status { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; font: 500 14px/17px var(--sans); white-space: nowrap; }
+.ae-survey-status.missing { color: #c2191c; background: #ffdcdc; }
+.ae-survey-status.complete { color: #516f31; background: #e5f6d4; gap: 12px; }
+.ae-survey-status.pending, .ae-survey-status.unassigned { color: var(--darker-gray); background: var(--light-gray); }
