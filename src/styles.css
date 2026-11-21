@@ -2113,3 +2113,30 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .ev-item, .ev-item:hover { box-shadow: none !important; transition: none; }
 /* Announcement groups have no faces: a megaphone avatar (volunteer messages) */
 .av.grp-ic { display: grid; place-items: center; background: var(--primary-lightest-purple) !important; color: var(--primary-dark-purple) !important; }
+/* Messages spacing, one step up on the 4px grid (manager + volunteer share these) */
+#stream:not(.posts) { gap: 20px; }
+.msg-time { margin-top: 8px; }
+.msg .reacts, .msg-col .reacts { margin-top: 8px; }
+.list-head { padding-top: 32px; gap: 20px; }
+/* Message / Announcements tab line runs the full width of the list column */
+.list-head #tabSeg { margin: 0 -24px; }
+/* Fitted tabs (Polaris "fitted", Material fixed tabs): two equal halves, label + badge centred,
+   1px full-bleed divider, 2px indicator spanning the active half */
+.list-head #tabSeg .tab-nav { padding: 0 24px; gap: 0; border-bottom-width: 1px; } /* tabs + indicator sit on the 24px content edges; the 1px divider stays full-bleed */
+.list-head #tabSeg .tab-nav__tab { flex: 1 1 0; width: auto; padding: 0 0 12px; margin-bottom: -1px; text-align: center; border-bottom-width: 2px; }
+.list-head #tabSeg .tab-nav__label { justify-content: center; align-items: center; gap: 8px; }
+
+/* Conversation rows: 8px between the name line and the preview line; 24px between messages */
+.convo-main { display: flex; flex-direction: column; gap: 8px; }
+#stream:not(.posts) { gap: 24px; }
+
+/* Even rhythm around the tab row: 24px from the title row, 20px to the search */
+.list-head #tabSeg { margin-top: 4px; }
+/* Tabs: "Message" flush with the 24px left edge, "Announcements" flush with the right edge;
+   the purple indicator sits under the label itself (not the whole half). Divider stays full-bleed. */
+.list-head #tabSeg .tab-nav__tab { display: flex; justify-content: flex-start; padding-bottom: 0; border-bottom-color: transparent !important; }
+.list-head #tabSeg .tab-nav__tab:last-child { justify-content: flex-end; }
+.list-head #tabSeg .tab-nav__label { padding-bottom: 12px; margin-bottom: -1px; border-bottom: 2px solid transparent; }
+.list-head #tabSeg .tab-nav__tab--active .tab-nav__label { border-bottom-color: var(--primary-purple); }
+/* Tab row split in two equal halves; each label starts at the left of its half */
+.list-head #tabSeg .tab-nav__tab, .list-head #tabSeg .tab-nav__tab:last-child { flex: 1 1 0; justify-content: flex-start; }
