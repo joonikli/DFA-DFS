@@ -123,7 +123,8 @@ export default function VolunteerDashboard() {
   const totalHours = Math.round(hours(attended) + volunteerHistory.hoursBefore)
   const totalEvents = attended.length + volunteerHistory.eventsBefore
   const rate = Math.round((totalEvents / (totalEvents + volunteerHistory.missedEvents)) * 100)
-  const programs = [...new Set(attended.map((e) => e.title))].slice(0, 3)
+  // Figma (2324:47983) lists two activities, each on one line
+  const programs = [...new Set(attended.map((e) => e.title))].slice(0, 2)
 
   const programsCount = new Set(upcoming.map((e) => e.program)).size
 

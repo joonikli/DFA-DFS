@@ -126,7 +126,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
 }
+/* Figma 2324:47983: four tiles of their natural height, side by side */
+.vdash-stats { align-items: start; }
+.vdash-stats .stat-tile { height: 100%; }
 
 .vdash-swatch {
   width: 24px;
@@ -144,8 +149,9 @@
   display: grid;
   grid-template-columns: 390px minmax(0, 1fr);
   gap: 20px;
-  align-items: start;
+  align-items: stretch; /* survey card and past surveys share one height */
 }
+.vdash-surveys > * { height: 100%; }
 
 .vdash-survey {
   display: flex;
