@@ -1361,7 +1361,7 @@ a { color: inherit; }
 .vp-rec-addr { display: flex; align-items: center; gap: 8px; font-size: 16px; color: var(--darker-gray); margin-top: 6px; }
 .vp-rec p { margin: 24px 0 10px; font-size: 16px; color: var(--darker-gray); max-width: 471px; line-height: 1.2; }
 .vp-tags { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-.vp-spots { margin-left: 8px; font-size: 13px; color: var(--darker-gray); }
+.vp-spots { margin-left: auto; padding-left: 8px; font-size: 13px; color: var(--darker-gray); }
 
 /* Stats row — 4 × 317 × 138 */
 .vp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
