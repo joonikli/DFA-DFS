@@ -2063,3 +2063,32 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .btn.btn--secondary { background: var(--neutral-white); border-color: var(--primary-dark-purple); color: var(--primary-dark-purple); }
 .btn.btn--tertiary { background: rgb(96 120 241 / .2); color: var(--primary-darkest-purple); border-color: transparent; }
 @media (hover: hover) and (pointer: fine) { .btn.btn--primary:hover { background: #252425; } .btn.btn--secondary:hover { background: var(--primary-lightest-purple); } }
+
+/* Grants card: "Your impact, ready for grants" — design tokens + text styles only */
+.impact-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; cursor: pointer; transition: border-color 120ms ease, box-shadow 120ms ease; }
+@media (hover: hover) and (pointer: fine) { .impact-card:hover { border-color: var(--primary-light-purple); box-shadow: var(--shadow-card-hover); } }
+.impact-in { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; padding: 26px 29px 20px; }
+.impact-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.impact-open { display: inline-flex; align-items: center; gap: 4px; color: var(--primary-dark-purple); white-space: nowrap; }
+.impact-open .ic { transition: transform 150ms cubic-bezier(.23, 1, .32, 1); }
+@media (hover: hover) and (pointer: fine) { .impact-card:hover .impact-open .ic { transform: translateX(2px); } }
+.impact-sub { color: var(--neutral-darker-gray); margin-top: -10px; }
+.impact-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; color: var(--neutral-black); }
+.impact-unit { color: var(--neutral-darker-gray); }
+.impact-up { display: inline-flex; align-items: center; gap: 4px; color: var(--green-dark-green); }
+.impact-hero .impact-up { flex-basis: 100%; }
+.impact-stats { list-style: none; margin: 0; padding: 16px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; border-top: 1px solid var(--neutral-gray); }
+.impact-stats li { display: flex; flex-direction: column; gap: 4px; min-width: 0; color: var(--neutral-black); }
+.impact-label { color: var(--neutral-darker-gray); }
+.impact-awarded { color: var(--neutral-darker-gray); margin-top: auto; }
+.impact-awarded b { color: var(--neutral-black); }
+.impact-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 24px; background: var(--neutral-light-gray); border-top: 1px solid var(--neutral-gray); border-radius: 0 0 12px 12px; }
+.impact-todo { display: inline-flex; align-items: center; gap: 8px; color: var(--neutral-black); text-align: left; }
+.impact-todo > .ic { color: var(--neutral-darker-gray); flex: none; }
+.impact-todo > .ic:last-child { color: var(--primary-dark-purple); }
+@media (hover: hover) and (pointer: fine) { .impact-todo:hover b { color: var(--primary-dark-purple); } }
+.impact-in { gap: 18px; }
+.impact-awarded { display: flex; flex-direction: column; gap: 2px; margin-top: auto; padding: 14px 16px; border-radius: 12px; background: var(--primary-lightest-purple); color: var(--neutral-black); }
+.impact-awarded .text-label-2 { color: var(--neutral-darker-gray); }
+.impact-todo span { white-space: nowrap; }
+.impact-foot { padding: 14px 24px; }

@@ -1,6 +1,6 @@
 // Figma: Final › Grants — Generate optional documents (2324:50057), Generate impact report (2324:50103, 2324:50327)
 // Full-screen document workspace (no app sidebar in the Figma frames).
-import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowUp,
@@ -138,6 +138,12 @@ export default function GenerateReports() {
   const closeDownload = useCallback(() => setShowDownload(false), [])
 
   const report = useMemo(() => (type ? reportFor(type) : null), [type])
+
+  // ?type=Impact report (e.g. from the manager dashboard's impact card) drafts that document right away
+  const preset = params.get('type')
+  useEffect(() => {
+    if (preset && REPORT_TYPES.includes(preset)) choose(preset)
+  }, [preset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function choose(t) {
     setType(t)

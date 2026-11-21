@@ -36,7 +36,18 @@ const seed = {
 // Dates don't survive JSON; revive the ones on admin-created events.
 const reviveEvent = (e) => ({ ...e, start: new Date(e.start), end: new Date(e.end) })
 
+// Links from the manager app (e.g. the dashboard's grants card) open the admin view with ?as=admin
+const roleFromUrl = () => {
+  try { const r = new URLSearchParams(location.search).get('as'); return r === 'admin' || r === 'volunteer' ? r : null } catch { return null }
+}
+
 function load() {
+  const asRole = roleFromUrl()
+  if (asRole) return { ...loadSaved(), role: asRole }
+  return loadSaved()
+}
+
+function loadSaved() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return seed

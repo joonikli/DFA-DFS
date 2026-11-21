@@ -6,7 +6,9 @@ import { Icon } from '../../components/Icon.jsx';
 import { LineChart } from '../../components/LineChart.jsx';
 import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
-import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, GRANTS, GRANTS_MORE, LOCATIONS, TODAY } from '../../data.js';
+import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, LOCATIONS, TODAY } from '../../data.js';
+import { grants as grantsData, impactReport } from '../../mock/grants.js';
+import Button from '../../components/Button/Button.jsx';
 import { reducedMotion } from '../../lib/store.js';
 import { useMsgShift } from './hooks.js';
 import { navigate } from '../../lib/router.js';
@@ -199,63 +201,58 @@ function ParticipationCard() {
   );
 }
 
-const gInitials = (name) => name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join('');
-const GRANTS_ALL = [...GRANTS, ...GRANTS_MORE];
-// Days from TODAY to a "Mon D" due date (December is 2026, everything else 2027)
-const daysUntil = (due) => {
-  const [mon, day] = due.split(' ');
-  const y = mon === 'Dec' ? 2026 : 2027;
-  const d = new Date(`${mon} ${day}, ${y} 12:00`), t = new Date(`${TODAY}T12:00`);
-  return Math.round((d - t) / 86400000);
-};
+// Grants card: leads with the program's wins (the same numbers the Impact report uses, so the
+// dashboard and the grant documents never disagree), then hands off to the Grants workspace in the
+// main app (/grants, opened in the admin view).
+const IMPACT = Object.fromEntries(impactReport.sections.find((x) => x.table).table.rows.map(([k, v, d]) => [k, { v, d }]));
+const ACCEPTED = grantsData.filter((g) => g.status === 'accepted');
+const AWARDED = ACCEPTED.reduce((n, g) => n + g.amount, 0);
+const TO_SUBMIT = grantsData.filter((g) => g.status === 'to_submit').sort((a, b) => a.due - b.due);
+const fmtMoney = (n) => `$${n.toLocaleString('en-US')}`;
+const fmtDue = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const goGrants = (path = '/grants', q = '') => { window.location.href = `${path}?as=admin${q}`; };
+
 function GrantsCard() {
-  const [hot, setHot] = useState(null);
-  const [tip, setTip] = useState({ on: false, i: null, top: 0 });
-  const list = D.grantsOpen ? GRANTS_ALL : GRANTS;
-  const draft = () => { Object.assign(D.gen, { tpl: 'funder', period: 'q4' }); navigate('report?tpl=funder&period=q4'); };
-  const over = (e) => {
-    const card = e.currentTarget;
-    const row = e.target.closest('.grant[data-g]');
-    if (!row) { setHot(null); setTip((t) => ({ ...t, on: false })); return; }
-    const i = +row.dataset.g;
-    if (i === hot) return;
-    const box = card.getBoundingClientRect(), r = row.getBoundingClientRect();
-    const k = card.offsetWidth / box.width; // undo dashboard zoom
-    setHot(i);
-    setTip({ on: true, i, top: (r.top - box.top + r.height / 2) * k });
-  };
-  const leave = () => { setHot(null); setTip((t) => ({ ...t, on: false })); };
-  const g = tip.i != null ? GRANTS_ALL[tip.i] : null;
-  const days = g ? daysUntil(g.due) : 0;
+  const hours = IMPACT['Total volunteer hours'];
+  const stats = [
+    ['Women served', IMPACT['Women served']],
+    ['Found jobs', { v: IMPACT['Women who secured employment within 6 months'].v.match(/\((\d+%)\)/)?.[1] || '61%', d: IMPACT['Women who secured employment within 6 months'].d }],
+    ['Events held', IMPACT['Total events held']],
+  ];
+  const next = TO_SUBMIT[0];
+  const openFromCard = (e) => { if (!e.target.closest('a, button')) goGrants(); };
   return (
-    <section className="card grants-card" data-card="grants" onPointerOver={over} onPointerLeave={leave}>
-      <div className="grants-in">
-        <h2 className="h2">Grant commitments</h2>
-        <div className="card-sub">1,292 of 1,350 match hours delivered.</div>
-        <div className="grant-list" id="grantList">
-          {list.map((gr, i) => {
-            const extra = i >= GRANTS.length;
-            return (
-              <div key={i} className={`grant ${extra ? 'reveal' : ''} ${hot === i ? 'hot' : ''}`} data-g={i} style={extra ? { animationDelay: `${(i - GRANTS.length) * 30}ms` } : undefined}>
-                <span className="g-logo">{gInitials(gr.name)}</span>
-                <div className="g-main"><div className="g-top"><b>{gr.name}</b><span>{gr.due}</span></div><div className="g-sub">{gr.sub}</div>
-                  <div className="g-track"><div className={gr.pct >= 100 ? 'done' : ''} style={{ width: `${Math.min(gr.pct, 100)}%` }} /></div></div>
-              </div>
-            );
-          })}
-          <button className="g-more" onClick={() => { D.grantsOpen = !D.grantsOpen; bump(); }}>{D.grantsOpen ? 'Show less' : `+${GRANTS_MORE.length} more`}</button>
+    <section className="card grants-card impact-card" data-card="grants" onClick={openFromCard}>
+      <div className="impact-in">
+        <div className="impact-head">
+          <h2 className="h2">Your impact</h2>
+          <button className="impact-open text-label-1" onClick={() => goGrants()}>View grants <Icon name="arrow-r" size={14} /></button>
         </div>
+        <p className="impact-sub text-label-2">FY 2025–26 · ready for grant applications</p>
+        <div className="impact-hero">
+          <span className="text-heading-1">{hours.v}</span>
+          <span className="text-label-2 impact-unit">volunteer hours</span>
+          <span className="text-label-2 impact-up"><Icon name="trend" size={14} /> {hours.d} from last year</span>
+        </div>
+        <ul className="impact-stats">
+          {stats.map(([label, x]) => (
+            <li key={label}>
+              <span className="text-heading-2">{x.v}</span>
+              <span className="text-label-2 impact-label">{label}</span>
+              <span className="text-label-2 impact-up">{x.d}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="impact-awarded"><span className="text-heading-2">{fmtMoney(AWARDED)}</span><span className="text-label-2">awarded across {ACCEPTED.length} grants this year</span></p>
       </div>
-      <div className={`g-tip ${tip.on ? "on" : ""}`} id="gTip" aria-hidden="true" style={{ translate: `0 ${tip.top}px` }}>
-        {g && <>
-          <div className="m">{g.name}</div><b>{Math.min(g.pct, 100)}%</b> of commitment
-          <div className="g-tip-row">
-            <span className={`g-status ${g.pct >= 100 ? 'met' : g.pct < 60 ? 'behind' : g.pct < 80 ? 'push' : ''}`}>{g.pct >= 100 ? 'Target met' : g.pct >= 80 ? 'On track' : g.pct >= 60 ? 'Needs a push' : 'Behind'}</span>
-            <span>Report due in {days} {days === 1 ? 'day' : 'days'}</span>
-          </div>
-        </>}
-      </div>
-      <footer className="grants-foot"><span><Icon name="nav-calendar" size={16} /> Next report due December 12</span><button className="link" onClick={draft}>Draft report <Icon name="arrow-r" size={14} /></button></footer>
+      <footer className="impact-foot">
+        {next && (
+          <button className="impact-todo text-label-2" onClick={() => goGrants('/grants', '&status=to_submit')}>
+            <span><b className="text-label-1">{TO_SUBMIT.length} to submit</b> · due {fmtDue(next.due)}</span> <Icon name="arrow-r" size={14} />
+          </button>
+        )}
+        <Button color="secondary" size="sm" onClick={() => goGrants('/grants/reports', '&type=Impact%20report')}>Impact report</Button>
+      </footer>
     </section>
   );
 }
