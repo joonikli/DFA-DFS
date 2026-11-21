@@ -123,3 +123,17 @@
 /* Survey cards and results stretch with the page instead of stopping at their 1488px widths */
 .app-shell .app-shell__content .as-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .app-shell .app-shell__content .sd-questions { width: auto; }
+/* Events lists (admin and volunteer) stretch like the Surveys lists: the list fills the width,
+   48px before the 400px calendar column. Narrow layouts (.fluid / stacked under 1300px) unchanged. */
+.app-shell .app-shell__content .ae-page:not(.fluid) .ae-layout {
+  grid-template-columns: minmax(0, 1fr) 400px;
+  column-gap: 48px;
+  justify-content: stretch;
+}
+@media (min-width: 1301px) {
+  .app-shell .app-shell__content .volunteer-events__body {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    column-gap: 48px;
+    justify-content: stretch;
+  }
+}

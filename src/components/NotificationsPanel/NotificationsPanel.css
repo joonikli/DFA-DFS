@@ -5,10 +5,13 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: min(559px, calc(100vw - 32px));
-  max-height: min(775px, calc(100vh - 100px));
-  padding-top: 24px;
+  gap: 14px;
+  /* The top nav isn't inside the app frame's zoom, so the panel takes the page scale here
+     (--page-zoom 0.9, AppShell.css) — same as the popups — and sits optically with the page */
+  zoom: 0.9;
+  width: min(480px, calc(100vw - 32px));
+  max-height: min(775px, calc((100vh - 100px) / 0.9));
+  padding-top: 20px;
   background: var(--neutral-white);
   border: 1px solid var(--neutral-gray);
   border-radius: 12px;
@@ -21,7 +24,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  margin-bottom: 15px;
+  margin-bottom: 4px;
   color: #000;
 }
 
@@ -67,4 +70,44 @@
   padding: 32px 20px;
   text-align: center;
   color: var(--neutral-darker-gray);
+}
+
+/* ---------- Dropdown hierarchy, one step under the page ----------
+   Title = card title (Crimson 600 24), actions and filters = labels (14), rows keep Body 16
+   with the 14px meta line; 48px media and 16px row padding instead of the full-page 70 / 24. */
+.notifications-panel__head h2 {
+  font-size: 24px;
+  line-height: 28px;
+}
+.notifications-panel .notifications-panel__mark {
+  font-size: 14px;
+  font-weight: 600;
+}
+.notifications-panel__icon svg {
+  width: 20px;
+  height: 20px;
+}
+.notifications-panel .sub-nav__item {
+  min-width: 0;
+  height: 28px;
+  padding: 4px 14px;
+  font-size: 14px;
+}
+.notifications-panel .notification {
+  gap: 16px;
+  padding: 16px 20px;
+}
+.notifications-panel .notification__media {
+  width: 48px;
+  height: 48px;
+}
+.notifications-panel .notification__media svg {
+  width: 24px;
+  height: 24px;
+}
+.notifications-panel .notification__text {
+  gap: 4px;
+}
+.notifications-panel .notification__link {
+  font-size: 14px;
 }
