@@ -4,7 +4,7 @@
 // (src/features/profiles/, see src/App.jsx).
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BadgeCheck, ChevronDown, Handshake, Mail, Phone, Star } from 'lucide-react'
+import { ChevronDown, Handshake, Mail, Phone } from 'lucide-react'
 import TabNav from '../components/TabNav/TabNav.jsx'
 import Modal from '../components/Modal/Modal.jsx'
 import Button from '../components/Button/Button.jsx'
@@ -169,8 +169,8 @@ export default function Profile() {
             <div>
               <h1 className="profile__name">
                 {person.fullName}
-                <BadgeCheck size={20} strokeWidth={1.75} aria-label="Verified" />
-                <Star size={20} strokeWidth={1.5} fill="#fae977" color="#bb7a34" aria-label="Top volunteer" />
+                {/* Figma badge: the same thick check as the staff badge, plus the top-volunteer star (as on the admin view of this profile) */}
+                <img className="profile__verified" src="/assets/profiles/verified-volunteer.svg" width="56" height="24" alt="Verified, top volunteer" />
               </h1>
               <p className="text-body profile__sub">
                 {person.title} <span aria-hidden="true">|</span> {person.city}

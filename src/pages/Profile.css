@@ -57,15 +57,15 @@
 .profile__name {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* name → badge, as on the staff profile */
   font-family: 'Crimson Pro', Georgia, serif;
   font-weight: 600;
   font-size: 32px;
   color: var(--neutral-black);
 }
-.profile__name svg:first-of-type {
-  align-self: flex-start;
-  margin-top: 2px;
+.profile__verified {
+  display: block;
+  flex-shrink: 0;
 }
 /* subtitle and Joined in the admin profile's lighter gray */
 .profile__sub {
