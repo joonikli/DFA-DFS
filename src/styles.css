@@ -2138,3 +2138,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .list-head #tabSeg .tab-nav__tab:last-child { justify-content: flex-end; }
 .list-head #tabSeg .tab-nav__label { padding-bottom: 12px; margin-bottom: -1px; border-bottom: 2px solid transparent; }
 .list-head #tabSeg .tab-nav__tab--active .tab-nav__label { border-bottom-color: var(--primary-purple); }
+/* Tab row split in two equal halves; each label starts at the left of its half */
+.list-head #tabSeg .tab-nav__tab, .list-head #tabSeg .tab-nav__tab:last-child { flex: 1 1 0; justify-content: flex-start; }
