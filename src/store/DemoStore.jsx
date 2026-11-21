@@ -94,6 +94,8 @@ function reducer(state, action) {
         link: { label: e.title, detail: formatShortDate(e.start), to: '/events?tab=registered' },
       })
     }
+    case 'updateRegistration':
+      return vol(state, { registrations: { ...state.volunteer.registrations, [action.id]: action.details } })
     case 'unregister':
       return vol(state, { registered: state.volunteer.registered.filter((x) => x !== action.id) })
     case 'submitSurvey':
@@ -129,6 +131,10 @@ function reducer(state, action) {
       }
     case 'adminCancelEvent':
       return { ...state, admin: { ...state.admin, cancelled: toggle(state.admin.cancelled, action.id) } }
+    case 'adminEditEvent': {
+      const edits = state.admin.eventEdits ?? {}
+      return { ...state, admin: { ...state.admin, eventEdits: { ...edits, [action.id]: { ...edits[action.id], ...action.patch } } } }
+    }
     case 'adminCreateSurvey':
       return { ...state, admin: { ...state.admin, createdSurveys: [...state.admin.createdSurveys, action.survey] } }
     case 'grantUpload': {
@@ -190,6 +196,7 @@ export function DemoProvider({ children }) {
       updateMessages: (fn) => dispatch({ type: 'messages', fn }),
       toggleSaved: (id) => dispatch({ type: 'toggleSaved', id }),
       register: (id, details) => dispatch({ type: 'register', id, details }),
+      updateRegistration: (id, details) => dispatch({ type: 'updateRegistration', id, details }),
       unregister: (id) => dispatch({ type: 'unregister', id }),
       submitSurvey: (id, answers) => dispatch({ type: 'submitSurvey', id, answers }),
       markPostEventSeen: (id) => dispatch({ type: 'seenPostEvent', id }),
@@ -199,6 +206,7 @@ export function DemoProvider({ children }) {
       adminCreateEvent: (event) => dispatch({ type: 'adminCreateEvent', event }),
       adminSaveDraft: (event) => dispatch({ type: 'adminSaveDraft', event }),
       adminCancelEvent: (id) => dispatch({ type: 'adminCancelEvent', id }),
+      adminEditEvent: (id, patch) => dispatch({ type: 'adminEditEvent', id, patch }),
       adminCreateSurvey: (survey) => dispatch({ type: 'adminCreateSurvey', survey }),
       adminSetSurveyStatus: (id, status) => dispatch({ type: 'adminSetSurveyStatus', id, status }),
       grantUpload: (grantId, docId, file) => dispatch({ type: 'grantUpload', grantId, docId, file }),

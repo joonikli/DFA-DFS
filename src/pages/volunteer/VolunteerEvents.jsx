@@ -1,7 +1,7 @@
 // Figma: Final (page 781:12667) › Volunteer - Events (section 2324:48069)
 //   V - Events - Upcoming (2324:48143) · Saved (2324:48221) · Registered (2324:48070) · Attended (2324:48323)
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { BookOpen, Bookmark, Handshake, SearchX } from 'lucide-react'
 import { PageHeader } from '../../layout/AppShell.jsx'
 import TabNav from '../../components/TabNav/TabNav.jsx'
@@ -19,6 +19,8 @@ import { TODAY } from '../../mock/today.js'
 import { MONTHS, daysBetween, formatShortDate, hoursBetween, sameDay } from '../../lib/dates.js'
 import { useDemo } from '../../store/DemoStore.jsx'
 import { useEventFlows } from '../../features/events/EventFlows.jsx'
+import { useDismiss } from '../../lib/useDismiss.js'
+import EventFilterPopover, { NO_FILTERS, compareDistance, filterOptions, hasFilters, matchesFilters, sortLabel, timeFilterLabel } from './EventFilterPopover.jsx'
 import './VolunteerEvents.css'
 
 // Length of the shrink-and-fade when a card leaves the current tab (keep in sync with CSS)
@@ -100,10 +102,16 @@ export default function VolunteerEvents() {
   const { volunteer } = useDemo()
   const { openRegistration, openCancelRegistration, openSurvey, toggleSave } = useEventFlows()
   const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
   const tab = TABS.some((t) => t.value === params.get('tab')) ? params.get('tab') : 'upcoming'
 
   const [query, setQuery] = useState('')
-  const [sortDir, setSortDir] = useState('asc')
+  // Time / location / tag filters from the Filter popover (the date is selectedDay, shared with the calendar)
+  const [filters, setFilters] = useState(NO_FILTERS)
+  const [filterOpen, setFilterOpen] = useState(false)
+  const filterRef = useRef(null)
+  const closeFilter = useCallback(() => setFilterOpen(false), [])
+  useDismiss(filterRef, filterOpen, closeFilter)
   const [view, setView] = useState(params.get('view') === 'grid' ? 'grid' : 'list')
   const [selectedDay, setSelectedDay] = useState(null)
   const [calMonth, setCalMonth] = useState(TODAY)
@@ -112,7 +120,10 @@ export default function VolunteerEvents() {
   const statusOf = (e) =>
     volunteer.attended.includes(e.id) ? 'attended' : volunteer.registered.includes(e.id) ? 'registered' : 'open'
 
-  const groups = useMemo(() => {
+  // Events in view before search / filters: the picked day (any tab), or the current tab.
+  // Also the source of the popover's location / tag chips.
+  const pool = useMemo(() => {
+    if (selectedDay) return events.filter((e) => sameDay(e.start, selectedDay))
     const isFuture = (e) => e.start >= TODAY
     const byTab = {
       // Saving or registering moves an event out of Upcoming into its own tab.
@@ -121,19 +132,24 @@ export default function VolunteerEvents() {
       registered: (e) => isFuture(e) && volunteer.registered.includes(e.id),
       attended: (e) => volunteer.attended.includes(e.id),
     }
-    const sorted = (list) => [...list].sort((a, b) => (sortDir === 'asc' ? a.start - b.start : b.start - a.start))
+    return events.filter(byTab[tab])
+  }, [tab, selectedDay, volunteer])
 
-    // A day picked on the calendar shows every event that day, regardless of tab.
-    if (selectedDay) {
-      const items = sorted(events.filter((e) => sameDay(e.start, selectedDay) && matchesQuery(e, query)))
-      return [{ key: 'day', label: formatShortDate(selectedDay), items, alwaysShow: true }]
-    }
+  const groups = useMemo(() => {
+    const list = pool.filter((e) => matchesQuery(e, query) && matchesFilters(e, filters))
+      .sort((a, b) => compareDistance(a, b, filters.sort) || a.start - b.start)
+    // A day picked on the calendar (or in the filter) shows every event that day, regardless of tab.
+    if (selectedDay) return [{ key: 'day', label: formatShortDate(selectedDay), items: list, alwaysShow: true }]
+    return group(list, tab === 'attended')
+  }, [pool, tab, query, filters, selectedDay])
 
-    const list = sorted(events.filter((e) => byTab[tab](e) && matchesQuery(e, query)))
-    const g = group(list, tab === 'attended')
-    return sortDir === 'asc' ? g : [...g].reverse()
-  }, [tab, query, sortDir, selectedDay, volunteer])
-
+  const filtersOn = hasFilters(filters)
+  // The distance sort never hides events: it lights the Filter pill but isn't a "filter" for the empty state
+  const refined = filtersOn || Boolean(filters.sort)
+  const clearFilters = () => {
+    setSelectedDay(null)
+    setFilters(NO_FILTERS)
+  }
   const total = groups.reduce((n, g) => n + g.items.length, 0)
   const empty = EMPTY[tab]
 
@@ -141,8 +157,8 @@ export default function VolunteerEvents() {
      When saving / registering / unregistering makes a card drop out of the
      current list, keep it rendered for LEAVE_MS so it can shrink + fade away
      ("leaving"), pulse the tab it moved to, then let the remaining cards slide
-     into place (FLIP, below). Changing tab/search/sort/day just swaps lists. */
-  const ctx = `${tab}|${query}|${sortDir}|${selectedDay?.getTime() ?? ''}`
+     into place (FLIP, below). Changing tab/search/filters/day just swaps lists. */
+  const ctx = `${tab}|${query}|${JSON.stringify(filters)}|${selectedDay?.getTime() ?? ''}`
   const current = groups.flatMap((g) => g.items.map((e, index) => ({ event: e, id: e.id, group: g.key, index })))
   const idsKey = current.map((c) => c.id).join(',')
   const [track, setTrack] = useState({ ctx, idsKey, items: current, leaving: [] })
@@ -257,8 +273,10 @@ export default function VolunteerEvents() {
 
   const renderCard = ({ e, leaving }) => {
     const status = statusOf(e)
-    // Attended events without feedback open their post-event survey when clicked.
+    // Attended events without feedback open their post-event survey when clicked;
+    // every other card opens the event's own page (VolunteerEventDetail).
     const needsSurvey = status === 'attended' && !volunteer.surveyResponses[e.id]
+    const openEvent = () => navigate(`/events/${e.id}${selectedDay ? '' : `?from=${tab}`}`)
     return (
       <div
         key={e.id}
@@ -271,7 +289,7 @@ export default function VolunteerEvents() {
         event={e}
         layout={view}
         flag={leaving ? undefined : flagFor(e)}
-        onOpen={needsSurvey ? () => openSurvey(e) : undefined}
+        onOpen={leaving ? undefined : needsSurvey ? () => openSurvey(e) : openEvent}
         cta={
           <EventCta
             status={status}
@@ -296,7 +314,8 @@ export default function VolunteerEvents() {
         value={tab}
         marks={{ upcoming: unseen.upcoming.length, saved: unseen.saved.length, registered: unseen.registered.length }}
         onChange={(v) => {
-          setSelectedDay(null)
+          clearFilters()
+          setFilterOpen(false)
           setParams(v === 'upcoming' ? {} : { tab: v })
         }}
       />
@@ -305,23 +324,73 @@ export default function VolunteerEvents() {
         <div className="volunteer-events__main">
           <div className="volunteer-events__toolbar">
             <SearchBar value={query} onChange={setQuery} label="Search events" />
-            <Filter label="Date" direction={sortDir} onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))} />
+            <div className="volunteer-events__filter" ref={filterRef}>
+              <Filter
+                active={Boolean(selectedDay) || refined}
+                aria-label="Filter events by date, time, location and tags, or sort by distance"
+                aria-haspopup="dialog"
+                aria-expanded={filterOpen}
+                onClick={() => setFilterOpen((o) => !o)}
+              />
+              {filterOpen && (
+                <EventFilterPopover
+                  day={selectedDay}
+                  filters={filters}
+                  options={filterOptions(pool)}
+                  onApply={(day, next) => {
+                    setSelectedDay(day)
+                    if (day) setCalMonth(day)
+                    setFilters(next)
+                    setFilterOpen(false)
+                  }}
+                />
+              )}
+            </div>
             <Toggle value={view} onChange={setView} />
           </div>
 
-          {selectedDay && (
+          {(selectedDay || refined) && (
             <div className="volunteer-events__active-filter text-body">
-              Showing all events on
-              <Tags color="purple" onRemove={() => setSelectedDay(null)}>
-                {formatShortDate(selectedDay)}
-              </Tags>
+              {selectedDay ? 'Showing all events on' : filtersOn ? 'Filtered by' : 'Sorted by'}
+              {selectedDay && (
+                <Tags color="purple" onRemove={() => setSelectedDay(null)}>
+                  {formatShortDate(selectedDay)}
+                </Tags>
+              )}
+              {(filters.from || filters.to) && (
+                <Tags color="purple" onRemove={() => setFilters((f) => ({ ...f, from: '', to: '' }))}>
+                  {timeFilterLabel(filters)}
+                </Tags>
+              )}
+              {filters.places.map((p) => (
+                <Tags key={p} color="purple" onRemove={() => setFilters((f) => ({ ...f, places: f.places.filter((x) => x !== p) }))}>
+                  {p}
+                </Tags>
+              ))}
+              {filters.tags.map((t) => (
+                <Tags key={t} color="purple" onRemove={() => setFilters((f) => ({ ...f, tags: f.tags.filter((x) => x !== t) }))}>
+                  {t}
+                </Tags>
+              ))}
+              {filters.sort && (
+                <Tags color="purple" onRemove={() => setFilters((f) => ({ ...f, sort: '' }))}>
+                  {sortLabel(filters.sort)}
+                </Tags>
+              )}
             </div>
           )}
 
           {/* Only this list (sublabels + cards) scrolls; everything else stays put */}
           <div className="volunteer-events__list" ref={listRef}>
-          {query && total === 0 && !track.leaving.length ? (
-            <EventCardEmpty icon={SearchX}>No events match “{query}”</EventCardEmpty>
+          {(query || filtersOn) && total === 0 && !track.leaving.length ? (
+            <EventCardEmpty icon={SearchX}>
+              {filtersOn ? 'No events match your filters' : <>No events match “{query}”</>}
+              {filtersOn && (
+                <button type="button" className="volunteer-events__clear text-body-2" onClick={() => { setQuery(''); setFilters(NO_FILTERS) }}>
+                  Clear filters
+                </button>
+              )}
+            </EventCardEmpty>
           ) : (
             shownGroups
               .filter((g) => g.alwaysShow || g.shown.length)
@@ -349,7 +418,7 @@ export default function VolunteerEvents() {
             dotFor={dotFor}
             variant="dashboard"
             today={TODAY}
-            selected={selectedDay ?? TODAY}
+            selected={selectedDay}
             onSelect={(d) => setSelectedDay((cur) => (cur && sameDay(cur, d)) || sameDay(d, TODAY) ? null : d)}
           />
           <Snapshot

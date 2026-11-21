@@ -2,8 +2,11 @@
 
 Prioritize accuracy and faithful execution over speed.
 
+For designs, check against this figma file and its components first.
 Figma file to reference: https://www.figma.com/design/jIXKjfx96sNdtcKZgMBeI6/Dress-for-Success-Redesign?node-id=781-12667
 
+Figma components: 
+@https://www.figma.com/design/jIXKjfx96sNdtcKZgMBeI6/Dress-for-Success-Redesign?node-id=813-13399&m=dev 
 
 Before changing anything:
 1. Inspect the relevant existing files, screens, components, and prior work.

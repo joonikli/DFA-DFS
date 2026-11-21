@@ -1,5 +1,7 @@
-// Figma: Components › Event-calendar (node 1366:18162) + Calendar Tags (node 1354:15001)
-// Month grid with dots: light purple = any event that day, dark purple = one you're registered for.
+// Figma: Components › Event-calendar (node 1366:18162) + Calendar Tags (node 1354:15001).
+// Both variants and the legacy .cal calendars (styles.css) follow this one spec.
+// Month grid with dots: light purple = any event that day, green = one you're registered for.
+import { useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { MONTHS, sameDay } from '../../lib/dates.js'
 import CalendarKey from '../CalendarKey/CalendarKey.jsx'
@@ -35,6 +37,17 @@ const DEFAULT_LEGEND = [
  * Needs `today` to mark today and grey out earlier days.
  */
 export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND, variant = 'default', today }) {
+  // Day → last dot tone seen, and whether that tone arrived by a change (register / unregister)
+  // rather than on first render. Changed dots replay the TabNav "new" pulse; the flag sticks
+  // until the tone changes again so unrelated re-renders don't cut the animation short.
+  const seenDots = useRef(new Map())
+  const dotChanged = (date, dot) => {
+    const k = date.getTime()
+    const prev = seenDots.current.get(k)
+    if (!prev || prev.tone !== dot) seenDots.current.set(k, { tone: dot, pop: Boolean(prev) && Boolean(dot) })
+    return seenDots.current.get(k).pop
+  }
+
   const year = month.getFullYear()
   const m = month.getMonth()
   const firstWeekday = new Date(year, m, 1).getDay()
@@ -53,10 +66,10 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
       <div className="event-calendar event-calendar--dashboard">
         <div className="ecd-head">
           <button type="button" className="ecd-nav" onClick={() => onMonthChange(new Date(year, m - 1, 1))} aria-label="Previous month">
-            <ChevronLeft size={22} strokeWidth={2} />
+            <ChevronLeft size={24} strokeWidth={2} />
           </button>
           <span className="calendar-title">
-            <span aria-live="polite">
+            <span className="text-subheading" aria-live="polite">
               {MONTHS[m]} {year}
             </span>
             {key.length > 0 && (
@@ -70,7 +83,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
             )}
           </span>
           <button type="button" className="ecd-nav" onClick={() => onMonthChange(new Date(year, m + 1, 1))} aria-label="Next month">
-            <ChevronRight size={22} strokeWidth={2} />
+            <ChevronRight size={24} strokeWidth={2} />
           </button>
         </div>
         <div className="ecd-grid ecd-dow">
@@ -82,6 +95,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
           {cells.map((date, i) => {
             if (!date) return <span key={`blank-${i}`} />
             const dot = dotFor(date)
+            const pop = dotChanged(date, dot)
             const isSelected = selected && sameDay(date, selected)
             const isToday = today && sameDay(date, today)
             const isPast = todayStart && date < todayStart
@@ -89,13 +103,14 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
               <button
                 key={date.getDate()}
                 type="button"
-                className={`ecd-day${isToday ? ' today' : ''}${isSelected ? ' sel' : ''}${isPast ? ' past' : ''}`}
+                className={`ecd-day text-title-3${isToday ? ' today' : ''}${isSelected ? ' sel' : ''}${isPast ? ' past' : ''}`}
                 aria-pressed={Boolean(isSelected)}
                 aria-label={`${MONTHS[m]} ${date.getDate()}${dot ? ', has events' : ''}`}
                 onClick={() => onSelect(date)}
               >
                 {date.getDate()}
-                {dot && <i className={`ecd-dot ecd-dot--${dot}`} aria-hidden="true" />}
+                {/* keyed by tone so a change remounts the dot and restarts its pulse */}
+                {dot && <i key={dot} className={`ecd-dot ecd-dot--${dot}${pop ? ' ecd-dot--pop' : ''}`} aria-hidden="true" />}
               </button>
             )
           })}
@@ -108,7 +123,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
     <div className="event-calendar">
       <div className="event-calendar__head">
         <button type="button" className="event-calendar__nav" onClick={() => onMonthChange(new Date(year, m - 1, 1))} aria-label="Previous month">
-          <ChevronLeft size={24} strokeWidth={1.5} />
+          <ChevronLeft size={24} strokeWidth={2} />
         </button>
         <span className="calendar-title">
           <p className="text-subheading">
@@ -125,7 +140,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
           )}
         </span>
         <button type="button" className="event-calendar__nav" onClick={() => onMonthChange(new Date(year, m + 1, 1))} aria-label="Next month">
-          <ChevronRight size={24} strokeWidth={1.5} />
+          <ChevronRight size={24} strokeWidth={2} />
         </button>
       </div>
 

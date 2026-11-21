@@ -6,7 +6,7 @@ import { Icon } from '../../components/Icon.jsx';
 import { LineChart } from '../../components/LineChart.jsx';
 import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
-import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, LOCATIONS, TODAY } from '../../data.js';
+import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, LOCATIONS, SHIFTS, TODAY } from '../../data.js';
 import { grants as grantsData, impactReport } from '../../mock/grants.js';
 import { reducedMotion } from '../../lib/store.js';
 import { useMsgShift } from './hooks.js';
@@ -82,9 +82,9 @@ function ExecCard() {
       <p id="execText" ref={textRef}>{EXEC[shown]}</p>
       <button className="link" aria-expanded={D.execOpen} aria-controls="execMore" onClick={() => { D.execOpen = !D.execOpen; bump(); }}>View recommended action items <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.execOpen ? 'open' : ''}`} id="execMore"><div><ul className="actions-list">
-        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in November.</li>
-        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts in spring but none since September.</li>
-        <li><b>Fill the Holiday Suit Drive</b>11 of 24 spots filled for Dec 19. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('hs19')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
+        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in April.</li>
+        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts last fall but none since January.</li>
+        <li><b>Fill the Summer Suit Drive</b>{SHIFTS.e15.filled} of {SHIFTS.e15.cap} spots filled for May 30. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('e15')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
       </ul></div></div>
     </section>
   );
@@ -109,13 +109,13 @@ function EngageCard() {
 
 function RecCard() {
   return (
-    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q1</h3>
-      <p>Add two Allegheny County routes and a second styling suite; the December cohort has capacity for roughly 180 more hours.</p>
+    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q3</h3>
+      <p>Add two Allegheny County routes and a second styling suite; the May cohort has capacity for roughly 180 more hours.</p>
       <button className="link" aria-expanded={D.planOpen} aria-controls="planMore" onClick={() => { D.planOpen = !D.planOpen; bump(); }}>View action plan <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.planOpen ? 'open' : ''}`} id="planMore"><div><ul className="actions-list dark" style={{ gridTemplateColumns: '1fr' }}>
-        <li><b>Jan · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
-        <li><b>Feb · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
-        <li><b>Mar · Open second styling suite</b>Homestead back room, after the spring sort.</li>
+        <li><b>Jun · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
+        <li><b>Jul · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
+        <li><b>Aug · Open second styling suite</b>Homestead back room, after the summer sort.</li>
       </ul></div></div>
     </div>
   );
@@ -201,8 +201,7 @@ function ParticipationCard() {
 }
 
 // Grants card: leads with the program's wins (the same numbers the Impact report uses, so the
-// dashboard and the grant documents never disagree), then hands off to the Grants workspace in the
-// main app (/grants, opened in the admin view).
+// dashboard and the grant documents never disagree), then hands off to the Grants page (/grants).
 const IMPACT = Object.fromEntries(impactReport.sections.find((x) => x.table).table.rows.map(([k, v, d]) => [k, { v, d }]));
 const ACCEPTED = grantsData.filter((g) => g.status === 'accepted');
 const AWARDED = ACCEPTED.reduce((n, g) => n + g.amount, 0);
@@ -229,7 +228,7 @@ function AwardSpark({ values }) {
 }
 const TO_SUBMIT = grantsData.filter((g) => g.status === 'to_submit').sort((a, b) => a.due - b.due);
 const fmtDue = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-const goGrants = (path = '/grants', q = '') => { window.location.href = `${path}?as=admin${q}`; };
+const goGrants = (q = '') => navigate(`grants${q}`);
 
 function GrantsCard() {
   // Research: lead with the number unique to grants (awarded), back it with the two outcomes funders ask
@@ -239,7 +238,7 @@ function GrantsCard() {
   const hrs = IMPACT['Total volunteer hours'];
   const rows = [['Found jobs within 6 months', jobs.v.match(/\((\d+%)\)/)?.[1] || '61%', jobs.d], ['Women served', served.v, served.d], ['Volunteer hours', hrs.v, hrs.d]];
   const next = TO_SUBMIT[0];
-  const open = () => goGrants('/grants', '&status=to_submit');
+  const open = () => goGrants('?status=to_submit');
   return (
     <section className="card grants-card impact-card" data-card="grants" onClick={open}
       role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') open(); }}

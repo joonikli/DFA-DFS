@@ -15,7 +15,7 @@ export function daysBetween(from, to) {
   return Math.round((startOfDay(to) - startOfDay(from)) / DAY)
 }
 
-function formatHour(d, withSuffix) {
+export function formatHour(d, withSuffix) {
   const h = d.getHours()
   const m = d.getMinutes()
   const h12 = h % 12 || 12
