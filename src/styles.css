@@ -2122,8 +2122,10 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .list-head #tabSeg { margin: 0 -24px; }
 /* Fitted tabs (Polaris "fitted", Material fixed tabs): two equal halves, label + badge centred,
    1px full-bleed divider, 2px indicator spanning the active half */
-.list-head #tabSeg .tab-nav { padding: 0; gap: 0; border-bottom-width: 1px; }
-.list-head #tabSeg .tab-nav__tab { flex: 1 1 0; width: auto; padding: 0 0 12px; margin-bottom: -1px; text-align: center; border-bottom-width: 2px; }
+/* Two tabs sized to their content and spaced evenly: the left edge, the gap between them and the
+   right edge are equal, so the row reads as centred even though the labels differ in length */
+.list-head #tabSeg .tab-nav { padding: 0; gap: 0; justify-content: space-evenly; border-bottom-width: 1px; }
+.list-head #tabSeg .tab-nav__tab { flex: none; width: auto; padding: 0 12px 12px; margin-bottom: -1px; text-align: center; border-bottom-width: 2px; }
 .list-head #tabSeg .tab-nav__label { justify-content: center; align-items: center; gap: 8px; }
 
 /* Conversation rows: 8px between the name line and the preview line; 24px between messages */
