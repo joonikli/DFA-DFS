@@ -16,7 +16,7 @@ const detail = {
     email: 'mariko.takahashi@dressforsuccess.org',
     phone: '412-555-0167',
     joined: 'June 14, 2022',
-    bio: 'I lead Warehouse Wednesdays, where we sort, tag and shelve every donation that comes through our doors. No experience needed — I’ll show you around the racks and get you set up at a station.',
+    bio: 'I lead Warehouse Wednesdays, where we sort, tag and shelve every donation that comes through our doors. No experience needed. I’ll show you around the racks and get you set up at a station.',
   },
   anna: {
     email: 'anna.claire@dressforsuccess.org',

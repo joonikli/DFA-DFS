@@ -118,7 +118,7 @@ export default function SurveyDetail() {
       </header>
 
       {s.responses === 0 && (
-        <p className="survey-detail__empty text-body">No responses yet — results will appear here as volunteers submit the survey.</p>
+        <p className="survey-detail__empty text-body">No responses yet. Results will appear here as volunteers submit the survey.</p>
       )}
 
       <div className="survey-detail__questions">

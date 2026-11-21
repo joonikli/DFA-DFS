@@ -77,7 +77,7 @@ export const seedNotifications = {
       variant: 'default',
       image: madison,
       parts: [['Madison F. (Volunteer)', true], [' submitted the ', false], ['Fill-A-Bag survey', true]],
-      preview: '“The stylists were wonderful — more sizes would help.”',
+      preview: '“The stylists were wonderful, but more sizes would help.”',
       time: '1 day ago',
       category: 'Event',
     },

@@ -5,6 +5,7 @@
 //   Register / Can't make it / Save       → src/features/events/EventFlows.jsx popups
 //   Award banner + "View award" popup     → component library (src/components/Banner, src/features/awards)
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { hideTip, useFitZoom, useToast } from '../components/ui.jsx';
 import { SHIFTS } from '../data.js';
 import { reducedMotion } from '../lib/store.js';
@@ -33,6 +34,7 @@ const hours = (list) => list.reduce((s, e) => s + hoursBetween(e.start, e.end), 
 
 export default function VolunteerDashboard() {
   const { volunteer, submitSurvey, dismissAnnouncement } = useDemo();
+  const navigate = useNavigate();
   const [showAward, setShowAward] = useState(true); // the award popup greets the volunteer on each dashboard visit
   const { openRegistration, openCancelRegistration, toggleSave } = useEventFlows();
   const toast = useToast();
@@ -76,6 +78,7 @@ export default function VolunteerDashboard() {
     setCal((c) => { const d = new Date(c.y, c.m + dir, 1); return { ...c, y: d.getFullYear(), m: d.getMonth() }; });
   };
   const calDay = (k) => { hideTip(); setCal((c) => ({ ...c, sel: c.sel === k ? null : k })); };
+  const calOpen = (id) => { hideTip(); navigate(`/events/${id}`); };
   const calClear = () => setCal((c) => ({ ...c, sel: null }));
   const findEvents = () => recsRef.current?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
   const addCal = (id) => {
@@ -133,7 +136,7 @@ export default function VolunteerDashboard() {
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
           cal={cal} registered={registered} attended={volunteer.attended} flash={null}
-          onNav={calNav} onDay={calDay} onClear={calClear} onFind={findEvents} onAddCal={addCal} onCancel={cancelShift}
+          onNav={calNav} onDay={calDay} onOpen={calOpen} onClear={calClear} onFind={findEvents} onAddCal={addCal} onCancel={cancelShift}
         />
       </section>
       <RecommendedCard ref={recsRef} recommended={RECOMMENDED} registered={registered} saved={saved} onSave={save} onRegister={register} />

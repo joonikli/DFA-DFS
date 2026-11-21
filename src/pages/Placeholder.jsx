@@ -36,7 +36,7 @@ export default function Placeholder({ title, note, figmaNode }) {
           <Construction size={32} strokeWidth={1.75} />
         </div>
         <p className="text-subheading" style={{ color: 'var(--neutral-black)' }}>
-          Placeholder — {title}
+          Placeholder: {title}
         </p>
         {note && <p className="text-body" style={{ maxWidth: 460 }}>{note}</p>}
         {figmaNode && (

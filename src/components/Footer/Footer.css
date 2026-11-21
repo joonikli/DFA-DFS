@@ -1,0 +1,13 @@
+/* Sits at the end of the shell's scroll area (.app-shell__main), below the page content.
+   Left edge lines up with page content (53px at the shared 0.9 page zoom). */
+.app-footer {
+  flex-shrink: 0;
+  padding: 16px 56px 16px calc(53px * 0.9);
+  border-top: 1px solid var(--neutral-gray);
+  background: var(--neutral-white);
+  color: var(--neutral-darker-gray);
+}
+
+.app-footer p {
+  margin: 0;
+}

@@ -38,28 +38,32 @@ function EvItem({ id, flash, onAddCal, onCancel }) {
 
 // Dots follow the volunteer Events calendar (EventCalendar): green = a day you're signed up
 // for (registered or attended), light purple = any other event that day.
-export function CalendarCard({ cal, registered, attended, flash, onNav, onDay, onClear, onFind, onAddCal, onCancel }) {
+export function CalendarCard({ cal, registered, attended, flash, onNav, onDay, onOpen, onClear, onFind, onAddCal, onCancel }) {
   const { y, m, sel } = cal;
   const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
   const iso = (d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
   const all = myShifts(registered);
   const mine = new Set([...registered, ...attended].map((id) => SHIFT_DATES[id]));
-  const any = new Set(Object.values(SHIFT_DATES));
+  const byDate = {};
+  Object.entries(SHIFT_DATES).forEach(([id, d]) => (byDate[d] ||= []).push(id));
 
   const cells = [];
   for (let i = 0; i < first.getDay(); i++) cells.push(<span key={`b${i}`} />);
   for (let d = 1; d <= days; d++) {
     const k = iso(d);
+    const ev = byDate[k] || [];
+    // Light purple days name their event(s) on hover. A day with one event opens its page;
+    // days with several (or none) filter the list below.
     cells.push(
       <button
         key={k}
         className={`cal-day ${k === TODAY ? 'today' : ''} ${k === sel ? 'sel' : ''}`}
         data-act="cal-day"
         data-d={k}
-        data-tip={mine.has(k) ? 'You’re signed up' : undefined}
-        onClick={() => onDay(k)}
+        data-tip={mine.has(k) ? 'You’re signed up' : ev.length ? ev.map((id) => SHIFTS[id].title).join(', ') : undefined}
+        onClick={() => (ev.length === 1 ? onOpen(ev[0]) : onDay(k))}
       >
-        {d}{mine.has(k) ? <i className="dot reg" /> : any.has(k) ? <i className="dot" /> : null}
+        {d}{mine.has(k) ? <i className="dot reg" /> : ev.length ? <i className="dot" /> : null}
       </button>,
     );
   }
