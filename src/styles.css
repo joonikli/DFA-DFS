@@ -2103,3 +2103,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 /* No card-level hover on the grants card: it behaves like the other dashboard cards */
 .impact-card, .impact-card:hover { border-color: var(--gray) !important; box-shadow: none !important; transition: none; }
 .impact-card:hover .impact-cta .ic { transform: none !important; }
+/* Bottom link, same as the other cards' "View survey data →" */
+.impact-link { margin-top: auto; align-self: flex-start; }

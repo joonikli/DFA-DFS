@@ -258,11 +258,7 @@ function GrantsCard() {
           </div>
         ))}
         {next && (
-          <div className="impact-todo">
-            <Icon name="nav-calendar" size={16} />
-            <div><b>{TO_SUBMIT.length} applications to submit</b><span>Next due {fmtDue(next.due)}</span></div>
-            <span className="impact-cta">Review <Icon name="arrow-r" size={14} /></span>
-          </div>
+          <button className="link impact-link" onClick={open}>Review {TO_SUBMIT.length} applications due {fmtDue(next.due)} <Icon name="arrow-r" size={14} /></button>
         )}
       </div>
     </section>
