@@ -257,7 +257,7 @@ export default function VolunteerDashboard() {
         <StatTile label="Activities">
           <ul className="vdash-activities">
             {programs.map((p, i) => (
-              <li key={p} className="text-subheading">
+              <li key={p} className="vdash-activity">
                 <span className={`vdash-swatch vdash-swatch--${TONES[i % TONES.length]}`} aria-hidden="true" />
                 {p}
               </li>

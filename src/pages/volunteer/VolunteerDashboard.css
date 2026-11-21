@@ -208,3 +208,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Activities: one step below Subheading = Heading/6 (Inter 16 medium, 24 line height) */
+.vdash-activity { font-family: 'Inter', system-ui, sans-serif; font-weight: 500; font-size: 16px; line-height: 24px; }
+.vdash-activities { gap: 12px; }
+.vdash-activities .vdash-swatch { width: 20px; height: 20px; }
