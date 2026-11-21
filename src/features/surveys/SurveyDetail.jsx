@@ -43,7 +43,7 @@ function slicePath(from, to) {
   return `M${x1} ${y1}A${R} ${R} 0 ${large} 1 ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 ${large} 0 ${x4} ${y4}Z`;
 }
 
-function Donut({ options, total }) {
+export function Donut({ options, total }) {
   const [hover, setHover] = useState(null);
   let at = START;
   const slices = options.map((o) => { const from = at; at += (o.count / total) * 360; return { ...o, from, to: at }; });

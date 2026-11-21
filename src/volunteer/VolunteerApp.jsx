@@ -19,6 +19,7 @@ import { RecommendedCard } from './Recommended.jsx';
 import { PastSurveys, SurveyCard } from './Surveys.jsx';
 import { Modal } from './Modal.jsx';
 import { AnnouncementModal, SurveyModal } from './Modals.jsx';
+import PortalSurveyPopup, { PortalSurveyCard } from '../components/SurveyPopup/PortalSurveyPopup.jsx';
 
 let pastSeq = 0;
 const withKey = (p) => ({ ...p, key: ++pastSeq });
@@ -44,6 +45,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
   const [past, setPast] = useState(() => PAST_SURVEYS.map(withKey));
   const [freshKey, setFreshKey] = useState(null);
   const [modal, setModal] = useState(null); // { kind: 'ann' } | { kind: 'survey', p }
+  const [surveyOpen, setSurveyOpen] = useState(false);
   const modalSeq = useRef(0);
 
   // ---------- Banner ----------
@@ -113,7 +115,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
     <div className="dash vp" id="vp" ref={vpRef}>
       <VolunteerTopNav className="vp-top-nav" onAnnouncement={() => openModal({ kind: 'ann' })} />
       <header className="dash-head"><h1 className="h1">Hi {firstName(vol.name)}, let’s see what’s going on…</h1></header>
-      {!dismissed && <Banner leave={survey.done} onSurvey={goSurvey} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
+      {!dismissed && <Banner leave={survey.done} onSurvey={() => setSurveyOpen(true)} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
           cal={cal} registered={registered} recommended={recommended} flash={flash}
@@ -132,7 +134,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
         </div>
       </div>
       <div className="vp-surveys">
-        <SurveyCard
+        <PortalSurveyCard
           survey={survey}
           onRate={(n) => setSurvey((s) => ({ ...s, rating: n }))}
           onComment={(v) => setSurvey((s) => ({ ...s, comment: v }))}
@@ -140,6 +142,7 @@ function Dashboard({ registered, setRegistered, saved, setSaved }) {
         />
         <PastSurveys past={past} freshKey={freshKey} onView={(i) => openModal({ kind: 'survey', p: past[i] })} />
       </div>
+      <PortalSurveyPopup open={surveyOpen} survey={survey} onRate={(n) => setSurvey((s) => ({ ...s, rating: n }))} onComment={(v) => setSurvey((s) => ({ ...s, comment: v }))} onSubmit={submitSurvey} onClose={() => setSurveyOpen(false)} />
       {modal && (
         <Modal key={modal.key} label={modal.kind === 'ann' ? 'Announcement' : `${modal.p.event} survey`} onClosed={closedModal}>
           {(close) => (modal.kind === 'ann' ? <AnnouncementModal close={close} /> : <SurveyModal p={modal.p} close={close} />)}

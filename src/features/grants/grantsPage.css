@@ -32,7 +32,7 @@
 .gr-head button img { width: 16px; height: 16px; opacity: .55; transition: transform var(--dur-micro) var(--ease-out), opacity var(--dur-micro); }
 .gr-head button.on img { opacity: 1; }
 .gr-head button img.desc { transform: scaleY(-1); }
-.gr-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gr-title { max-width: 100%; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gr-pending { color: var(--darker-gray); }
 .gr-avatars { display: flex; gap: 6px; }
 .gr-avatars .av { width: 28px; height: 28px; font-size: 11px; }

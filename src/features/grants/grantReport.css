@@ -17,6 +17,14 @@
 .grp-dl-meta { margin: 12px 0 16px; font: 400 14px/17px var(--sans); color: var(--darker-gray); }
 .grp-dl-go.btn { width: 100%; height: 40px; border-radius: 48px; font: 400 14px/17px var(--sans); }
 
+/* Editing toolbar slides out from under the top bar once a report is ready, and back up when it's deleted
+   (same 0fr → 1fr grid technique as .expand, plus the bar itself travelling down out of the header) */
+.grp-tools-wrap { position: relative; z-index: 1; display: grid; grid-template-rows: 0fr; flex-shrink: 0; transition: grid-template-rows 320ms var(--ease-out); }
+.grp-tools-wrap.open { grid-template-rows: 1fr; }
+.grp-tools-clip { min-height: 0; overflow: hidden; }
+.grp-tools-wrap .grp-tools { transform: translateY(-100%); opacity: 0; transition: transform 320ms var(--ease-out), opacity 200ms var(--ease-out); }
+.grp-tools-wrap.open .grp-tools { transform: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .grp-tools-wrap, .grp-tools-wrap .grp-tools { transition: none; } }
 .grp-tools { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-shrink: 0; padding: 10px 24px; border-bottom: 1px solid var(--gray); background: var(--white); }
 .grp-tools-main, .grp-tools-zoom { display: flex; align-items: center; gap: 8px; }
 .grp-tools button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 32px; height: 36px; padding: 0 6px; border-radius: 8px; font: 600 14px/17px var(--sans); color: #000; transition: background-color var(--dur-micro); }
@@ -31,8 +39,17 @@
 @media (hover: hover) and (pointer: fine) { .grp-tools button:not(:disabled):not(.on):hover { background: var(--light-gray); } }
 
 .grp-body { display: flex; flex: 1; min-height: 0; }
-.grp-side { display: flex; flex-direction: column; justify-content: space-between; width: 414px; flex-shrink: 0; padding: 32px 24px; background: var(--vlight); overflow-y: auto; }
-.grp-side-q { margin: 0 0 24px; font: 600 15px/20px var(--sans); color: var(--black); }
+.grp-side { display: flex; flex-direction: column; gap: 16px; width: 414px; flex-shrink: 0; padding: 32px 24px; background: var(--vlight); min-height: 0; }
+/* Choices and the chat thread scroll together above the pinned input (bubbles reuse the dashboard composer's .chat-me / .chat-ai) */
+.grp-thread { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; overflow-y: auto; margin: 0 -24px; padding: 0 24px 8px; }
+.grp-thread .grp-choices { margin-bottom: 12px; }
+.grp-thread .chat-me, .grp-thread .chat-ai { font: 400 15px/20px var(--sans); color: var(--black); }
+.grp-thread .chat-me { flex-shrink: 0; }
+.grp-thread .chat-ai p { margin: 0 0 8px; }
+.grp-thread .chat-ai p:last-of-type { margin-bottom: 0; }
+.grp-offer { margin: 12px 0 0 !important; gap: 8px !important; }
+.grp-choices button:disabled { cursor: default; }
+.grp-side-q { margin: 0 0 12px; font: 600 15px/20px var(--sans); color: var(--black); }
 .grp-choices { display: flex; flex-direction: column; gap: 12px; }
 .grp-choices button { padding: 10px 12px; border: 1px solid var(--purple-light); border-radius: 12px; background: var(--purple-lightest); text-align: left; font: 400 15px/18px var(--sans); color: var(--purple-dark); transition: border-color var(--dur-micro), background-color var(--dur-micro); }
 .grp-choices button.on { border-color: var(--purple-dark); background: var(--white); font-weight: 600; }
@@ -89,14 +106,71 @@
 .grp-seg button { padding: 10px 12px; background: var(--white); font: 600 14px/17px var(--sans); color: var(--black); transition: background-color var(--dur-micro); }
 .grp-seg button + button { border-left: 1px solid var(--gray); }
 @media (hover: hover) and (pointer: fine) { .grp-seg button:hover { background: var(--vlight); } }
-.grp-source .sd-question { margin-bottom: 20px; }
-.grp-source .sd-bars { width: 100%; }
-.grp-ask { display: flex; align-items: center; margin-top: 22px; padding: 8px 8px 8px 18px; border: 1px solid var(--gray); border-radius: 50px; }
-.grp-ask input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 600 15px/18px var(--sans); color: var(--black); }
+.grp-source-tags .as-source .ic { flex-shrink: 0; color: var(--darker-gray); }
+
+/* Evidence modules: two-column grid, wide ones span both. Each fades up in turn like the report itself. */
+.grp-source ul { margin: 0; padding: 0; }
+.grp-mods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.grp-mod { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 16px 18px 18px; border: 1px solid var(--gray); border-radius: 12px; background: var(--white); animation: fadeUp 300ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 50ms); }
+.grp-mod.wide { grid-column: 1 / -1; }
+.grp-mod-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 12px; }
+.grp-mod-head h3 { flex: 1 1 180px; }
+.grp-mod-head h3 { margin: 0; font: 600 15px/19px var(--sans); color: var(--black); }
+.grp-mod-from { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; max-width: 100%; padding: 3px 8px; border-radius: 8px; background: var(--vlight); font: 500 12px/16px var(--sans); color: var(--darker-gray); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background-color var(--dur-micro), color var(--dur-micro); }
+.grp-mod-from img, .grp-mod-from .ic { width: 12px; height: 12px; flex-shrink: 0; }
+.grp-mod-from:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .grp-mod-from:hover { background: var(--purple-lightest); color: var(--purple-dark); } }
+.grp-mod .trend { font: 400 13px/16px var(--sans); font-style: normal; }
+/* Dashboard stat tiles */
+.grp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px 0; }
+.grp-stat { display: flex; flex-direction: column; gap: 8px; padding: 0 16px; border-left: 2px solid var(--gray); }
+.grp-stat:first-child { padding-left: 0; border-left: 0; }
+.grp-stat > span { font: 400 13px/16px var(--sans); color: var(--darker-gray); }
+.grp-stat .big { font-size: 28px; }
+/* Dashboard line chart */
+.grp-note { margin-top: -8px; }
+.grp-line.chart { height: 170px; }
+/* Survey bars, donut and written responses, sized for a card */
+.grp-mod .sd-bars { width: 100%; gap: 10px; }
+.grp-mod .sd-bar-track { flex: 1; height: 30px; }
+.grp-mod .sd-bar-label { top: 7px; }
+.grp-mod .sd-bar { padding: 7px 14px; }
+.grp-mod .sd-pie { justify-content: flex-start; gap: 28px; }
+.grp-mod .sd-donut { width: 170px; height: 170px; }
+.grp-mod .sd-legend { gap: 10px; }
+.grp-mod .sd-legend li { font-size: 13px; }
+.grp-mod .sd-tip { padding: 10px 12px 8px; }
+.grp-mod .sd-tip strong { font-size: 24px; line-height: 28px; }
+.grp-mod .sd-text { padding: 10px; border-radius: 16px; }
+.grp-mod .sd-text ul { gap: 8px; max-height: 172px; }
+.grp-mod .sd-text li { width: auto; padding: 10px 16px; font: 400 14px/20px var(--sans); }
+/* Dashboard bar lists (participation, locations) */
+.grp-hbars { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.grp-hbars li { display: grid; grid-template-columns: minmax(0, 150px) 1fr 40px; align-items: center; gap: 12px; font: 400 13px/16px var(--sans); }
+.grp-hbars span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.grp-hbars i { height: 8px; border-radius: 4px; background: var(--light-gray); overflow: hidden; }
+.grp-hbars b { display: block; height: 100%; border-radius: 4px; background: var(--purple-light); transform-origin: left; animation: barGrowX 600ms var(--ease-out) both; }
+.grp-hbars em { font-style: normal; font-weight: 600; text-align: right; }
+/* Dashboard grant commitment tracks */
+.grp-commit { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px 28px; margin: 0; padding: 0; list-style: none; }
+.grp-commit li > div:first-child { display: flex; justify-content: space-between; gap: 12px; font: 600 14px/17px var(--sans); }
+.grp-commit p { margin: 2px 0 6px; font: 400 13px/16px var(--sans); color: var(--darker-gray); }
+.grp-commit .g-track { height: 7px; }
+/* AI summary / dashboard recommendation insights */
+.grp-mod.grp-insight { gap: 8px; border-color: var(--purple-light); background: var(--purple-lightest); }
+.grp-mod-eyebrow { display: flex; align-items: center; gap: 6px; color: var(--purple-dark) !important; }
+.grp-mod.grp-insight .grp-mod-from { background: var(--white); }
+.grp-mod.grp-insight h4 { margin: 0; font: 600 18px/22px var(--serif); }
+.grp-mod.grp-insight p { margin: 0; font: 400 14px/20px var(--sans); color: var(--black); }
+@media (max-width: 1100px) { .grp-mods { grid-template-columns: 1fr; } }
+
+/* Free-form follow-up: a slim single line under the modules */
+.grp-ask { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding: 4px 4px 4px 16px; border: 1px solid var(--gray); border-radius: 30px; }
+.grp-ask input { flex: 1; min-width: 0; height: 30px; border: 0; outline: 0; background: transparent; font: 400 14px/17px var(--sans); color: var(--black); }
 .grp-ask input::placeholder { color: #747474; }
 .grp-ask:focus-within { border-color: var(--purple); }
-.grp-ask button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gray); }
-.grp-ask button img { width: 24px; height: 24px; }
+.grp-ask button { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gray); flex-shrink: 0; }
+.grp-ask button img { width: 16px; height: 16px; }
 
 /* Empty / generating skeleton (2324:50057) */
 .grp-skeleton { height: 935px; padding: 0; overflow: hidden; }
@@ -104,10 +178,18 @@
 .grp-skel-head i { display: block; height: 22px; border-radius: 4px; background: var(--light-gray); }
 .grp-skel-head i:first-child { width: 306px; } .grp-skel-head i:last-child { width: 559px; max-width: 100%; }
 .grp-skel-body { display: flex; flex-direction: column; gap: 20px; padding: 22px; }
-.grp-skel-body i { display: block; height: 378px; border: 2px solid var(--gray); border-radius: 24px; background: var(--vlight); }
-.grp-skeleton.loading i { background: linear-gradient(90deg, var(--light-gray) 0%, #f8f9fd 45%, var(--light-gray) 90%) 0 0 / 200% 100%; animation: grpShimmer 1.1s linear infinite; }
+/* Placeholder blocks use the shared empty-state card (.ae-empty: white, 1px gray border, 18px radius, soft shadow) */
+.grp-skel-block.ae-empty { height: 378px; min-height: 0; padding: 32px; }
+.grp-skeleton.loading .grp-skel-head i, .grp-skeleton.loading .grp-skel-block { background: linear-gradient(90deg, var(--light-gray) 0%, #f8f9fd 45%, var(--light-gray) 90%) 0 0 / 200% 100%; animation: grpShimmer 1.1s linear infinite; }
 @keyframes grpShimmer { to { background-position: -200% 0; } }
-@media (prefers-reduced-motion: reduce) { .grp-skeleton.loading i { animation: none; } }
+/* Direction text: the shared empty-state icon tile + 16px darker-gray text, kept on one line */
+.grp-skel-hint { animation: fadeUp var(--dur-panel) var(--ease-out); }
+.ae-empty .grp-skel-hint p { max-width: none; color: var(--black); }
+@media (prefers-reduced-motion: reduce) { .grp-skeleton.loading .grp-skel-head i, .grp-skeleton.loading .grp-skel-block { animation: none; } }
+
+/* Report reveal: header then each module fades up in turn, using the survey AI summary's fadeUp
+   (opacity + 4px rise + blur). Stagger is capped so lower sections don't wait. */
+.grp-reveal > .grp-doc-head, .grp-reveal > .grp-sec { animation: fadeUp 360ms var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 8) * 70ms); }
 
 @media (max-width: 1100px) {
   .grp-side { width: 300px; }

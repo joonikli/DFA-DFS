@@ -20,6 +20,8 @@ import './grantsPage.css';
 const GA = ({ name, className = '' }) => <img className={`ae-asset ${className}`} src={`/assets/grants/${name}.svg`} alt="" aria-hidden="true" />;
 const TABS = ['Your grants', 'Explore'];
 const SORTS = { Default: null, 'Due date': { key: 'due', dir: 1 }, Amount: { key: 'amount', dir: -1 } };
+// Truncated titles get the shared data-tip tooltip (shown above); full-length ones don't need one
+const tipIfCut = (e) => { const el = e.currentTarget; if (el.scrollWidth > el.clientWidth) el.dataset.tip = el.textContent; else delete el.dataset.tip; };
 const COLUMNS = [['title', 'Grant title'], ['contributors', 'Contributor'], ['applied', 'Date applied'], ['due', 'Due date'], ['status', 'Status'], ['amount', 'Amount']];
 const sortValue = (g, key) => key === 'contributors' ? (VOLS[g.contributors[0]]?.name || 'Bridget') : key === 'applied' ? (g.applied || '9999') : g[key];
 
@@ -51,7 +53,7 @@ function GrantTable({ grants, sort, onSort, onDocuments }) {
         <span role="columnheader">Attachments</span>
       </div>
       {shown.map((g) => <div className="gr-row" role="row" key={g.id}>
-        <span role="cell" className="gr-title" title={g.title}>{g.title}</span>
+        <span role="cell" className="gr-title" onPointerOver={tipIfCut}>{g.title}</span>
         <span role="cell" className="gr-avatars" aria-label={g.contributors.map((id) => VOLS[id]?.name || 'Bridget Okafor').join(', ')}>{g.contributors.map((id, i) => <span key={i} data-tip={VOLS[id]?.name || 'Bridget Okafor (you)'}><Avatar id={id} /></span>)}</span>
         <span role="cell" className={g.applied ? '' : 'gr-pending'}>{g.applied ? day(g.applied) : 'Pending'}</span>
         <span role="cell">{day(g.due)}</span>

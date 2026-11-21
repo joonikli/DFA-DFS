@@ -1,0 +1,112 @@
+/* event-survey-popup (Figma 2502:41346). Values are the frame's; colours are Figma variables with
+   their Figma values as fallbacks so the popup looks the same in both volunteer apps. */
+.svp, .svp-inline {
+  --svp-white: var(--neutral-white, #fff);
+  --svp-vlight: var(--neutral-very-light-gray, #f8f9fa);
+  --svp-light: var(--neutral-light-gray, #eff2f5);
+  --svp-gray: var(--neutral-gray, #dde4e9);
+  --svp-dark-gray: var(--neutral-dark-gray, #a1a6aa);
+  --svp-darker-gray: var(--neutral-darker-gray, #7a7f84);
+  --svp-black: var(--neutral-black, #3a393a);
+  --svp-lightest-purple: var(--primary-lightest-purple, #edefff);
+  --svp-light-purple: var(--primary-light-purple, #cdd2fd);
+  --svp-purple: var(--primary-purple, #6078f1);
+  --svp-dark-purple: var(--primary-dark-purple, #4b50e0);
+  --svp-red: var(--red-dark-red, #c2191c);
+  --svp-ease: cubic-bezier(.23, 1, .32, 1);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+.svp { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 24px; }
+.svp *, .svp *::before, .svp *::after, .svp-inline *, .svp-inline *::before, .svp-inline *::after { box-sizing: border-box; }
+/* Figma scrim: Neutral/Black at 50% */
+.svp-scrim { position: absolute; inset: 0; background: rgba(58, 57, 58, .5); transition: opacity 200ms var(--svp-ease); }
+.svp-panel {
+  position: relative; display: flex; flex-direction: column; gap: 32px;
+  width: 737px; max-width: 100%; max-height: calc(100vh - 48px); overflow-y: auto; overscroll-behavior: contain;
+  margin: 0; padding: 32px 31px 40px; border: 1px solid var(--svp-gray); border-radius: 16px; background: var(--svp-white);
+  box-shadow: 0 24px 48px rgba(60, 57, 64, .16);
+  transition: opacity 200ms var(--svp-ease), transform 200ms var(--svp-ease);
+}
+.svp[data-state="closed"] .svp-scrim { opacity: 0; transition-duration: 150ms; }
+.svp[data-state="closed"] .svp-panel { opacity: 0; transform: translateY(8px) scale(.98); transition-duration: 150ms; }
+
+/* Header: title, description, tags; close */
+.svp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.svp-title { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.svp-title h2 { margin: 0; font: 600 28px/normal 'Crimson Pro', Georgia, serif; color: var(--svp-black); }
+.svp-title p { margin: 0; font: 400 16px/normal 'Inter', system-ui, sans-serif; color: var(--svp-darker-gray); }
+.svp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.svp-tags span { padding: 4px 8px; border-radius: 8px; background: var(--svp-lightest-purple); font: 400 16px/normal 'Inter', system-ui, sans-serif; color: var(--svp-purple); }
+.svp-x { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: none; cursor: pointer; transition: background-color 150ms ease; }
+.svp-x img { display: block; }
+
+/* Answer question cards */
+.svp-questions { display: flex; flex-direction: column; gap: 24px; }
+.svp-q { display: flex; flex-direction: column; gap: 20px; min-width: 0; margin: 0; padding: 20px 16px; border: 1px solid var(--svp-gray); border-radius: 8px; background: var(--svp-white); transition: border-color 150ms ease; }
+.svp-q.missing { border-color: var(--svp-red); }
+.svp-prompt { display: flex; align-items: flex-start; gap: 12px; margin: 0; font: 600 16px/normal 'Inter', system-ui, sans-serif; color: var(--svp-black); }
+.svp-num { color: var(--svp-dark-gray); white-space: nowrap; }
+.svp-answers { display: flex; flex-direction: column; gap: 16px; padding: 0 10px; }
+
+.svp-option { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; font: 400 16px/normal 'Inter', system-ui, sans-serif; color: var(--svp-black); cursor: pointer; }
+.svp-option input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.svp-radio { display: block; flex-shrink: 0; width: 21px; height: 21px; border-radius: 50%; }
+/* Selected = Figma Radio Button "Selected" (1133:18770): white centre, 6px dark-purple ring */
+.svp-radio.on { border: 6px solid var(--svp-dark-purple); background: var(--svp-white); animation: svpPick 160ms var(--svp-ease); }
+@keyframes svpPick { from { transform: scale(.8); } }
+.svp-option input:focus-visible + .svp-radio { outline: 2px solid var(--svp-purple); outline-offset: 2px; }
+
+/* Text fields: "Search Bar" 16px-radius box for FRQ, 32px-radius pill for "Other" */
+.svp-field { display: block; width: 100%; margin: 0; padding: 12px 18px; border: 0; background: var(--svp-vlight); font: 400 16px/normal 'Inter', system-ui, sans-serif; color: var(--svp-black); outline: none; transition: box-shadow 150ms ease, background-color 150ms ease; }
+.svp-field::placeholder { color: var(--svp-dark-gray); }
+.svp-field:focus { box-shadow: inset 0 0 0 1px var(--svp-light-purple); background: var(--svp-white); }
+.svp-field--area { min-height: 87px; padding-bottom: 12px; border-radius: 16px; resize: none; field-sizing: content; }
+.svp-field--pill { border-radius: 32px; }
+
+.svp-stars { display: flex; justify-content: center; gap: 4px; padding: 8px 0; border-radius: 16px; background: var(--svp-vlight); }
+.svp-stars button { display: inline-flex; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; transition: transform 100ms var(--svp-ease); }
+.svp-stars button:active { transform: scale(.94); }
+.svp-stars button:focus-visible { outline: 2px solid var(--svp-purple); outline-offset: 2px; }
+
+.svp-error { margin: -16px 0 0; font: 400 14px/normal 'Inter', system-ui, sans-serif; color: var(--svp-red); }
+
+/* Actions: Cancel (outline) left, Submit (dark) right, 116 wide */
+.svp-actions { display: flex; justify-content: space-between; align-items: center; }
+.svp-btn { display: inline-flex; justify-content: center; align-items: center; width: 116px; padding: 10px 14px; border: 1px solid transparent; border-radius: 48px; font: 400 16px/normal 'Inter', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, transform 100ms var(--svp-ease); }
+.svp-btn:active { transform: scale(.97); }
+.svp-btn:focus-visible, .svp-x:focus-visible { outline: 2px solid var(--svp-purple); outline-offset: 2px; }
+.svp-btn--outline { border-color: var(--svp-dark-purple); background: var(--svp-white); color: var(--svp-dark-purple); }
+.svp-btn--dark { background: var(--svp-black); color: var(--svp-white); }
+
+/* Hover system shared by both apps: outline → lightest purple, dark → dark purple, icon → light gray */
+@media (hover: hover) and (pointer: fine) {
+  .svp-btn--outline:hover { background: var(--svp-lightest-purple); }
+  .svp-btn--dark:hover { background: var(--svp-dark-purple); }
+  .svp-x:hover { background: var(--svp-light); }
+  .svp-stars button:hover { transform: scale(1.06); }
+  .svp-field:not(:focus):hover { background: var(--svp-light); }
+}
+
+/* Inline: the same survey inside a page card (volunteer portal, 390 × 392). Header and Submit stay put;
+   the question cards scroll between them. */
+.svp-inline { display: flex; flex-direction: column; gap: 16px; height: 100%; min-height: 0; margin: 0; }
+.svp-inline .svp-title { gap: 6px; }
+.svp-inline-scroll { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px 2px; scrollbar-width: thin; scrollbar-color: var(--svp-gray) transparent;
+  /* soft fade at the bottom says there's another question below */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); padding-bottom: 20px; }
+.svp-inline .svp-questions { gap: 16px; }
+.svp-inline .svp-error { margin: 0; }
+.svp-inline .svp-answers { padding: 0 4px; }
+.svp-inline .svp-stars { gap: 0; }
+.svp-actions--end { justify-content: flex-end; }
+
+@media (prefers-reduced-motion: reduce) {
+  .svp-scrim, .svp-panel { transition: none; }
+  .svp[data-state="closed"] .svp-panel { transform: none; }
+  .svp-radio.on { animation: none; }
+}
+@media (max-width: 600px) {
+  .svp { padding: 12px; }
+  .svp-panel { padding: 24px 18px 28px; gap: 24px; }
+  .svp-answers { padding: 0; }
+}
