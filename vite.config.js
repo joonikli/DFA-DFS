@@ -22,6 +22,7 @@ const CSS_SCOPES = [
   ['src/layout/embed.css', null],
   ['src/components/CalendarKey/', null],
   ['src/components/SurveyPopup/', null],
+  ['src/components/EditButton/', null],
   ['src/components/Button/', ['a', 'manager']],
   ['src/components/SearchBar/', ['a', 'manager']],
   ['src/components/Filter/', ['a', 'manager']],

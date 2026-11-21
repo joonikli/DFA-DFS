@@ -1,12 +1,10 @@
-// Post-shift thank-you banner (Figma 1218:15194): pink gradient, diagonal stripes,
+// Post-shift thank-you banner (Figma 1218:15194): the pink banner art exported from Figma,
 // "Take our survey" jumps to the survey card. Leaving (dismiss, or the survey gets submitted):
 // fade + slight scale (150ms ease-out), then the gap closes (200ms ease-in-out) so the page
 // below glides up instead of jumping.
 import { useEffect, useRef } from 'react';
 import { Icon } from '../components/Icon.jsx';
 import { reducedMotion } from '../lib/store.js';
-
-const STRIPES = [455.565, 168.565, 114.565, 29.565].map((right, i) => ({ right, top: [47, -148, -29, 53][i] }));
 
 export function Banner({ leave = false, onSurvey, onDismiss, onGone }) {
   const ref = useRef(null);
@@ -31,10 +29,6 @@ export function Banner({ leave = false, onSurvey, onDismiss, onGone }) {
   useEffect(() => { if (leave) exit(); }, [leave]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <section className="vp-thanks" id="vpBanner" aria-label="Thanks for volunteering" ref={ref}>
-      <div className="vp-thanks-art" aria-hidden="true">
-        <img className="vp-thanks-dot" src="/assets/banner/ellipse.svg" alt="" width="190" height="190" />
-        {STRIPES.map((s) => <span key={s.right} className="vp-thanks-stripe" style={{ right: s.right, top: s.top }}><i /></span>)}
-      </div>
       <div className="vp-thanks-main">
         <h2>Thanks for volunteering with us today! Before you leave…</h2>
         <button className="vp-thanks-cta" onClick={onSurvey}>Take our survey <Icon name="plus" size={16} /></button>

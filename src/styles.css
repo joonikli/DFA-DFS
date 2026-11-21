@@ -1737,11 +1737,7 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { .side, .side > .side-card { transition: none !important; } }
 
 /* Volunteer thank-you banner (Figma 1218:15194) */
-.vp-thanks { position: relative; overflow: hidden; height: 150px; border-radius: 12px; color: var(--white); background: linear-gradient(112.27deg, var(--pink) 24.98%, var(--pink-dark) 87.14%); display: flex; align-items: center; padding: 0 39px; }
-.vp-thanks-art { position: absolute; inset: 0; pointer-events: none; }
-.vp-thanks-dot { position: absolute; right: 129px; top: 116px; }
-.vp-thanks-stripe { position: absolute; width: 287.435px; height: 327.727px; display: flex; align-items: center; justify-content: center; }
-.vp-thanks-stripe i { display: block; width: 70px; height: 367px; flex: none; transform: rotate(39.5deg); background: linear-gradient(to bottom, var(--pink), var(--pink-dark)); }
+.vp-thanks { position: relative; overflow: hidden; height: 150px; border-radius: 8px; color: var(--white); background: var(--pink-dark) url('/assets/banner/banner-pink.png') right center / cover no-repeat; /* Figma Banner 2324:46120 exported with its effects (same art as components/Banner) */ display: flex; align-items: center; padding: 0 39px; }
 .vp-thanks-main { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 857px; }
 .vp-thanks h2 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 36px; line-height: normal; color: var(--white); }
 .vp-thanks-cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 48px; background: var(--black); color: var(--white); font: 700 16px/normal var(--sans); transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-micro) ease; }
@@ -2143,3 +2139,9 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .conv-head > .av-stack.lg { width: 40px; height: 40px; }
 /* Unread count badges one step smaller: 20px circle, 12px semibold number */
 .badge, .tab-badge, .nav-badge { min-width: 20px !important; height: 20px !important; padding: 0 6px !important; border-radius: 10px !important; font: 600 12px/20px var(--sans) !important; }
+/* Conversation rows: 20px vertical padding; names one step up the type scale = Subheading (Inter 20/500), unread 600 */
+.convo { padding-top: 20px !important; padding-bottom: 20px !important; }
+.convo-name { font: 500 20px/normal var(--sans) !important; }
+.convo.unread .convo-name { font-weight: 600 !important; }
+/* Time sits on the vertical centre of the (now larger) name */
+.convo-top { align-items: center !important; }

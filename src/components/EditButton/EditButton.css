@@ -1,0 +1,24 @@
+.edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 10px;
+  height: 39px;
+  padding: 10px;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 12px;
+  background: var(--neutral-white);
+  color: var(--neutral-darker-gray);
+  font: 600 14px/17px 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.edit-button > img { display: block; width: 16px; height: 16px; flex-shrink: 0; }
+.edit-button:hover { background: var(--neutral-light-gray); }
+.edit-button:active { background: var(--neutral-gray); }
+.edit-button:focus-visible { outline: 2px solid var(--neutral-darker-gray); outline-offset: 3px; }
+.edit-button:disabled { opacity: .5; cursor: not-allowed; }
+.edit-button--icon { width: 39px; }
+@media (prefers-reduced-motion: reduce) { .edit-button { transition: none; } }
