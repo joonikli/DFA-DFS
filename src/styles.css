@@ -2089,3 +2089,14 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .impact-card .stat-row { padding: 16px 0; }
 .impact-todo { margin-top: auto; }
 .impact-card .stat-row + .impact-todo, .impact-card .stat-row:last-of-type { margin-bottom: 20px; }
+/* Grants card refinements from the layout research: title only, sparkline under the hero, light-purple inset to-do */
+.impact-hero { margin-top: 16px; }
+.impact-spark { display: block; width: 100%; height: 48px; margin-top: 14px; overflow: visible; }
+.impact-spark__area { fill: var(--primary-lightest-purple); }
+.impact-spark__line { fill: none; stroke: var(--primary-purple); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.impact-spark__dot { fill: var(--primary-purple); stroke: var(--neutral-white); stroke-width: 2; }
+.impact-label { margin: 22px 0 2px; }
+.impact-card .stat-row { padding: 14px 0; }
+.impact-todo { background: var(--primary-lightest-purple); border-color: transparent; border-radius: 8px; padding: 12px; }
+.impact-todo > .ic { color: var(--primary-dark-purple); }
+.impact-spark { height: 64px; margin-top: 16px; }

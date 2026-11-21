@@ -206,6 +206,27 @@ function ParticipationCard() {
 const IMPACT = Object.fromEntries(impactReport.sections.find((x) => x.table).table.rows.map(([k, v, d]) => [k, { v, d }]));
 const ACCEPTED = grantsData.filter((g) => g.status === 'accepted');
 const AWARDED = ACCEPTED.reduce((n, g) => n + g.amount, 0);
+// Awards adding up over the year (accepted grants by the month they were decided), for the sparkline
+const AWARD_MONTHS = (() => {
+  const by = Array(12).fill(0);
+  ACCEPTED.forEach((g) => { if (g.applied) by[g.applied.getMonth()] += g.amount; });
+  const last = by.reduce((m, v, i) => (v ? i : m), 0);
+  let run = 0;
+  return by.slice(0, last + 1).map((v) => (run += v));
+})();
+function AwardSpark({ values }) {
+  const W = 300, H = 48, max = Math.max(...values), n = values.length;
+  const pts = values.map((v, i) => [(i / (n - 1)) * W, H - 4 - (v / max) * (H - 10)]);
+  const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join('');
+  const [ex, ey] = pts[n - 1];
+  return (
+    <svg className="impact-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label="Grant awards adding up across the year">
+      <path d={`${line}L${W},${H}L0,${H}Z`} className="impact-spark__area" />
+      <path d={line} className="impact-spark__line" vectorEffect="non-scaling-stroke" />
+      <circle cx={ex} cy={ey} r="3.5" className="impact-spark__dot" />
+    </svg>
+  );
+}
 const TO_SUBMIT = grantsData.filter((g) => g.status === 'to_submit').sort((a, b) => a.due - b.due);
 const fmtDue = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 const goGrants = (path = '/grants', q = '') => { window.location.href = `${path}?as=admin${q}`; };
@@ -224,11 +245,11 @@ function GrantsCard() {
       aria-label={`Grants: $${Math.round(AWARDED / 1000)}K awarded, ${TO_SUBMIT.length} applications to submit${next ? `, next due ${fmtDue(next.due)}` : ''}`}>
       <div className="impact-in">
         <h2 className="h2">Grants</h2>
-        <div className="card-sub">FY 2025–26</div>
         <div className="impact-hero">
-          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded</small></div>
-          <div className="impact-meta">{ACCEPTED.length} grants won this year</div>
+          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded this year</small></div>
+          <div className="impact-meta">{ACCEPTED.length} grants won</div>
         </div>
+        <AwardSpark values={AWARD_MONTHS} />
         <div className="impact-label">Impact to report</div>
         {rows.map(([label, v, d]) => (
           <div className="stat-row" key={label}>
@@ -238,7 +259,7 @@ function GrantsCard() {
         ))}
         {next && (
           <div className="impact-todo">
-            <Icon name="nav-calendar" size={18} />
+            <Icon name="nav-calendar" size={16} />
             <div><b>{TO_SUBMIT.length} applications to submit</b><span>Next due {fmtDue(next.due)}</span></div>
             <span className="impact-cta">Review <Icon name="arrow-r" size={14} /></span>
           </div>
