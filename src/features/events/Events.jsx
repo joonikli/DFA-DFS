@@ -57,12 +57,15 @@ function Calendar({ month, onMonth, selected, onSelect, events, saved }) {
   const label = month.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   const dates = new Set(events.filter((e) => e.status === 'Upcoming').map((e) => e.date));
   const savedDates = new Set(events.filter((e) => saved.has(e.id)).map((e) => e.date));
+  // Events behind each dot: hover names them; a day with one event opens its page,
+  // days with several (or none) filter the list
+  const onDay = (date) => events.filter((e) => e.date === date && (e.status === 'Upcoming' || saved.has(e.id)));
   // Same calendar design as the dashboard CalendarCard (.cal), framed as a rail card
   return <section className="cal ae-calendar" aria-label="Event calendar"><div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => onMonth(-1)}><Icon name="chev-r" size={24} /></button><div className="calendar-title"><h2 aria-live="polite">{label}</h2><CalendarKey><span><i className="dot reg" /> Saved events</span><span><i className="dot" /> Your events</span></CalendarKey></div><button className="icon-btn plain" aria-label="Next month" onClick={() => onMonth(1)}><Icon name="chev-r" size={24} /></button></div>
     <div className="cal-grid cal-dow">{WEEKDAYS.map((d) => <span key={d}>{d}</span>)}</div>
     <div className="cal-grid">{Array.from({ length: offset }, (_, i) => <span key={`blank-${i}`} />)}{Array.from({ length: days }, (_, i) => {
       const day = i + 1, date = `${year}-${String(index + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      return <button key={date} className={`cal-day ${date === EVENT_TODAY ? 'today' : ''} ${selected === date ? 'sel' : ''} ${date < EVENT_TODAY ? 'past' : ''}`} aria-label={dateLabel(date)} aria-pressed={selected === date} onClick={() => onSelect(date === selected ? '' : date)}>{day}{(dates.has(date) || savedDates.has(date)) && <i className={`dot ${savedDates.has(date) ? 'reg' : ''}`} />}</button>;
+      return <button key={date} className={`cal-day ${date === EVENT_TODAY ? 'today' : ''} ${selected === date ? 'sel' : ''} ${date < EVENT_TODAY ? 'past' : ''}`} aria-label={dateLabel(date)} aria-pressed={selected === date} data-tip={onDay(date).map((e) => e.title).join(', ') || undefined} onClick={() => { const ev = onDay(date); if (ev.length === 1) { hideTip(); navigate(`events?event=${ev[0].id}`); } else onSelect(date === selected ? '' : date); }}>{day}{(dates.has(date) || savedDates.has(date)) && <i className={`dot ${savedDates.has(date) ? 'reg' : ''}`} />}</button>;
     })}</div>
   </section>;
 }
@@ -74,7 +77,7 @@ export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationC
   // Direction D "Quiet column": quiet month / day / weekday column; time moves into the icon row below the title
   return <article className="ae-event-card">
     {isDraft ? <button className="ae-card-open" aria-label={`Continue editing ${event.title}`} onClick={onEditDraft} /> : <a className="ae-card-open" href={`#events?event=${event.id}`} aria-label={`Open ${event.title}, ${dateLabel(event.date)}`} />}
-    <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'short' }) : 'Date'}</span><b>{date ? date.getDate() : '—'}</b>{date && <small>{date.toLocaleDateString('en-US', { weekday: 'short' })}</small>}</div>
+    <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'short' }) : 'Date'}</span><b>{date ? date.getDate() : '–'}</b>{date && <small>{date.toLocaleDateString('en-US', { weekday: 'short' })}</small>}</div>
     <div className="ae-card-body"><div className="ae-card-title"><h2>{event.title}</h2><div className="ae-card-actions">{event.status !== 'Upcoming' && <span className={`ae-status ${event.status.toLowerCase()}`}>{event.status}</span>}{isDraft ? <Icon name="pen" size={16} /> : <>{showRegistrationCount && <span className="ae-registered"><EventAsset name="list-frame" />{event.registered} Registered</span>}<span className="ae-card-save-actions">{notice}<button className={`ae-bookmark ${saved ? 'on' : ''}`} aria-label={`${saved ? 'Unsave' : 'Save'} ${event.title}, ${dateLabel(event.date)}`} aria-pressed={saved} data-tip={saved ? 'Remove from saved' : 'Save event'} onClick={() => onSave(event)}><EventAsset name={saved ? 'list-bookmark-saved' : 'list-bookmark2'} /></button></span></>}</div></div>
       <div className="ae-card-meta">{event.time && <span className="ae-card-time"><Icon name="clock" size={16} sw={1.75} />{event.time}</span>}<span className="ae-card-location"><Icon name="pin" size={16} sw={1.75} /><span>{event.address ? `${event.address} · 0.5 mi from you` : 'Location to be added'}</span></span></div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{event.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
     </div>

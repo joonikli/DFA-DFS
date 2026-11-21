@@ -49,7 +49,7 @@ export const IMPACT_REPORT = {
       { type: 'text', survey: 's01', q: 'q2', wide: true },
       { type: 'stats', title: 'How clients talk about us', from: AI, items: [['Positive association in responses', '74%', '', '+2% from last week'], ['Average survey score', '7.45', '/10', '+2 from last week']] },
       { type: 'insight', label: 'Suggestion', from: AI, text: 'Implement mentorship programs pairing participants with experienced women in their fields.' },
-    ] }, paragraphs: ['Marisol, a mother of two, had been out of the workforce for six years when a shelter caseworker referred her to us. She was fitted for her first interview outfit, completed our workshop series, and practiced mock interviews with a volunteer. Within five weeks she was hired as a medical billing specialist. Today she is a PWG mentor.'], quote: ['“I walked in feeling invisible. I walked out feeling ready.”', ' — Marisol, client and mentor of 2 years'] },
+    ] }, paragraphs: ['Marisol, a mother of two, had been out of the workforce for six years when a shelter caseworker referred her to us. She was fitted for her first interview outfit, completed our workshop series, and practiced mock interviews with a volunteer. Within five weeks she was hired as a medical billing specialist. Today she is a PWG mentor.'], quote: ['“I walked in feeling invisible. I walked out feeling ready.”', ' Marisol, client and mentor of 2 years'] },
     { id: 'finance', title: 'Financial Summary', sources: { grants: true, modules: [
       { type: 'revenue', wide: true, title: 'Accepted grant revenue by funder', from: GRANTS_PAGE },
     ] },

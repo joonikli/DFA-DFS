@@ -337,7 +337,7 @@ function SurveyResponsePopup({ event, onClose }) {
     if (!a || a.answer == null || a.answer === '') return <span className="flow-response__empty">No answer</span>
     if (q.type === 'rating') return `${'★'.repeat(a.answer)}${'☆'.repeat(5 - a.answer)}  (${a.answer}/5)`
     if (Array.isArray(a.answer)) return a.answer.join(', ')
-    return a.other ? `${a.answer} — ${a.other}` : a.answer
+    return a.other ? `${a.answer}: ${a.other}` : a.answer
   }
   return (
     <Modal

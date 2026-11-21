@@ -39,7 +39,7 @@ function ask(raw) {
     const live = RP.sections.filter((s) => !s.leaving);
     if (intent && live.some((s) => s.kind === intent.kind)) {
       const sec = live.find((s) => s.kind === intent.kind);
-      RP.chat.push(chatMsg({ role: 'ai', text: `“${sec.title}” is already in the report — I’ve highlighted it.`, sec: sec.id }));
+      RP.chat.push(chatMsg({ role: 'ai', text: `“${sec.title}” is already in the report. I’ve highlighted it.`, sec: sec.id }));
       rpEmit();
       flash(sec.id);
       return;
@@ -130,7 +130,7 @@ function Composer({ p }) {
     <aside className="rp-composer">
       <div className="rp-c-head">{TPL_NAME[RP.tpl]} • {p.short}</div>
       <div className="rp-chat" id="rpChat" ref={chatRef}>
-        <div className="rp-intro">I can edit and adjust the information here from events, surveys, the volunteer roster and grant commitments for {p.short}. Ask for anything, or start here —</div>
+        <div className="rp-intro">I can edit and adjust the information here from events, surveys, the volunteer roster and grant commitments for {p.short}. Ask for anything, or start here:</div>
         {SUGGESTIONS.map(([t, k]) => (
           <button key={k} type="button" className={`sugg ${used.has(k) ? 'used' : ''}`} onClick={() => ask(t)}>{t}</button>
         ))}
@@ -178,7 +178,7 @@ function SecBody({ s, animate }) {
         <>
           <div className="lbl-sm" style={{ fontSize: 14 }}>{s.title}</div>
           <div className="bars">
-            {SURVEY.map((x, i) => <div key={i} className="bar grow" style={{ height: `${(x.n / SURVEY_MAX) * 100}%`, animationDelay: `${i * 40}ms` }} data-tip={`${x.event} — ${x.n} responses`} />)}
+            {SURVEY.map((x, i) => <div key={i} className="bar grow" style={{ height: `${(x.n / SURVEY_MAX) * 100}%`, animationDelay: `${i * 40}ms` }} data-tip={`${x.event} · ${x.n} responses`} />)}
           </div>
           <div className="bar-foot">{SURVEY_FOOT.map((t) => <span key={t}>{t}</span>)}</div>
           {!s.compact && <div className="ai-sum"><div className="h"><Icon name="sparkles" size={14} /> AI summary</div><p>{SURVEY_AI}</p></div>}
@@ -279,7 +279,7 @@ function Sections({ mountedAt }) {
     return <><div className="skel" style={{ gridColumn: '1/-1', height: 300 }} /><div className="skel" style={{ height: 280 }} /><div className="skel" style={{ height: 280 }} /></>;
   }
   if (!RP.sections.length) {
-    return <div className="doc-empty"><Icon name="sparkles" size={20} /><p style={{ margin: '10px 0 0' }}>This report is empty. Describe what you want in the composer — e.g. “retention by cohort” or “top volunteers”.</p></div>;
+    return <div className="doc-empty"><Icon name="sparkles" size={20} /><p style={{ margin: '10px 0 0' }}>This report is empty. Describe what you want in the composer, e.g. “retention by cohort” or “top volunteers”.</p></div>;
   }
   // Sections created/rewritten/revealed while this page instance is mounted animate in; a
   // report restored on navigating back renders still (vanilla re-renders without reveal/is-new).

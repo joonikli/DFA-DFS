@@ -50,7 +50,7 @@ function membersOf(volunteer) {
 
 // Empty-state copy per tab, per bucket ("This Week" / "This Month")
 const EMPTY = {
-  upcoming: { icon: Handshake, week: 'No events scheduled this week — check back soon', month: 'No more events scheduled this month' },
+  upcoming: { icon: Handshake, week: 'No events scheduled this week. Check back soon', month: 'No more events scheduled this month' },
   saved: { icon: Bookmark, week: 'You haven’t saved any events this week yet', month: 'You haven’t saved any events this month yet' },
   registered: { icon: Handshake, week: 'You’re not registered for anything this week yet', month: 'You’re not registered for anything this month yet' },
   attended: { icon: BookOpen, week: 'You haven’t attended any event yet this week!', month: 'You haven’t attended any events this month yet' },
@@ -270,6 +270,17 @@ export default function VolunteerEvents() {
     if (!onDay.length) return null
     return onDay.some((e) => statusOf(e) !== 'open') ? 'registered' : 'event'
   }
+  // Light purple days name their event(s) on hover; signed-up days keep "You’re signed up"
+  const tipFor = (date) => {
+    if (dotFor(date) !== 'event') return null
+    return events.filter((e) => sameDay(e.start, date)).map((e) => e.title).join(', ')
+  }
+  // A day with one event opens that event's page; days with several (or none) filter the list
+  const selectDay = (d) => {
+    const onDay = events.filter((e) => sameDay(e.start, d))
+    if (onDay.length === 1) return navigate(`/events/${onDay[0].id}?from=${tab}`)
+    setSelectedDay((cur) => (cur && sameDay(cur, d)) || sameDay(d, TODAY) ? null : d)
+  }
 
   const renderCard = ({ e, leaving }) => {
     const status = statusOf(e)
@@ -419,8 +430,9 @@ export default function VolunteerEvents() {
             dotFor={dotFor}
             variant="dashboard"
             today={TODAY}
+            tipFor={tipFor}
             selected={selectedDay}
-            onSelect={(d) => setSelectedDay((cur) => (cur && sameDay(cur, d)) || sameDay(d, TODAY) ? null : d)}
+            onSelect={selectDay}
           />
           <Snapshot
             title={

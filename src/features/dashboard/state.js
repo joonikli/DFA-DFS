@@ -4,9 +4,9 @@
 import { useSyncExternalStore } from 'react';
 
 export const EXEC = {
-  month: 'May showed a 22% rise in volunteer hours over April, reaching 262 hours — the highest month on record. The spike was driven primarily by the spring suit drives and increased Mobile Services participation.',
-  quarter: 'This quarter has logged 477 volunteer hours in its first seven weeks — already more than all of Q1 (434). Mobile Services and Warehouse Wednesday account for most of the growth, and first-time volunteers filled a third of May shifts.',
-  year: '2026 so far: 911 logged hours across 120 volunteers — up 87% on the same months of 2025. May is the year’s high at 262 hours, driven by the spring suit drives and increased Mobile Services participation.',
+  month: 'May showed a 22% rise in volunteer hours over April, reaching 262 hours, the highest month on record. The spike was driven primarily by the spring suit drives and increased Mobile Services participation.',
+  quarter: 'This quarter has logged 477 volunteer hours in its first seven weeks, already more than all of Q1 (434). Mobile Services and Warehouse Wednesday account for most of the growth, and first-time volunteers filled a third of May shifts.',
+  year: '2026 so far: 911 logged hours across 120 volunteers, up 87% on the same months of 2025. May is the year’s high at 262 hours, driven by the spring suit drives and increased Mobile Services participation.',
 };
 
 // Every card is a widget on a 12-column grid. A view is an ordered list of [widget, span].

@@ -30,7 +30,7 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
       </div>
       <div className="ae-stat-row">
         <div className="ae-stat"><span>Sign-up</span><p><b>{event.registered}</b><span>{roster.length ? 'Volunteers' : 'volunteers'}</span></p></div>
-        <div className="ae-stat"><span>Surveys missing</span><p><b>{hasSurvey || !event.registered ? `${missing}/${event.registered}` : '—'}</b><span>{roster.length ? 'Surveys' : 'surveys'}</span></p></div>
+        <div className="ae-stat"><span>Surveys missing</span><p><b>{hasSurvey || !event.registered ? `${missing}/${event.registered}` : '–'}</b><span>{roster.length ? 'Surveys' : 'surveys'}</span></p></div>
         <button className="btn btn-purple-outline" onClick={() => setSurvey(true)}>View survey</button>
       </div>
       <div className="ae-roster-heading"><h2>Volunteers</h2><button className="btn btn-purple-outline" disabled={!roster.length} onClick={messageAll}>Message all volunteers<EventAsset name="detail-message-square" /></button></div>

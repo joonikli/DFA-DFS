@@ -10,7 +10,7 @@ export const M = {
   tab: 'message', filter: 'all', channel: 'inapp', q: '',
   active: 'c1', activeGroup: 'g1', composing: false, channelFilter: 'all', rcptsOpen: false,
   sideTab: 'upcoming', sideClosed: false, thread: null, msgThread: null, newFrom: null, pinned: {}, drafts: {
-    c1: { body: 'Text me if you need any more help, or if something comes up on the day! I’ll also text you if there are any updates, and there will be reminders sent out as well.', subject: 'Your upcoming shift — Mobile Services, May 26' },
+    c1: { body: 'Text me if you need any more help, or if something comes up on the day! I’ll also text you if there are any updates, and there will be reminders sent out as well.', subject: 'Your upcoming shift: Mobile Services, May 26' },
   },
   fresh: { convo: null, msg: null, ann: null, reply: null },
   // React-port bookkeeping (what vanilla did by poking the DOM)
@@ -320,7 +320,7 @@ const onMessages = () => currentRoute() === 'messages';
 function fakeReply(c, sent, email = false) {
   const replies = email
     ? ['Thanks Bridget, that works for us. See you there.', 'Got it, thank you! I’ll pass it on to the team.']
-    : ['Sounds good — thank you!', 'Perfect, see you then 🙌', 'Got it, thanks Bridget!', 'Thank you! Added it to my calendar.'];
+    : ['Sounds good, thank you!', 'Perfect, see you then 🙌', 'Got it, thanks Bridget!', 'Thank you! Added it to my calendar.'];
   const viewingNow = () => onMessages() && M.tab === 'message' && !M.composing && M.active === c.id;
   setTimeout(() => {
     if (!sent || email) return;
@@ -368,7 +368,7 @@ export function startShiftCompose(id) {
   const s = SHIFTS[id];
   if (!s) return;
   Object.assign(M, { tab: 'message', composing: true, thread: null, rcpts: s.vols.map((v) => ({ kind: 'vol', id: v })), attach: [{ type: 'shift', id }] });
-  Object.assign(draft(), { channel: undefined, subject: '', body: `Hi all — thanks for signing up for ${s.title} on ${s.mon} ${s.day}. We still have ${s.cap - s.filled} open spots; if you know anyone who’d like to join, send them the link below!` });
+  Object.assign(draft(), { channel: undefined, subject: '', body: `Hi all, thanks for signing up for ${s.title} on ${s.mon} ${s.day}. We still have ${s.cap - s.filled} open spots; if you know anyone who’d like to join, send them the link below!` });
   closePops(true);
   if (onMessages()) fullRender(); else { M.convSeq += 1; navigate('messages'); }
 }

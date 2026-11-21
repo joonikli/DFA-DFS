@@ -109,7 +109,7 @@ function MsgThread({ c, m }) {
     push({ who: 'me', when: nowTime(), text: v });
     // Someone else in the conversation answers in the thread
     const other = m.from === 'me' ? c.who[0] : m.from === 'them' ? c.who[0] : m.from;
-    setTimeout(() => push({ who: other, when: nowTime(), text: ['Sounds good, thanks!', 'Will do 👍', 'Got it — thank you!'][m.replies.length % 3] }), 2200);
+    setTimeout(() => push({ who: other, when: nowTime(), text: ['Sounds good, thanks!', 'Will do 👍', 'Got it, thank you!'][m.replies.length % 3] }), 2200);
   };
   const close = () => { M.msgThread = null; rerender(); };
   return (

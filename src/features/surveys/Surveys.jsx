@@ -139,7 +139,7 @@ function CreateSurveyDialog({ eventId, onClosed }) {
   const [value, setValue] = useState(() => draft ? { ...draft, eventId: draft.eventId || eventId || '' } : { ...newSurvey(), status: 'Open', eventId: eventId || '' });
   const choices = events.filter((e) => e.status !== 'Cancelled' && e.date).sort((a, b) => b.date.localeCompare(a.date)).map((e) => ({ ...e, dateText: shortDate(e.date) }));
   return <EventDialog label="Create survey" className="ae-survey-dialog" onClosed={onClosed}>{(close) => <SurveyEditor variant="library" value={value} onChange={setValue} events={choices} onCancel={() => close()}
-    onDraft={(next) => { setDraft(next); toast('Survey saved as draft — it’ll be here next time you create a survey', { ic: 'check' }); close(); }}
+    onDraft={(next) => { setDraft(next); toast('Survey saved as draft. It’ll be here next time you create a survey', { ic: 'check' }); close(); }}
     onCreate={(survey) => {
       const event = events.find((e) => e.id === survey.eventId), date = parseDate(event.date);
       const card = { id: `survey-${Date.now()}`, title: event.title, surveyName: survey.title, month: date.toLocaleDateString('en-US', { month: 'short' }), day: date.getDate(), time: event.start && event.end ? timeRange(event.start, event.end) : event.time, status: survey.status, questions: survey.questions.length, responses: 0, organizer: event.organizer || 'Kelly Trow', location: event.address || 'Location to be added', eventId: event.id, tags: (event.tags || []).map((tone, i) => ({ tone, label: (event.tagText || '').split(',')[i]?.trim() || event.type })), definition: survey, event: { date: shortDate(event.date), time: (event.time || '').toUpperCase(), description: event.description || '' } };

@@ -58,7 +58,7 @@ export function Statistics({ person, year, onYear }) {
     <label className="ap-year"><span className="sr">Activity year</span><select aria-label="Activity year" value={year} onChange={(event) => onYear(event.target.value)}>{['2026', '2025', '2024'].map((item) => <option key={item}>{item}</option>)}</select><ProfileAsset name="year-chevron" /></label>
     <div className="ap-stat-grid">{['Total volunteer hours', 'Total events attended', 'Attendance rate'].map((label, index) => <div className="ap-stat" key={label}>
       {index === 2 && <button className="ap-stat-info" aria-label="About attendance rate" onClick={(event) => pop.toggle(event.currentTarget, <div className="ap-info-pop" role="dialog" aria-label="Attendance rate information">Share of registered events the volunteer attended in the selected year. Historic rates are not available for every demo profile.</div>, { align: 'end' })}><ProfileAsset name="attendance-info" /></button>}
-      <span>{label}</span><p><b>{values[index] ?? '—'}</b><span>{['hours', 'events', '%'][index]}</span></p>
+      <span>{label}</span><p><b>{values[index] ?? '–'}</b><span>{['hours', 'events', '%'][index]}</span></p>
     </div>)}</div>
     {!current && <p className="ap-missing-history" role="status">Activity data for {year} is not included in this prototype.</p>}
   </section>;
