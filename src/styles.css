@@ -762,16 +762,15 @@ a { color: inherit; }
 .cal-dow span { color: var(--dark-gray); text-transform: uppercase; }
 .cal-day { position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; transition: background-color var(--dur-micro) ease, color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
 .cal-day:active { transform: scale(.94); }
-.cal-day.past { color: var(--dark-gray); }
 .cal-day.today { color: var(--purple-dark); font-weight: 600; }
 .cal-day.sel { background: var(--black); color: var(--white); }
 .cal-day.today.sel { background: var(--purple-dark); } /* today stays purple, never the black circle */
-@media (hover: hover) and (pointer: fine) { .cal-day:not(.sel):hover { background: var(--light-gray); } }
-.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--purple-light); }
+@media (hover: hover) and (pointer: fine) { .cal-day:not(.sel):hover { color: var(--purple-dark); } } /* hover: number turns dark purple, no circle */
+.dot { display: inline-block; width: 6.3px; height: 6.3px; border-radius: 50%; background: var(--purple-light); }
 .dot.needs { background: var(--purple-dark); }
 .dot.reg { background: var(--green-dark-green); }
-/* 10px dot above the number, on the top edge of the day circle */
-.cal-day .dot { position: absolute; top: -2px; left: 50%; width: 10px; height: 10px; margin-left: -5px; }
+/* 9px dot above the number, on the top edge of the day circle */
+.cal-day .dot { position: absolute; top: -2px; left: 50%; width: 9px; height: 9px; margin-left: -4.5px; }
 .ev { padding: 24px 22px 0 30px; display: flex; flex-direction: column; min-height: 0; max-height: 440px; }
 .ev-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
 .ev-btns { display: flex; gap: 8px; align-items: center; }

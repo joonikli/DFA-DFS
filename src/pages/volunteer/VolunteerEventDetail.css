@@ -54,8 +54,8 @@
   gap: 24px;
 }
 .ved__banner {
-  height: 65px;
-  border-radius: 12px 12px 0 0;
+  height: 130px;
+  border-radius: 12px;
   background: var(--primary-light-purple); /* fallback when an event has no photo */
   overflow: hidden;
 }
@@ -136,7 +136,7 @@
 }
 /* Heading 2 in #494949 (Figma literal, no token) */
 .ved__card h2,
-.ved__aside h2 {
+.ved__contacts h2 {
   color: #494949;
 }
 
@@ -189,12 +189,61 @@
   text-decoration: underline;
 }
 
-/* ---- Key Contacts ---- */
+/* ---- Right column: post-event survey card (Attended only) + Key Contacts ---- */
 .ved__aside {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 44px;
   flex: 0 0 363px;
+}
+
+/* "Post-event popup" (2532:41929) */
+.ved__survey {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 16px;
+  box-shadow: 0 4px 2px var(--neutral-drop-shadow);
+}
+.ved__survey-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ved__survey-head h2 {
+  margin: 0;
+  color: var(--neutral-black);
+}
+/* Same close affordance as the shared Modal's X */
+.ved__survey-close {
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: 6px;
+  color: var(--neutral-darker-gray);
+}
+.ved__survey-close:hover {
+  color: var(--neutral-black);
+  background: var(--neutral-light-gray);
+}
+.ved__survey-text {
+  margin: 6px 0 0;
+  padding: 8px 2px;
+  color: var(--neutral-darker-gray);
+}
+.ved__survey-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+/* ---- Key Contacts ---- */
+.ved__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 .ved__contact {
   display: flex;

@@ -36,29 +36,30 @@ function EvItem({ id, flash, onAddCal, onCancel }) {
   );
 }
 
-export function CalendarCard({ cal, registered, recommended, flash, onNav, onDay, onClear, onFind, onAddCal, onCancel }) {
+// Dots follow the volunteer Events calendar (EventCalendar): green = a day you're signed up
+// for (registered or attended), light purple = any other event that day.
+export function CalendarCard({ cal, registered, attended, flash, onNav, onDay, onClear, onFind, onAddCal, onCancel }) {
   const { y, m, sel } = cal;
   const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
   const iso = (d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
   const all = myShifts(registered);
-  const mine = new Set(all.map((id) => SHIFT_DATES[id]));
-  const recs = new Set(recommended.filter((r) => !registered.has(r.id)).map((r) => SHIFT_DATES[r.id]));
+  const mine = new Set([...registered, ...attended].map((id) => SHIFT_DATES[id]));
+  const any = new Set(Object.values(SHIFT_DATES));
 
   const cells = [];
   for (let i = 0; i < first.getDay(); i++) cells.push(<span key={`b${i}`} />);
   for (let d = 1; d <= days; d++) {
     const k = iso(d);
-    const tip = mine.has(k) ? 'You’re signed up' : recs.has(k) ? 'Recommended for you' : '';
     cells.push(
       <button
         key={k}
-        className={`cal-day ${k === TODAY ? 'today' : ''} ${k === sel ? 'sel' : ''} ${k < TODAY ? 'past' : ''}`}
+        className={`cal-day ${k === TODAY ? 'today' : ''} ${k === sel ? 'sel' : ''}`}
         data-act="cal-day"
         data-d={k}
-        data-tip={tip || undefined}
+        data-tip={mine.has(k) ? 'You’re signed up' : undefined}
         onClick={() => onDay(k)}
       >
-        {d}{mine.has(k) ? <i className="dot reg" /> : recs.has(k) ? <i className="dot" /> : null}
+        {d}{mine.has(k) ? <i className="dot reg" /> : any.has(k) ? <i className="dot" /> : null}
       </button>,
     );
   }
@@ -75,7 +76,7 @@ export function CalendarCard({ cal, registered, recommended, flash, onNav, onDay
           <button className="icon-btn plain" data-act="cal-nav" data-v="-1" aria-label="Previous month" onClick={() => onNav(-1)}><Icon name="chev-r" size={24} /></button>
           <span className="calendar-title">
             <span>{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
-            <CalendarKey><span><i className="dot reg" /> Signed up</span><span><i className="dot" /> Recommended</span></CalendarKey>
+            <CalendarKey><span><i className="dot reg" /> Registered Events</span><span><i className="dot" /> All Events</span></CalendarKey>
           </span>
           <button className="icon-btn plain" data-act="cal-nav" data-v="1" aria-label="Next month" onClick={() => onNav(1)}><Icon name="chev-r" size={24} /></button>
         </div>

@@ -1,11 +1,12 @@
 // Figma: Final (page 781:12667) › Volunteer - Single Event (section 2530:10615)
-//   Upcoming detail (2530:11017) · Saved detail (2532:41322) · Registered detail (2532:41578)
+//   Upcoming detail (2530:11017) · Saved detail (2532:41322) · Attended detail (2532:41578)
 //   · Images popup (2532:41244)
-// The three frames differ only in the breadcrumb tab and the Event-cta state, so one page
-// renders all of them from the volunteer's live saved / registered / attended state.
+// The frames differ only in the breadcrumb tab, the Event-cta state and (Attended) the
+// post-event survey card, so one page renders all of them from the volunteer's live
+// saved / registered / attended state.
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowUpRight, Bookmark, Camera, ChevronLeft, ChevronRight, Link as LinkIcon, MessageCircle, UsersRound } from 'lucide-react'
+import { ArrowUpRight, Bookmark, Camera, ChevronLeft, ChevronRight, Link as LinkIcon, MessageCircle, UsersRound, X } from 'lucide-react'
 import EventCta from '../../components/EventCta/EventCta.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
 import Button from '../../components/Button/Button.jsx'
@@ -58,9 +59,10 @@ export default function VolunteerEventDetail() {
   const { id } = useParams()
   const [params] = useSearchParams()
   const { volunteer } = useDemo()
-  const { openRegistration, openCancelRegistration, toggleSave } = useEventFlows()
+  const { openRegistration, openCancelRegistration, toggleSave, openSurvey } = useEventFlows()
   const [expanded, setExpanded] = useState(false)
   const [photosOpen, setPhotosOpen] = useState(false)
+  const [surveyDismissedFor, setSurveyDismissedFor] = useState(null)
 
   const event = eventsById[id]
   const admin = adminEventsById[id]
@@ -87,6 +89,9 @@ export default function VolunteerEventDetail() {
   const savedCount = BASE_SAVED[index % BASE_SAVED.length] + (saved ? 1 : 0)
   const sharedCount = BASE_SHARED[index % BASE_SHARED.length]
   const manager = admin && staff[staffIdFor(admin.organizer)]
+
+  // Attended frame (2532:41578): "Post-event popup" card above Key Contacts until the survey is sent
+  const showSurveyCard = status === 'attended' && !volunteer.surveyResponses[event.id] && surveyDismissedFor !== event.id
 
   const { start, end } = event
 
@@ -191,23 +196,44 @@ export default function VolunteerEventDetail() {
           </div>
         </div>
 
-        <aside className="ved__aside" aria-labelledby="ved-contacts">
-          <h2 id="ved-contacts" className="text-heading-2">Key Contacts</h2>
-          {manager && (
-            <div className="ved__contact text-body">
-              <img src="/assets/events/detail-frame634.svg" width="36.4469" height="36.4469" alt="" />
-              <span>
-                Managed by <Link to={`/staff/${manager.id}`} className="ved__person">{manager.name}</Link>
-              </span>
-            </div>
+        <aside className="ved__aside">
+          {showSurveyCard && (
+            <section className="ved__survey" aria-labelledby="ved-survey">
+              <div className="ved__survey-head">
+                <h2 id="ved-survey" className="text-subheading">
+                  Thank you for volunteering!
+                </h2>
+                <button type="button" className="ved__survey-close" aria-label="Dismiss" onClick={() => setSurveyDismissedFor(event.id)}>
+                  <X size={24} strokeWidth={1.75} />
+                </button>
+              </div>
+              <p className="ved__survey-text text-body">
+                We would appreciate if you could take this survey to help us improve events for you and others :)
+              </p>
+              <div className="ved__survey-actions">
+                <Button onClick={() => openSurvey(event)}>Take survey</Button>
+              </div>
+            </section>
           )}
-          <Link to="/messages" className="ved__contact ved__contact--chat text-body">
-            <span className="ved__chat-icon" aria-hidden="true">
-              <MessageCircle size={20} strokeWidth={2} />
-            </span>
-            Contacts, Questions, Chat
-            <ArrowUpRight className="ved__arrow" size={24} strokeWidth={2} aria-hidden="true" />
-          </Link>
+
+          <section className="ved__contacts" aria-labelledby="ved-contacts">
+            <h2 id="ved-contacts" className="text-heading-2">Key Contacts</h2>
+            {manager && (
+              <div className="ved__contact text-body">
+                <img src="/assets/events/detail-frame634.svg" width="36.4469" height="36.4469" alt="" />
+                <span>
+                  Managed by <Link to={`/staff/${manager.id}`} className="ved__person">{manager.name}</Link>
+                </span>
+              </div>
+            )}
+            <Link to="/messages" className="ved__contact ved__contact--chat text-body">
+              <span className="ved__chat-icon" aria-hidden="true">
+                <MessageCircle size={20} strokeWidth={2} />
+              </span>
+              Contacts, Questions, Chat
+              <ArrowUpRight className="ved__arrow" size={24} strokeWidth={2} aria-hidden="true" />
+            </Link>
+          </section>
         </aside>
       </div>
 

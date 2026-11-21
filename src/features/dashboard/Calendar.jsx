@@ -70,7 +70,7 @@ export function CalendarCard() {
     const needs = ev.some((id) => SHIFTS[id].filled / SHIFTS[id].cap < 0.6);
     const tip = ev.length ? `${ev.map((id) => SHIFTS[id].title).join(', ')}${needs ? ' · needs volunteers' : ''}` : undefined;
     cells.push(
-      <button key={key} className={`cal-day ${key === TODAY ? 'today' : ''} ${key === sel ? 'sel' : ''} ${key < TODAY ? 'past' : ''}`}
+      <button key={key} className={`cal-day ${key === TODAY ? 'today' : ''} ${key === sel ? 'sel' : ''}`}
         data-tip={tip} aria-label={`${monthLong} ${d}${ev.length ? `, ${ev.length} shift${ev.length > 1 ? 's' : ''}` : ''}`}
         aria-pressed={key === sel}
         onClick={() => { D.cal.sel = D.cal.sel === key ? null : key; hideTip(); bump(); }}>
