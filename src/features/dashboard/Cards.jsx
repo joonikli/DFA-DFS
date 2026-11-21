@@ -236,7 +236,8 @@ function GrantsCard() {
   // for, keep the one to-do in its own zone, and give the card a single destination (the Grants page).
   const jobs = IMPACT['Women who secured employment within 6 months'];
   const served = IMPACT['Women served'];
-  const rows = [['Found jobs within 6 months', jobs.v.match(/\((\d+%)\)/)?.[1] || '61%', jobs.d], ['Women served', served.v, served.d]];
+  const hrs = IMPACT['Total volunteer hours'];
+  const rows = [['Found jobs within 6 months', jobs.v.match(/\((\d+%)\)/)?.[1] || '61%', jobs.d], ['Women served', served.v, served.d], ['Volunteer hours', hrs.v, hrs.d]];
   const next = TO_SUBMIT[0];
   const open = () => goGrants('/grants', '&status=to_submit');
   return (
