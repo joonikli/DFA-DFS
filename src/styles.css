@@ -2142,3 +2142,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .convo { padding-top: 20px !important; padding-bottom: 20px !important; }
 .convo-name { font: 500 20px/normal var(--sans) !important; }
 .convo.unread .convo-name { font-weight: 600 !important; }
+/* Time sits on the vertical centre of the (now larger) name */
+.convo-top { align-items: center !important; }
