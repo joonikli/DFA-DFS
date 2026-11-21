@@ -6,6 +6,7 @@ import EventAsset from './EventAsset.jsx';
 import SurveyEditor, { newSurvey } from './SurveyEditor.jsx';
 import EventPreview from './EventPreview.jsx';
 import SurveyRemoveButton from '../../components/SurveyRemoveButton.jsx';
+import EditButton from '../../components/EditButton/EditButton.jsx';
 import useSurveyTransition from '../../lib/useSurveyTransition.js';
 export { default as EventAsset } from './EventAsset.jsx';
 
@@ -61,7 +62,7 @@ export default function EventEditor({ event, draft, defaultDate, onSave, onClose
       <div className="ae-form-pair"><label className="ae-form-label"><span><EventAsset name="form-map-pin" />Location</span><input required placeholder="Add location" {...field('address')} /></label><label className="ae-form-label"><span><EventAsset name="form-calendar-sync" />Event type</span><select {...field('type')}><option value="">Choose event type</option>{[...new Set([form.type, 'Warehouse Wednesday', 'Mobile Shop', 'Clothing Distribution', 'Other'].filter(Boolean))].map((type) => <option key={type}>{type}</option>)}</select></label></div>
       <div className="ae-form-label ae-tags-field"><span><EventAsset name="form-tags" />Tags</span><button className="ae-tags-control" type="button" aria-label="Edit event tags" aria-expanded={editTags} onClick={() => setEditTags((v) => !v)}><span>{form.tags.split(',').filter((tag) => tag.trim()).map((tag, index) => <span key={index} className="ae-form-chip">{tag.trim()}</span>)}</span><EventAsset name="form-chevron-down" /></button>{editTags && <input aria-label="Event tags" placeholder="Separate tags with commas" {...field('tags')} />}</div>
       <label className="ae-form-label">Description<textarea rows="7" placeholder="Write event description" {...field('description')} /></label>
-      {form.survey ? <div className="ae-attached-survey survey-attachment"><span><Icon name="nav-file-pen" size={20} /><span><small>Survey</small><b>{form.survey}</b></span></span><button data-survey-return type="button" className="btn btn-purple-outline" onClick={openSurvey}>Edit survey<Icon name="pen" size={16} /></button><SurveyRemoveButton onRemove={removeSurvey} /></div> : <button ref={addSurveyButton} data-survey-return type="button" className="btn btn-purple-outline ae-add-survey" onClick={openSurvey}>Add survey <Icon name="plus" size={16} /></button>}
+      {form.survey ? <div className="ae-attached-survey survey-attachment"><span><Icon name="nav-file-pen" size={20} /><span><small>Survey</small><b>{form.survey}</b></span></span><EditButton data-survey-return label="Edit survey" onClick={openSurvey} /><SurveyRemoveButton onRemove={removeSurvey} /></div> : <button ref={addSurveyButton} data-survey-return type="button" className="btn btn-purple-outline ae-add-survey" onClick={openSurvey}>Add survey <Icon name="plus" size={16} /></button>}
     {error && <p className="ae-form-error" role="alert">{error}</p>}
     <footer className="ae-editor-footer"><button type="button" className="btn btn-purple-outline" onClick={() => { onSave({ ...form, surveyDefinition }, true); close(true); }}>Save draft</button><span /><button type="button" className="btn ae-preview-button" onClick={() => setPreview((v) => !v)}>{preview ? 'Edit' : 'Preview'}</button><button className="btn btn-dark" type="submit">{event ? 'Save changes' : 'Create event'}</button></footer>
     </>}

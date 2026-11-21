@@ -210,8 +210,6 @@
 .sd-question { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: 850px; max-width: 100%; padding: 11px 18px; border: 1px solid var(--gray); border-radius: 12px; }
 .sd-question h2 { display: flex; gap: 10px; margin: 0; font: 600 16px/19px var(--sans); color: var(--black); }
 .sd-question h2 span { color: var(--dark-gray); white-space: nowrap; }
-.sd-icon-plain { display: grid; place-items: center; width: 24px; height: 24px; margin: -2px; border-radius: 4px; flex-shrink: 0; transition: background-color var(--dur-micro); }
-@media (hover: hover) and (pointer: fine) { .sd-icon-plain:hover { background: var(--light-gray); } }
 
 /* Bar graph — 850px track, label right-aligned, coloured bar = share of responses */
 .sd-bars { display: flex; flex-direction: column; gap: 14px; width: 990px; max-width: 100%; }

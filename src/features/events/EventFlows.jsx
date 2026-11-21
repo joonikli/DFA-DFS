@@ -7,6 +7,7 @@ import { Handshake } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Modal from '../../components/Modal/Modal.jsx'
 import Button from '../../components/Button/Button.jsx'
+import EditButton from '../../components/EditButton/EditButton.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
 import Notification from '../../components/Notification/Notification.jsx'
 import SurveyQuestion from '../../components/SurveyQuestion/SurveyQuestion.jsx'
@@ -182,9 +183,7 @@ function CancelRegistrationPopup({ event, onClose, onEdit }) {
         Your spot will open up for another volunteer. You can register again while spots are available.
       </p>
       <div className="modal__footer">
-        <Button color="tertiary" onClick={onEdit} autoFocus>
-          Edit registration
-        </Button>
+        <EditButton label="Edit registration" onClick={onEdit} autoFocus />
         <Button onClick={confirm}>Cancel registration</Button>
       </div>
     </Modal>

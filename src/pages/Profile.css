@@ -30,7 +30,7 @@
   margin-top: -100px;
   margin-left: -20px;
 }
-.profile__avatar img,
+.profile__avatar > img,
 .profile__avatar > span {
   width: 200px;
   height: 200px;
@@ -42,15 +42,6 @@
   position: absolute;
   right: 6px;
   bottom: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--neutral-white);
-  background: var(--primary-purple);
-  color: var(--neutral-white);
 }
 
 .profile__identity {
@@ -79,7 +70,6 @@
 }
 .profile__edit {
   margin-bottom: 2px;
-  font-weight: 400;
 }
 
 .profile__bio {
