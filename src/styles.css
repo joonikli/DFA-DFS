@@ -2132,3 +2132,9 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 
 /* Even rhythm around the tab row: 24px from the title row, 20px to the search */
 .list-head #tabSeg { margin-top: 4px; }
+/* Tabs: "Message" flush with the 24px left edge, "Announcements" flush with the right edge;
+   the purple indicator sits under the label itself (not the whole half). Divider stays full-bleed. */
+.list-head #tabSeg .tab-nav__tab { display: flex; justify-content: flex-start; padding-bottom: 0; border-bottom-color: transparent !important; }
+.list-head #tabSeg .tab-nav__tab:last-child { justify-content: flex-end; }
+.list-head #tabSeg .tab-nav__label { padding-bottom: 12px; margin-bottom: -1px; border-bottom: 2px solid transparent; }
+.list-head #tabSeg .tab-nav__tab--active .tab-nav__label { border-bottom-color: var(--primary-purple); }
