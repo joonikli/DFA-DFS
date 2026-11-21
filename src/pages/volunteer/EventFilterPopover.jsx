@@ -1,19 +1,15 @@
 // Filter popover for the volunteer Events page (opened from the Filter pill):
-// date, a From / To time window, location + tag chips, and a nearest / furthest distance sort.
+// date, a From / To time window, location + tag chips, and a "Nearest first" distance-sort checkbox.
 // Matching: an event fits the time window when it starts at/after From and ends at/before To;
 // chips are OR within a group, AND across groups. The date is the same day the calendar selects.
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownUp } from 'lucide-react'
 import Button from '../../components/Button/Button.jsx'
-import { TextField, TimeField } from '../../components/Field/Field.jsx'
+import { Checkbox, TextField, TimeField } from '../../components/Field/Field.jsx'
 import { formatHour, formatTimeRange } from '../../lib/dates.js'
 
 export const NO_FILTERS = { from: '', to: '', places: [], tags: [], sort: '' }
-// Distance sort options (single choice; none = the default date order)
-export const SORTS = [
-  { value: 'nearest', label: 'Nearest first' },
-  { value: 'furthest', label: 'Furthest first' },
-]
+// Distance sort (off = the default date order)
+export const SORTS = [{ value: 'nearest', label: 'Nearest first' }]
 // Time pickers offer 9 am – 9 pm only
 const EARLIEST = '09:00'
 const LATEST = '21:00'
@@ -41,7 +37,6 @@ const toggleItem = (list, value) => (list.includes(value) ? list.filter((item) =
 export const hasFilters = (f) => Boolean(f.from || f.to || f.places.length || f.tags.length)
 
 const FIRST_TAG = 'no requirements'
-const NEXT_SORT ={ '': 'nearest', nearest: 'furthest', furthest: '' }
 export const sortLabel = (sort) => SORTS.find((s) => s.value === sort)?.label ?? ''
 
 // '0.5 mi from you' → 0.5; events without a distance sort last either way
@@ -90,14 +85,14 @@ export function timeFilterLabel({ from, to }) {
   return from ? `From ${formatHour(clock(from), true)}` : `Until ${formatHour(clock(to), true)}`
 }
 
-// `leading`: an extra control shown before the option chips (e.g. Location's distance sort)
-function ChipGroup({ legend, options, value, onChange, leading = null }) {
-  if (!options.length && !leading) return null
+// `extra`: a control shown above the option chips (e.g. Location's distance sort)
+function ChipGroup({ legend, options, value, onChange, extra = null }) {
+  if (!options.length && !extra) return null
   return (
     <fieldset className="event-filter__group">
       <legend className="text-body-2">{legend}</legend>
+      {extra}
       <div className="event-filter__chips">
-        {leading}
         {options.map((option) => {
           const on = value.includes(option)
           return (
@@ -164,18 +159,12 @@ export default function EventFilterPopover({ day, filters, options, onApply }) {
           options={options.places}
           value={places}
           onChange={setPlaces}
-          leading={
-            /* Distance sort: one chip, each click steps off → Nearest first → Furthest first → off */
-            <button
-              type="button"
-              className={`event-filter__chip event-filter__chip--sort text-label-2 ${sort ? 'event-filter__chip--on' : ''}`}
-              aria-pressed={Boolean(sort)}
-              aria-label={`Sort by distance: ${sort ? sortLabel(sort) : 'off'}. Click to switch.`}
-              onClick={() => setSort(NEXT_SORT[sort])}
-            >
-              <ArrowDownUp size={14} aria-hidden="true" />
-              {sortLabel(sort || 'nearest')}
-            </button>
+          extra={
+            <Checkbox
+              label={sortLabel('nearest')}
+              checked={sort === 'nearest'}
+              onChange={(e) => setSort(e.target.checked ? 'nearest' : '')}
+            />
           }
         />
         <ChipGroup legend="Tags" options={options.tags} value={tags} onChange={setTags} />

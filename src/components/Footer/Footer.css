@@ -5,7 +5,7 @@
   padding: 16px 56px 16px calc(53px * 0.9);
   border-top: 1px solid var(--neutral-gray);
   background: var(--neutral-white);
-  color: var(--neutral-darker-gray);
+  color: var(--neutral-dark-gray);
 }
 
 .app-footer p {
