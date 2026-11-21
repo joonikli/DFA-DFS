@@ -120,7 +120,7 @@
 .grp-mod-from img, .grp-mod-from .ic { width: 12px; height: 12px; flex-shrink: 0; }
 .grp-mod-from:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .grp-mod-from:hover { background: var(--purple-lightest); color: var(--purple-dark); } }
-.grp-mod .trend { font: 400 13px/16px var(--sans); font-style: normal; }
+.grp-mod .trend { font: 400 13px/16px var(--sans) !important; font-style: normal; } /* !important: styles.css forces .trend to 16px */
 /* Dashboard stat tiles */
 .grp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px 0; }
 .grp-stat { display: flex; flex-direction: column; gap: 8px; padding: 0 16px; border-left: 2px solid var(--gray); }
@@ -205,3 +205,9 @@
   .grp-body, .grp-canvas { display: block; overflow: visible; padding: 0; background: none; }
   .grp-doc { width: auto; border: 0; padding: 0; zoom: 1 !important; }
 }
+
+/* Keep the report's evidence type as designed. styles.css (design-system alignment) forces chart
+   axis text to 500 14px with !important and restyles .big small; these restore the original sizes. */
+.grp .chart .axis { font: 400 12px var(--sans) !important; }
+.grp .chart .axis.x { font-size: 11px !important; }
+.grp-stat .big small { font: 400 13px/1 var(--sans); }

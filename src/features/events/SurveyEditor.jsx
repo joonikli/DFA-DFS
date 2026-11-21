@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { Icon } from '../../components/Icon.jsx';
 import EventAsset from './EventAsset.jsx';
-import '../surveys/surveys.css';
 
 const newQuestion = (type = 'Multiple choice') => ({ id: crypto.randomUUID(), title: '', type, options: [''] });
 export const newSurvey = (title = '') => ({ title, questions: [newQuestion(), newQuestion('Free form')] });

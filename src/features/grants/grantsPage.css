@@ -35,7 +35,7 @@
 .gr-title { max-width: 100%; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gr-pending { color: var(--darker-gray); }
 .gr-avatars { display: flex; gap: 6px; }
-.gr-avatars .av { width: 28px; height: 28px; font-size: 11px; }
+.gr-avatars .av { width: 28px; height: 28px; font-size: 11px; background: var(--placeholder); color: #8b8f93; } /* not the design-system dark avatar */
 .gr-tag { display: inline-flex; justify-content: center; align-items: center; min-width: 102px; padding: 4px 8px; border-radius: 8px; font: 500 13px/16px var(--sans); white-space: nowrap; }
 .gr-tag.blue { background: var(--blue-light); color: var(--blue-dark); }
 .gr-tag.yellow { background: #fffad6; color: #bb7a34; }
@@ -100,7 +100,7 @@
 .gr-docs-actions { display: flex; gap: 12px; flex-shrink: 0; }
 .gr-docs-actions .btn, .gr-docs-section-head .btn, .gr-upload.btn { height: 36px; padding: 8px 14px; gap: 6px; border-radius: 48px; font: 400 14px/17px var(--sans); }
 .gr-docs-actions .btn img, .gr-docs-section-head .btn img, .gr-upload img { width: 14px; height: 14px; }
-.gr-soft.btn { background: rgba(96, 120, 241, .2); color: #3a3ea9; }
+.gr-soft.btn { border: 0; background: rgba(96, 120, 241, .2); color: #3a3ea9; }
 .gr-soft.btn[aria-pressed="true"] { background: #3a3ea9; color: var(--white); }
 .gr-docs-section { margin-top: 36px; }
 .gr-docs-section-head { display: flex; justify-content: space-between; align-items: center; }

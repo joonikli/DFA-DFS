@@ -1,5 +1,14 @@
 /* Admin / Survey Responses - Home (Figma 2324:46004). Sits on the shared .ae-page frame
    (1488px beside the sidebar, Events fonts, useFitZoom). All rules are survey-scoped. */
+/* Main's design-system alignment (styles.css, after this file) restyles every .btn and .av:
+   1px transparent border, 48px radius, line-height normal, dark avatars. Survey responses, Grants,
+   the grant report and the Create survey dialog keep their own button look. Placed first so the
+   rules below still win. */
+:is(.as-page, .gr-page, .grp, .gr-docs-dialog, .ae-survey-dialog) .btn { border-radius: var(--r-pill); line-height: 1.4; }
+:is(.as-page, .gr-page, .grp, .gr-docs-dialog, .ae-survey-dialog) .btn-dark { border: 0; }
+.as-view-event.btn { border-color: var(--purple-dark); }
+.sv-library .ae-preview-button.btn { border: 0; }
+
 /* Heading sits 41px under the top nav, same as the Events page */
 .as-workspace { padding: 41px 64px 112px 52px; }
 /* Page heading uses the Events heading (.ae-heading: 28px serif + gray description); spacing kept to the toolbar */
