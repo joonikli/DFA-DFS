@@ -83,6 +83,8 @@ function reducer(state, action) {
         link: { label: e.title, detail: formatShortDate(e.start), to: '/events?tab=registered' },
       })
     }
+    case 'updateRegistration':
+      return vol(state, { registrations: { ...state.volunteer.registrations, [action.id]: action.details } })
     case 'unregister':
       return vol(state, { registered: state.volunteer.registered.filter((x) => x !== action.id) })
     case 'submitSurvey':
@@ -183,6 +185,7 @@ export function DemoProvider({ children }) {
       updateMessages: (fn) => dispatch({ type: 'messages', fn }),
       toggleSaved: (id) => dispatch({ type: 'toggleSaved', id }),
       register: (id, details) => dispatch({ type: 'register', id, details }),
+      updateRegistration: (id, details) => dispatch({ type: 'updateRegistration', id, details }),
       unregister: (id) => dispatch({ type: 'unregister', id }),
       submitSurvey: (id, answers) => dispatch({ type: 'submitSurvey', id, answers }),
       markPostEventSeen: (id) => dispatch({ type: 'seenPostEvent', id }),

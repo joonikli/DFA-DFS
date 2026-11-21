@@ -753,21 +753,25 @@ a { color: inherit; }
 /* Calendar + upcoming events */
 .cal-card { padding: 0; display: grid; grid-template-columns: 450px minmax(0, 1fr); overflow: hidden; margin-bottom: 20px; min-height: 420px; }
 .cal { border-right: 1px solid var(--gray); padding: 28px 34px; }
-.cal-head { display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 500; margin-bottom: 14px; }
-.cal-head .icon-btn { color: var(--dark-gray); }
+/* Calendar grid follows Figma › Components › Event-calendar (node 1366:18162), same as EventCalendar */
+.cal-head { display: flex; justify-content: space-between; align-items: center; padding: 8px; margin-bottom: 8px; font: 500 20px/normal var(--sans); }
+.cal-head .icon-btn { color: var(--dark-gray); margin: -6px; } /* 24px chevron in the layout, 36px hit area */
 .cal-head .icon-btn:first-child .ic { transform: scaleX(-1); }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 4px; justify-items: center; }
-.cal-dow span { font-size: 12px; font-weight: 600; color: var(--dark-gray); text-transform: uppercase; padding: 6px 0; }
-.cal-day { position: relative; width: 42px; height: 42px; border-radius: 50%; font-size: 18px; display: grid; place-items: center; transition: background-color var(--dur-micro) ease, color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 7px; justify-items: center; }
+.cal-dow { height: 20px; margin: 8px 0 3px; align-items: center; }
+.cal-dow span { color: var(--dark-gray); text-transform: uppercase; }
+.cal-day { position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; transition: background-color var(--dur-micro) ease, color var(--dur-micro) ease, transform var(--dur-press) var(--ease-out); }
 .cal-day:active { transform: scale(.94); }
 .cal-day.past { color: var(--dark-gray); }
 .cal-day.today { color: var(--purple-dark); font-weight: 600; }
 .cal-day.sel { background: var(--black); color: var(--white); }
+.cal-day.today.sel { background: var(--purple-dark); } /* today stays purple, never the black circle */
 @media (hover: hover) and (pointer: fine) { .cal-day:not(.sel):hover { background: var(--light-gray); } }
 .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--purple-light); }
 .dot.needs { background: var(--purple-dark); }
-.cal-day .dot { position: absolute; bottom: -2px; left: 50%; margin-left: -3.5px; }
-.cal-day.sel .dot { background: var(--white); }
+.dot.reg { background: var(--green-dark-green); }
+/* 10px dot above the number, on the top edge of the day circle */
+.cal-day .dot { position: absolute; top: -2px; left: 50%; width: 10px; height: 10px; margin-left: -5px; }
 .ev { padding: 24px 22px 0 30px; display: flex; flex-direction: column; min-height: 0; max-height: 440px; }
 .ev-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
 .ev-btns { display: flex; gap: 8px; align-items: center; }
@@ -1958,7 +1962,7 @@ a { color: inherit; }
 .av, .av.list, .av-stack .av, .av-stack.lg .av { background: var(--neutral-dark-gray); color: var(--neutral-white); }
 
 /* Dashboard */
-.cal-day { font: 400 16px/normal var(--sans); }
+.cal-day { font: 400 20px/25px -apple-system, 'SF Pro Text', 'SF Pro', system-ui, sans-serif; letter-spacing: -0.45px; } /* Title3/Regular */
 .eyebrow-n, .trend, .p-lbl { font: 400 16px/normal var(--sans); }
 .p-hrs { font: 600 16px/normal var(--sans); }
 .chart .axis, .chart text, svg text.axis { font: 500 14px var(--sans); }
@@ -1971,7 +1975,7 @@ a { color: inherit; }
 .send-circle { background: var(--neutral-gray); }
 .sec-tools button { font: 600 14px/normal var(--sans); padding: 8px 12px; }
 .sec-tools { border-radius: 8px; }
-.cal-dow span { font: 600 14px/normal var(--sans); }
+.cal-dow span { font: 590 13px/18px -apple-system, 'SF Pro Text', 'SF Pro', system-ui, sans-serif; }
 .actions-list li, .timeline li { font: 400 16px/1.4 var(--sans); }
 .actions-list b, .timeline b { font-weight: 600; }
 /* Older volunteer portal (volunteer.html) */

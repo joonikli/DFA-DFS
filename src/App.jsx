@@ -3,6 +3,8 @@ import { Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearch
 import AppShell from './layout/AppShell.jsx'
 import Placeholder from './pages/Placeholder.jsx'
 import VolunteerEvents from './pages/volunteer/VolunteerEvents.jsx'
+import VolunteerEventDetail from './pages/volunteer/VolunteerEventDetail.jsx'
+import StaffProfile from './pages/volunteer/StaffProfile.jsx'
 import SurveysHome from './pages/admin/SurveysHome.jsx'
 import SurveyDetail from './pages/admin/SurveyDetail.jsx'
 import VolunteerSurveys from './pages/volunteer/VolunteerSurveys.jsx'
@@ -119,7 +121,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route index element={<ByRole admin={<Lazy><ManagerDashboard /></Lazy>} volunteer={<Lazy><VolunteerHome /></Lazy>} />} />
           <Route path="events" element={<ByRole admin={<Lazy><ManagerEvents /></Lazy>} volunteer={<VolunteerEvents />} />} />
-          <Route path="events/:id" element={<ByRole admin={<EventLink />} volunteer={<Navigate to="/events" replace />} />} />
+          <Route path="events/:id" element={<ByRole admin={<EventLink />} volunteer={<VolunteerEventDetail />} />} />
           <Route path="surveys" element={<ByRole admin={<SurveysHome />} volunteer={<VolunteerSurveys />} />} />
           <Route path="surveys/:id" element={<ByRole admin={<SurveyDetail />} volunteer={<Navigate to="/surveys" replace />} />} />
           <Route
@@ -135,7 +137,9 @@ export default function App() {
               /people (Bridget's own with type=admin, any volunteer with type=volunteer&id=…) */}
           <Route path="profile" element={<ByRole admin={<Navigate to="/people?type=admin" replace />} volunteer={<Profile />} />} />
           <Route path="volunteers/:id" element={<ByRole admin={<VolunteerLink />} volunteer={<Navigate to="/profile" replace />} />} />
-          <Route path="people" element={<ByRole admin={<WithParams as={ManagerProfile} />} volunteer={<Navigate to="/profile" replace />} />} />
+          {/* Volunteer-facing staff profile ("Managed by" on an event page); admins use their own profile screen */}
+          <Route path="staff/:id" element={<ByRole admin={<Navigate to="/people?type=admin" replace />} volunteer={<StaffProfile />} />} />
+          <Route path="people"element={<ByRole admin={<WithParams as={ManagerProfile} />} volunteer={<Navigate to="/profile" replace />} />} />
           <Route path="messages" element={<ByRole admin={<Lazy><ManagerMessages /></Lazy>} volunteer={<VolunteerMessages />} />} />
           <Route path="settings" element={<Placeholder title="Settings" note="Not in the Figma designs yet." />} />
           <Route path="*" element={<Navigate to="/" replace />} />

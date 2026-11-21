@@ -114,27 +114,49 @@
   background: currentColor;
 }
 
-/* ---- Toasts (top center) ---- */
+/* ---- Toasts (top right, just under the TopNav avatar) ----
+   TopNav is 68px tall with 56px side padding, so the stack lines up with the avatar's right edge. */
 .toaster {
   position: fixed;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(68px + 12px);
+  right: 56px;
   z-index: 200;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: min(559px, calc(100vw - 48px));
+  align-items: flex-end;
+  gap: 8px;
+  width: min(380px, calc(100vw - 32px));
   pointer-events: none;
 }
 
 .toaster .notification {
   align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
   border: 1px solid var(--neutral-gray);
   border-radius: 10px;
-  box-shadow: 0 12px 32px rgb(60 57 64 / 0.14);
+  box-shadow: 0 8px 24px rgb(60 57 64 / 0.12);
   pointer-events: auto;
   animation: toast-in 220ms ease;
+}
+.toaster .notification__media {
+  width: 36px;
+  height: 36px;
+}
+.toaster .notification__media svg {
+  width: 20px;
+  height: 20px;
+}
+.toaster .notification__text {
+  gap: 2px;
+}
+.toaster .notification__link {
+  margin-top: 4px;
+  padding: 4px 10px;
+}
+
+@media (max-width: 640px) {
+  .toaster { right: 16px; }
 }
 
 @keyframes toast-in {

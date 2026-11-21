@@ -83,6 +83,10 @@
   color: var(--neutral-darker-gray);
   overflow-wrap: anywhere;
 }
+.event-card__meta-dist {
+  color: var(--neutral-darker-gray);
+  white-space: nowrap;
+}
 
 .event-card__divider {
   align-self: stretch;

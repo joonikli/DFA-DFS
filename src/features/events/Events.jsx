@@ -57,11 +57,11 @@ function Calendar({ month, onMonth, selected, onSelect, events, saved }) {
   const dates = new Set(events.filter((e) => e.status === 'Upcoming').map((e) => e.date));
   const savedDates = new Set(events.filter((e) => saved.has(e.id)).map((e) => e.date));
   // Same calendar design as the dashboard CalendarCard (.cal), framed as a rail card
-  return <section className="cal ae-calendar" aria-label="Event calendar"><div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => onMonth(-1)}><Icon name="chev-r" size={22} /></button><div className="calendar-title"><h2 aria-live="polite">{label}</h2><CalendarKey><span><i className="dot needs" /> Saved events</span><span><i className="dot" /> Your events</span></CalendarKey></div><button className="icon-btn plain" aria-label="Next month" onClick={() => onMonth(1)}><Icon name="chev-r" size={22} /></button></div>
+  return <section className="cal ae-calendar" aria-label="Event calendar"><div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => onMonth(-1)}><Icon name="chev-r" size={24} /></button><div className="calendar-title"><h2 aria-live="polite">{label}</h2><CalendarKey><span><i className="dot reg" /> Saved events</span><span><i className="dot" /> Your events</span></CalendarKey></div><button className="icon-btn plain" aria-label="Next month" onClick={() => onMonth(1)}><Icon name="chev-r" size={24} /></button></div>
     <div className="cal-grid cal-dow">{WEEKDAYS.map((d) => <span key={d}>{d}</span>)}</div>
     <div className="cal-grid">{Array.from({ length: offset }, (_, i) => <span key={`blank-${i}`} />)}{Array.from({ length: days }, (_, i) => {
       const day = i + 1, date = `${year}-${String(index + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      return <button key={date} className={`cal-day ${date === EVENT_TODAY ? 'today' : ''} ${selected === date ? 'sel' : ''} ${date < EVENT_TODAY ? 'past' : ''}`} aria-label={dateLabel(date)} aria-pressed={selected === date} onClick={() => onSelect(date === selected ? '' : date)}>{day}{(dates.has(date) || savedDates.has(date)) && <i className={`dot ${savedDates.has(date) ? 'needs' : ''}`} />}</button>;
+      return <button key={date} className={`cal-day ${date === EVENT_TODAY ? 'today' : ''} ${selected === date ? 'sel' : ''} ${date < EVENT_TODAY ? 'past' : ''}`} aria-label={dateLabel(date)} aria-pressed={selected === date} onClick={() => onSelect(date === selected ? '' : date)}>{day}{(dates.has(date) || savedDates.has(date)) && <i className={`dot ${savedDates.has(date) ? 'reg' : ''}`} />}</button>;
     })}</div>
   </section>;
 }

@@ -1,7 +1,7 @@
 // Figma: Components › Event card (node 1126:14497)
 // Variants (Color =): pink-default | blue | green (tag colors — driven by data here),
 // Hover (CSS :hover), Color7 / admin view (admin "15 Registered" CTA), empty (EventCardEmpty).
-import { Clock, MapPin, Users } from 'lucide-react'
+import { Clock, MapPin, Navigation, Users } from 'lucide-react'
 import { MONTHS, formatTimeRange } from '../../lib/dates.js'
 import Tags from '../Tags/Tags.jsx'
 import RecommendedTag from '../RecommendedTag/RecommendedTag.jsx'
@@ -57,8 +57,14 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
             </span>
             <span className="event-card__meta-loc">
               <MapPin size={16} strokeWidth={1.75} aria-hidden="true" />
-              <span>{[event.location, event.distance].filter(Boolean).join(' · ')}</span>
+              <span>{event.location}</span>
             </span>
+            {event.distance && (
+              <span className="event-card__meta-dist">
+                <Navigation size={16} strokeWidth={1.75} aria-hidden="true" />
+                {event.distance}
+              </span>
+            )}
           </div>
         </div>
 

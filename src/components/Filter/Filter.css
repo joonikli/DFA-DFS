@@ -13,6 +13,14 @@
   background: var(--neutral-gray);
 }
 
+.filter--icon {
+  padding: 4px;
+}
+
+.filter--active {
+  box-shadow: inset 0 0 0 1px var(--primary-dark-purple);
+}
+
 .filter__icon {
   display: inline-flex;
   align-items: center;

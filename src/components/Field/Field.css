@@ -85,6 +85,23 @@
   border-color: var(--primary-light-purple);
   background: var(--neutral-white);
 }
+/* Editable variant: same box, with a text input in place of the value */
+.field--time-edit {
+  cursor: text;
+}
+.field--time__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: var(--neutral-black);
+}
+.field--time__input::placeholder {
+  color: var(--neutral-darker-gray);
+}
 .time-field__menu {
   position: absolute;
   top: calc(100% + 4px);

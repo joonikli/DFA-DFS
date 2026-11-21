@@ -80,7 +80,7 @@
 .ae-status + .ae-registered { display: none; }
 .ae-rail { padding-top: 55px; }
 /* Rail calendar reuses the dashboard calendar (.cal in styles.css) inside its own card frame */
-.cal.ae-calendar { width: 400px; min-height: 402px; padding: 20px 24px; border: 1px solid var(--gray); border-radius: 20px; box-shadow: 0 4px 8px rgba(58,57,58,.04); background: var(--white); }
+.cal.ae-calendar { width: 400px; min-height: 402px; padding: 16px 14px; border: 1px solid var(--gray); border-radius: var(--radius-card); box-shadow: 0 2px 4px var(--neutral-drop-shadow); background: var(--white); }
 .cal.ae-calendar .cal-head h2 { font: inherit; }
 .ae-tasks { margin-top: 20px; padding: 14px 8px; }
 .ae-tasks h2 { font-size: 20px; font-weight: 500; color: var(--darker-gray); padding: 0 4px; margin-bottom: 14px; }
@@ -326,9 +326,8 @@
 .ae-page.fluid .ae-heading { margin-left: 0; margin-bottom: 40px; }
 .ae-page.fluid .ae-layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; }
 .ae-page.fluid .cal.ae-calendar { width: 100%; min-height: 350px; padding: 16px 10px; }
-.ae-page.fluid .ae-calendar .cal-head { font-size: 16px; }
-.ae-page.fluid .ae-calendar .cal-dow span { font-size: 10px; }
-.ae-page.fluid .ae-calendar .cal-day { width: 34px; height: 34px; font-size: 16px; }
+/* 300px rail: keep the Figma type sizes, just let the day circles fit the narrower columns */
+.ae-page.fluid .ae-calendar .cal-day { width: 100%; max-width: 38px; height: auto; aspect-ratio: 1; }
 .ae-page.fluid .ae-task { padding: 10px 8px; flex-wrap: wrap; }
 .ae-page.fluid .ae-task > span:nth-child(2) { white-space: normal; }
 .ae-page.fluid .ae-card-title { align-items: flex-start; flex-direction: column; }

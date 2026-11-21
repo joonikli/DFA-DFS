@@ -19,7 +19,7 @@ export default function EventCta({ status = 'open', saved = false, onToggleSaved
         </Button>
       )}
       {status === 'registered' && (
-        <Button size="sm" icon="minus" onClick={onUnregister} title="Cancel registration">
+        <Button size="sm" icon="minus" className="event-cta__registered" onClick={onUnregister} title="Cancel registration">
           Registered
         </Button>
       )}

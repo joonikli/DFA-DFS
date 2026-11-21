@@ -1,0 +1,286 @@
+/* Figma: Volunteer - Single Event (2530:10615). Sizes are the Figma frame's at 1728px. */
+/* Matches the Your events page's rendered scale. That page zooms layout by 0.88 but its cards
+   also shrink type (24px titles, 15px text), so Figma type lands at ~0.8 there. 0.8 here makes
+   the 940px main column the same width as the events list (~750px) and the type the same size.
+   max-width is divided by the zoom so the page fills the same on-screen width. */
+.ved {
+  --page-zoom: 0.8;
+  zoom: var(--page-zoom);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: calc(1381px / var(--page-zoom));
+}
+
+/* ---- Breadcrumb ("Page Nav") ---- */
+.ved__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--neutral-darker-gray);
+}
+.ved__crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+.ved__crumbs a:hover {
+  color: var(--neutral-black);
+  text-decoration: underline;
+}
+.ved__crumbs [aria-current='page'] {
+  color: var(--neutral-black);
+}
+
+.ved__layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 78px;
+}
+
+.ved__main {
+  display: flex;
+  flex-direction: column;
+  gap: 43px;
+  flex: 1 1 940px;
+  min-width: 0;
+  max-width: 940px;
+}
+
+/* ---- Banner, title, CTA, description ---- */
+.ved__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ved__banner {
+  height: 65px;
+  border-radius: 12px 12px 0 0;
+  background: var(--primary-light-purple); /* fallback when an event has no photo */
+  overflow: hidden;
+}
+.ved__banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.ved__heading-block {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.ved__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.ved__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  color: #000;
+}
+.ved__subtitle {
+  color: var(--neutral-darker-gray);
+}
+/* Shared components render at the events page's 0.88 (0.8 × 1.1) so they look identical there and here */
+.ved .event-cta,
+.ved .tag {
+  zoom: 1.1;
+}
+
+.ved__desc {
+  display: flex;
+  align-items: flex-end;
+}
+.ved__desc-text {
+  flex: 0 1 850px;
+  min-width: 0;
+  color: #000;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.ved__desc-text--open {
+  display: block;
+}
+.ved__more {
+  flex-shrink: 0;
+  margin-left: 4px;
+  color: var(--primary-dark-purple);
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+/* ---- Event Details / Other Information cards ---- */
+.ved__cards {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+.ved__card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 28px 30px;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 12px;
+}
+/* Heading 2 in #494949 (Figma literal, no token) */
+.ved__card h2,
+.ved__aside h2 {
+  color: #494949;
+}
+
+.ved__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--neutral-black);
+}
+.ved__facts li {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.ved__facts svg {
+  flex-shrink: 0;
+  color: var(--neutral-darker-gray);
+}
+.ved__facts img {
+  flex-shrink: 0;
+}
+.ved__address {
+  max-width: 274px;
+}
+.ved__facts .ved__tags-row {
+  align-items: flex-end;
+  gap: 19px;
+}
+.ved__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ved__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--neutral-black);
+}
+.ved__facts .ved__link svg,
+.ved__arrow {
+  color: var(--primary-purple);
+}
+.ved__link:hover,
+.ved__contact--chat:hover {
+  text-decoration: underline;
+}
+
+/* ---- Key Contacts ---- */
+.ved__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 0 0 363px;
+}
+.ved__contact {
+  display: flex;
+  align-items: center;
+  gap: 13.55px;
+  color: #000;
+  text-decoration: none;
+}
+.ved__contact img {
+  flex-shrink: 0;
+}
+.ved__person {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+.ved__contact--chat {
+  gap: 13px;
+}
+.ved__chat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36.45px;
+  height: 36.45px;
+  border-radius: 50%;
+  background: var(--neutral-gray);
+  color: var(--neutral-dark-gray);
+}
+.ved__contact--chat .ved__arrow {
+  margin-left: -9px; /* 4px from the label (flex gap is 13px) */
+}
+
+/* Narrow windows: Key Contacts drops below the main column */
+@media (max-width: 1280px) {
+  .ved__layout {
+    flex-direction: column;
+    gap: 43px;
+  }
+  .ved__aside {
+    flex-basis: auto;
+  }
+}
+
+/* ---- Past Event Images popup (2532:41244) ---- */
+.ved-photos__title {
+  color: var(--neutral-black);
+}
+.ved-photos__stack {
+  position: relative;
+  align-self: center;
+  width: 356px;
+  height: 250px;
+  margin-top: 12px; /* 36px below the header (Modal header row is 24px tall) */
+}
+.ved-photos__stack img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 341px;
+  height: 227px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.ved-photos__under {
+  transform: translate(-50%, -50%);
+}
+.ved-photos__top {
+  transform: translate(-50%, -50%) rotate(-4deg);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}
+.ved-photos__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 28px;
+}
+.ved-photos__nav .btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.ved-photos__count {
+  cursor: default;
+}
+.ved-photos__count:hover {
+  background: rgb(96 120 241 / 0.2);
+}
