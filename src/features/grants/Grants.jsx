@@ -23,7 +23,8 @@ const SORTS = { Default: null, 'Due date': { key: 'due', dir: 1 }, Amount: { key
 // Truncated titles get the shared data-tip tooltip (shown above); full-length ones don't need one
 const tipIfCut = (e) => { const el = e.currentTarget; if (el.scrollWidth > el.clientWidth) el.dataset.tip = el.textContent; else delete el.dataset.tip; };
 const COLUMNS = [['title', 'Grant title'], ['contributors', 'Contributor'], ['applied', 'Date applied'], ['due', 'Due date'], ['status', 'Status'], ['amount', 'Amount']];
-const sortValue = (g, key) => key === 'contributors' ? (VOLS[g.contributors[0]]?.name || 'Bridget') : key === 'applied' ? (g.applied || '9999') : g[key];
+// Explore opportunities share the sort but have no contributors: they compare equal and keep their order
+const sortValue = (g, key) => key === 'contributors' ? (g.contributors ? VOLS[g.contributors[0]]?.name || 'Bridget' : '') :key === 'applied' ? (g.applied || '9999') : g[key];
 
 function SortMenu({ value, onChange }) {
   const close = usePopClose();

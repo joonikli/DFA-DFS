@@ -115,7 +115,7 @@
 .as-card-head { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
 .as-card-date { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; min-width: 72px; padding: 9px 16px; border: 1px solid var(--gray); border-radius: 12px; color: #000; }
 .as-card-date span { font: 400 14px/17px var(--sans); }
-.as-card-date b { font: 600 30px/34px var(--serif); }
+.as-card-date b { font: 600 28px/32px var(--serif); } /* Heading 2 */
 .as-card-title { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 4px 0; align-self: flex-start; }
 /* Longer event names wrap to two lines rather than truncating */
 .as-card-title h3 { margin: 0; font: 600 24px/28px var(--serif); color: var(--black); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
@@ -161,10 +161,10 @@
 .sd { padding: 33px 54px 96px 47px; }
 .sd-top { display: flex; justify-content: space-between; align-items: center; }
 /* Compact top bar: 16px breadcrumb, 36px buttons with 14px labels (card button size) */
-.sd-breadcrumb { display: flex; align-items: center; gap: 4px; font: 500 16px/19px var(--sans); }
+.sd-breadcrumb { display: flex; align-items: center; gap: 6px; font: 500 20px/24px var(--sans); } /* same breadcrumb as the event pages (.ae-breadcrumb) */
 .sd-breadcrumb button { color: var(--darker-gray); font: inherit; border-radius: 4px; transition: color var(--dur-micro); }
 .sd-breadcrumb [aria-current] { color: var(--black); }
-.sd-breadcrumb img { width: 18px; height: 18px; }
+.sd-breadcrumb img { width: 24px; height: 24px; }
 .sd-actions, .sd-actions-main, .sd-actions-icons { display: flex; align-items: center; }
 .sd-actions { gap: 16px; }
 .sd-actions-main { gap: 8px; }

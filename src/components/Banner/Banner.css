@@ -24,9 +24,9 @@
   position: relative;
   font-family: 'Crimson Pro', Georgia, serif;
   font-weight: 600;
-  font-size: 32px;
+  font-size: 36px; /* Figma: Display 2 (Crimson Pro 600 36) */
   line-height: 1.1;
-  max-width: 80%;
+  max-width: calc(100% - 48px); /* runs up to the close button */
 }
 
 .banner__cta {

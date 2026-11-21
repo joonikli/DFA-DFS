@@ -56,12 +56,12 @@
 .ae-bookmark { position: relative; z-index: 2; display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border: 1px solid var(--dark-gray); border-radius: 50%; background: var(--white); transition: background-color var(--dur-micro), border-color var(--dur-micro), color var(--dur-micro), transform var(--dur-press); }
 .ae-bookmark:active { transform: scale(.97); }
 .ae-bookmark.on { background: var(--black); border-color: var(--gray); }
-.ae-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: -4px; font: 400 15px/19px var(--sans); }
+.ae-card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: -4px; font: 400 14px/17px var(--sans); } /* Label (type scale) */
 .ae-card-meta > span { display: inline-flex; align-items: flex-start; gap: 6px; min-width: 0; }
 .ae-card-meta .ic { flex-shrink: 0; margin-top: 1px; }
 .ae-card-time { color: var(--black); font-weight: 500; white-space: nowrap; }
 .ae-card-location { color: var(--darker-gray); overflow-wrap: anywhere; }
-.ae-card-body > p { display: -webkit-box; max-width: 640px; margin: 0; overflow: hidden; color: var(--darker-gray); font: 400 15px/19px var(--sans); -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.ae-card-body > p { display: -webkit-box; max-width: 640px; margin: 0; overflow: hidden; color: var(--darker-gray); font: 400 16px/20px var(--sans); -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .ae-card-body > p:empty { display: none; }
 .ae-card-tags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 25px; }
 .ae-tag { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 8px; font-size: 14px; line-height: 17px; font-weight: 500; }

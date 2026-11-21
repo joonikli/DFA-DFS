@@ -63,11 +63,12 @@ export default function VolunteerSurveys() {
   return (
     <div className="volunteer-surveys">
       <PageHeader title="Your surveys" subtitle="Share feedback on events you attended" />
+      {/* Full width above both columns, like the dashboard banner, so the title stays on one line */}
+      {pending.length > 0 && (
+        <Banner type="pink" title="Thanks for volunteering with us! Before you go…" cta="Take our survey" onCta={() => openSurvey(pending[0])} />
+      )}
       <div className="volunteer-surveys__body">
         <div className="volunteer-surveys__main">
-          {pending.length > 0 && (
-            <Banner type="pink" title="Thanks for volunteering with us! Before you go…" cta="Take our survey" onCta={() => openSurvey(pending[0])} />
-          )}
           {section('To do', pending, (e) => (
             <span className="volunteer-surveys__actions">
               <StatusBadge color="red">Survey missing</StatusBadge>

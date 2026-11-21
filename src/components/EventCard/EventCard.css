@@ -59,8 +59,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 10px;
-  font-size: 15px;
-  line-height: 19px;
+  font-size: 14px; /* Label (Figma type scale) */
+  line-height: 17px;
 }
 .event-card__meta > span {
   display: inline-flex;
@@ -187,8 +187,8 @@
   display: -webkit-box;
   max-width: 640px;
   overflow: hidden;
-  font-size: 15px;
-  line-height: 19px;
+  font-size: 16px; /* Body (Figma type scale) */
+  line-height: 20px;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }

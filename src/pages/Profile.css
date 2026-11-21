@@ -12,7 +12,7 @@
 
 .profile__grid {
   display: grid;
-  grid-template-columns: minmax(0, 860px) 280px;
+  grid-template-columns: minmax(0, 860px) 340px; /* wide enough for a full email address on one line */
   justify-content: space-between;
   gap: 48px;
 }
@@ -28,7 +28,7 @@
   width: 200px;
   height: 200px;
   margin-top: -100px;
-  margin-left: -20px;
+  margin-left: 0; /* photo lines up with the content edge, as on the admin profile */
 }
 .profile__avatar > img,
 .profile__avatar > span {
@@ -37,6 +37,10 @@
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 0 4px var(--neutral-white);
+}
+/* Initials use Label Large (64), like the admin profile; Avatar sets its size inline */
+.profile__avatar > span {
+  font-size: 64px !important;
 }
 .profile__avatar-edit {
   position: absolute;
@@ -48,7 +52,7 @@
   display: flex;
   align-items: flex-end;
   gap: 40px;
-  margin-top: 30px;
+  margin-top: 39px; /* same gap under the photo as the admin profile */
 }
 .profile__name {
   display: flex;
@@ -63,10 +67,11 @@
   align-self: flex-start;
   margin-top: 2px;
 }
+/* subtitle and Joined in the admin profile's lighter gray */
 .profile__sub {
   margin-top: 6px;
   font-weight: 400;
-  color: var(--neutral-darker-gray);
+  color: var(--neutral-dark-gray);
 }
 .profile__edit {
   margin-bottom: 2px;
@@ -103,7 +108,7 @@
 
 .profile__events-title {
   margin-top: 48px;
-  margin-bottom: 18px;
+  margin-bottom: 32px; /* admin profile spacing above the tabs */
   color: var(--neutral-black);
 }
 
@@ -160,20 +165,20 @@
   gap: 18px;
   margin-top: 20px;
   font-weight: 400;
-  color: var(--neutral-black);
+  color: var(--neutral-dark-gray);
 }
 .profile__joined span {
   color: var(--neutral-dark-gray);
 }
 
 .profile__contact {
-  margin-top: 46px;
+  margin-top: 68px; /* Contact heading level with the name, as on the admin profile */
   color: var(--neutral-black);
 }
 .profile__contact ul {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px; /* contact rows match the admin profile: 16px text, 24px dark icons */
   margin: 16px 0 0;
   padding: 0;
   list-style: none;
@@ -182,11 +187,15 @@
 .profile__contact li {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 21px;
+  min-height: 24px;
+  font-size: 16px;
 }
 .profile__contact li svg {
   flex-shrink: 0;
-  color: var(--neutral-darker-gray);
+  width: 24px;
+  height: 24px;
+  color: var(--neutral-black);
 }
 .profile-form {
   display: flex;

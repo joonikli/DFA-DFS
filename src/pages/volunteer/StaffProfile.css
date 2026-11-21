@@ -1,14 +1,6 @@
 /* Staff profile (Figma 2324:48567): layout and type come from Profile.css; only the differences live here. */
 
-/* cover is a gradient here, not the volunteer profile's flat light purple */
-.staff-profile__cover {
-  background: linear-gradient(
-    to bottom,
-    var(--primary-light-purple) 0%,
-    var(--blue-light-blue) 76.923%,
-    var(--neutral-light-gray) 100%
-  );
-}
+/* cover: the same flat light purple as the volunteer and admin profiles (Profile.css) */
 
 /* name block on the left, Message button pushed to the right edge, vertically centred */
 .staff-profile__identity {
@@ -52,4 +44,9 @@
 }
 .staff-profile .profile__contact a:hover {
   text-decoration: underline;
+}
+
+/* bio → events heading: the admin profile's spacing */
+.staff-profile .profile__events-title {
+  margin-top: 64px;
 }

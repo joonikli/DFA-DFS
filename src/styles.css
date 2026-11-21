@@ -464,8 +464,8 @@ a { color: inherit; }
 .link[aria-expanded="true"] .ic { transform: rotate(90deg); }
 
 .insight h3 { font-family: var(--serif); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 0 0 18px; }
-.insight p { color: var(--darker-gray); font-size: 15px; margin: 0; }
-.rec p { font-size: 15px; margin: 0 0 18px; color: var(--black); }
+.insight p { color: var(--darker-gray); font-size: 16px; margin: 0; } /* Body (type scale) */
+.rec p { font-size: 16px; margin: 0 0 18px; color: var(--black); } /* Body (type scale) */
 
 .chart-card { padding: 34px 36px 24px; margin-bottom: 20px; }
 .chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
