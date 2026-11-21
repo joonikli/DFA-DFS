@@ -10,8 +10,9 @@
 .ae-asset { display: block; flex-shrink: 0; object-fit: contain; }
 .ae-top-nav.top-nav { margin: 0; height: 68px; padding: 16px 56px; gap: 24px; }
 .ae-avatar { display: block; width: 36px; height: 36px; border-radius: 50%; }
-.ae-workspace { padding: 41px 38px 40px 52px; }
-.ae-heading { margin: 0 0 67px 6px; }
+/* Same frame as the volunteer Events page: 53px left inset, 1380px content cap */
+.ae-workspace { max-width: calc(1380px + 53px + 38px); padding: 41px 38px 40px 53px; }
+.ae-heading { margin: 0 0 41px 2px; }
 .ae-heading h1, .ae-group h2, .ae-calendar h2, .ae-tasks h2 { margin: 0; }
 .ae-heading h1 { font: 600 28px/31px var(--serif); }
 .ae-heading p { margin: 4px 0 0; font-size: 16px; line-height: 19px; color: var(--darker-gray); }
@@ -19,6 +20,9 @@
 .ae-tabs button { position: relative; width: 124px; height: 33px; padding-bottom: 12px; color: var(--darker-gray); font-size: 16px; font-weight: 600; transition: color var(--dur-micro) var(--ease-out); }
 /* Content-sized event tabs keep the visible gap between short/long labels even. */
 .ae-workspace > .ae-tabs button { flex: 0 0 auto; width: auto; padding-inline: 24px; }
+/* Match the volunteer tab bar (TabNav): label + 10px to the underline */
+.ae-workspace > .ae-tabs { height: auto; }
+.ae-workspace > .ae-tabs button { height: auto; padding-bottom: 10px; line-height: normal; }
 .ae-tabs button.on { color: var(--purple-dark); }
 .ae-tab-line { position: absolute; bottom: 0; left: 0; width: 124px; height: 2px; background: var(--purple-dark); pointer-events: none; transition: transform var(--dur-pop) var(--ease-out), width var(--dur-pop) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .ae-tab-line, .ae-tabs button { transition: none; } }
@@ -28,13 +32,14 @@
   .ae-page.fluid .ae-workspace > .ae-tabs button { min-width: 0; padding-inline: 16px; }
 }
 /* At 1488px the columns sit 146px apart (Figma); narrower, the gap gives way first, then the list column */
-.ae-layout { display: grid; grid-template-columns: minmax(0, 852px) 400px; gap: 146px 24px; justify-content: space-between; margin-top: 16px; }
+.ae-layout { display: grid; grid-template-columns: minmax(0, 849px) 400px; gap: 146px 24px; justify-content: space-between; margin-top: 16px; }
 .ae-list { min-width: 0; }
-.ae-toolbar { display: flex; align-items: flex-start; gap: 8px; height: 43px; }
+.ae-toolbar { display: flex; align-items: center; gap: 8px; height: 43px; }
 .ae-search.search { flex: 1; min-width: 0; height: 43px; padding: 12px 18px; gap: 10px; }
-.ae-search input { width: 100%; min-width: 0; font-size: 16px; }
-.ae-filter { height: 38px; border-radius: 18px; padding: 4px 12px 4px 14px; display: inline-flex; align-items: center; gap: 10px; background: var(--light-gray); font-size: 16px; font-weight: 600; }
-.ae-filter.on { box-shadow: inset 0 0 0 1px var(--purple-dark); }
+.ae-search.search input { width: 100%; min-width: 0; padding: 0; font-size: 16px; line-height: normal; }
+/* Shared Filter pill (components/Filter): typography.css (.text-body-2) doesn't reach embedded
+   screens, so restate its label style to match the volunteer page */
+.ae-toolbar .filter .text-body-2 { font-size: 16px; font-weight: 600; line-height: normal; }
 .ae-views { display: flex; gap: 2px; align-items: center; padding: 4px; background: var(--light-gray); border-radius: 18px; }
 /* Fixed-width buttons keep the icons still; the active pill extends 3px toward the center (36px / 30px per Figma). */
 .ae-views button { position: relative; display: grid; place-items: center; height: 30px; width: 33px; border-radius: 18px; }
@@ -43,10 +48,11 @@
 .ae-views button.on:first-child::before { right: -3px; }
 .ae-views button.on:last-child::before { left: -3px; }
 .ae-create.btn { margin-left: 13px; height: 38px; padding: 0 14px; gap: 8px; font-size: 16px; font-weight: 400; }
-.ae-groups { padding-top: 40px; display: flex; flex-direction: column; gap: 28px; }
-.ae-group > header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; height: 31px; margin-bottom: 8px; color: var(--darker-gray); font-size: 16px; }
+/* Spacing matches the volunteer Events list: 20px below the toolbar and between sections, 10px under each label, 8px between cards */
+.ae-groups { padding-top: 20px; display: flex; flex-direction: column; gap: 20px; }
+.ae-group > header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; min-height: 23px; margin-bottom: 10px; color: var(--darker-gray); font-size: 16px; line-height: normal; }
 .ae-group > header h2 { font: inherit; }
-.ae-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.ae-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .ae-event-card { position: relative; display: flex; gap: 24px; min-width: 0; padding: 18px 20px 18px 24px; border: 1px solid var(--gray); border-radius: 16px; box-shadow: 0 2px 3px rgba(239,242,245,.8); background: var(--white); transition: box-shadow var(--dur-micro) ease; }
 .ae-card-open { position: absolute; inset: 0; border-radius: inherit; z-index: 1; }
 .ae-card-open:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
@@ -80,7 +86,8 @@
 .ae-status.completed { color: var(--green-dark); background: #daf9df; }
 .ae-status.cancelled { color: var(--pink-dark); background: #ffddeE; }
 .ae-status + .ae-registered { display: none; }
-.ae-rail { padding-top: 55px; }
+/* Calendar lines up with the search row, as on the volunteer page */
+.ae-rail { padding-top: 0; }
 /* Rail calendar reuses the dashboard calendar (.cal in styles.css) inside its own card frame */
 .cal.ae-calendar { width: 400px; min-height: 402px; padding: 16px 14px; border: 1px solid var(--gray); border-radius: var(--radius-card); box-shadow: 0 2px 4px var(--neutral-drop-shadow); background: var(--white); }
 .cal.ae-calendar .cal-head h2 { font: inherit; }
@@ -92,9 +99,8 @@
 .ae-task-type.type-survey { background: #e5f6d4; }
 .ae-task-type.type-grant { background: var(--purple-lightest); }
 .ae-view-all.link { display: flex; width: max-content; margin: 8px 0 0 auto; font-size: 14px; }
-.ae-active-filter { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 6px 10px; background: var(--purple-lightest); color: var(--purple-dark); border-radius: 18px; }
-.ae-active-filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.ae-active-filters + .ae-groups { padding-top: 16px; }
+.ae-active-filter { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--purple-lightest); color: var(--purple-dark); border-radius: 18px; }
+.ae-active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 /* Empty event container shared visually with Final / Volunteer Events Registered. */
 .ae-empty { display: flex; align-items: center; justify-content: center; min-height: 176px; padding: 32px 18px 32px 26px; background: var(--white); border: 1px solid var(--gray); border-radius: 18px; box-shadow: 0 2px 3px rgba(239, 242, 245, .8); }
 .ae-empty-content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; width: 100%; text-align: center; }
