@@ -78,10 +78,10 @@
 }
 
 .profile__bio {
-  max-width: 640px;
+  max-width: none; /* full column, like the admin profile */
   margin-top: 26px;
   font-weight: 400;
-  line-height: 1.35;
+  line-height: normal;
   color: var(--neutral-black);
 }
 
@@ -103,7 +103,7 @@
   padding: 30px 22px;
 }
 .profile__stats .text-body {
-  font-size: 14px;
+  font-size: 16px; /* stat labels: Body, as on the admin profile */
 }
 
 .profile__events-title {

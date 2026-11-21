@@ -172,13 +172,13 @@ export default function Profile() {
                 <BadgeCheck size={20} strokeWidth={1.75} aria-label="Verified" />
                 <Star size={20} strokeWidth={1.5} fill="#fae977" color="#bb7a34" aria-label="Top volunteer" />
               </h1>
-              <p className="text-label-2 profile__sub">
+              <p className="text-body profile__sub">
                 {person.title} <span aria-hidden="true">|</span> {person.city}
               </p>
             </div>
             <EditButton aria-label="Edit profile" className="profile__edit" onClick={() => setEditing(true)} />
           </div>
-          <p className="text-label-2 profile__bio">{person.bio}</p>
+          <p className="text-body profile__bio">{person.bio}</p>
 
           <button type="button" className="profile__year text-label-2">
             2026 <ChevronDown size={14} strokeWidth={2} aria-hidden="true" />
@@ -204,7 +204,7 @@ export default function Profile() {
         </div>
 
         <aside className="profile__side">
-          <p className="profile__joined text-label-2">
+          <p className="profile__joined text-body">
             <span>Joined</span> {person.joined}
           </p>
           <section className="profile__contact">

@@ -17,6 +17,8 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
   const roster = (event.volunteerIds || Object.keys(VOLS).slice(0, event.registered)).filter((id) => VOLS[id]);
   const partialRoster = roster.length < event.registered;
   const missing = event.surveyMissingIds?.length || 0;
+  // Surveys go out after the event: before then (or if it was cancelled) nothing can be missing
+  const notYet = event.status === 'Upcoming' || event.status === 'Cancelled';
   const tags = (event.tagText || '').split(',').map((tag) => tag.trim()).filter(Boolean);
   const surveyStatus = (id) => !hasSurvey ? 'unassigned' : event.surveyMissingIds?.includes(id) ? 'missing' : event.surveyCompletedIds?.includes(id) ? 'complete' : 'pending';
   const messageAll = () => partialRoster ? setConfirmMessage(true) : onMessage(roster, event);
@@ -31,7 +33,7 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
       </div>
       <div className="ae-stat-row">
         <div className="ae-stat"><span>Sign-up</span><p><b>{event.registered}</b><span>{roster.length ? 'Volunteers' : 'volunteers'}</span></p></div>
-        <div className="ae-stat"><span>Surveys missing</span><p><b>{hasSurvey || !event.registered ? `${missing}/${event.registered}` : '–'}</b><span>{roster.length ? 'Surveys' : 'surveys'}</span></p></div>
+        <div className="ae-stat"><span>Surveys missing</span><p><b>{notYet ? '–' : hasSurvey || !event.registered ? `${missing}/${event.registered}` : '–'}</b><span>{notYet ? (event.status === 'Cancelled' ? 'event cancelled' : 'after the event') : roster.length ? 'Surveys' : 'surveys'}</span></p></div>
         <button className="btn btn-purple-outline" onClick={() => setSurvey(true)}>View survey</button>
       </div>
       <div className="ae-roster-heading"><h2>Volunteers</h2><button className="btn btn-purple-outline" disabled={!roster.length} onClick={messageAll}>Message all volunteers<EventAsset name="detail-message-square" /></button></div>
