@@ -10,7 +10,10 @@
   animation: modal-fade 140ms ease;
 }
 
+/* Popups portal outside the app frame, so they take the frame's 0.9 scale
+   (--page-zoom, AppShell.css) here to match the page behind them. */
 .modal {
+  zoom: 0.9;
   display: flex;
   flex-direction: column;
   max-width: 100%;

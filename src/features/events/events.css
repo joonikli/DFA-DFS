@@ -272,7 +272,6 @@
 .ae-detail-heading > div { flex: 1; min-width: 0; }
 .ae-detail-heading h1 { font: 600 28px/31px var(--serif); margin: 0 0 12px; color: #000; overflow-wrap: anywhere; }
 .ae-detail-heading p { margin: 0; color: var(--darker-gray); font: 500 20px/23px var(--sans); }
-.ae-edit.btn { font: 600 14px/17px var(--sans); height: 39px; padding: 10px; gap: 10px; border-color: var(--gray); border-radius: 12px; color: var(--darker-gray); }
 .ae-detail-description { display: flex; align-items: flex-end; min-height: 67px; margin: 30px 0 0 7px; gap: 20px; width: 894px; max-width: calc(100% - 7px); }
 .ae-detail-description p { align-self: flex-start; width: 850px; min-width: 0; max-height: 57px; margin: 0; font: 400 16px/19px var(--sans); color: #000; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .ae-detail-description.expanded p { display: block; max-height: none; white-space: pre-wrap; }

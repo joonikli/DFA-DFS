@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowUpRight, CalendarDays, ChevronRight, Filter as FilterIcon, MapPin, Pencil, Users } from 'lucide-react'
 import Button from '../../components/Button/Button.jsx'
+import EditButton from '../../components/EditButton/EditButton.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
 import StatusPill from '../../components/StatusPill/StatusPill.jsx'
 import { SelectField } from '../../components/Field/Field.jsx'
@@ -65,9 +66,7 @@ export default function SurveyDetail() {
           <Button size="sm" icon="plus" onClick={() => navigate('/surveys?create=1')}>
             Create survey
           </Button>
-          <button type="button" className="survey-detail__icon" aria-label="Edit survey">
-            <Pencil size={18} strokeWidth={1.75} />
-          </button>
+          <EditButton aria-label="Edit survey" />
           <button type="button" className="survey-detail__icon" aria-label="Filter responses">
             <FilterIcon size={18} strokeWidth={1.75} />
           </button>

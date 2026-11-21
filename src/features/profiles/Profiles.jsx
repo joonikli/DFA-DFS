@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../../components/Icon.jsx';
 import SurveyWarning from '../../components/SurveyWarning.jsx';
+import EditButton from '../../components/EditButton/EditButton.jsx';
 import SurveyStatus from '../events/SurveyStatus.jsx';
 import { hideTip, useFitZoom, usePop, useToast } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
@@ -42,7 +43,7 @@ function Notes({ person }) {
   const edit = useRef(null);
   const finish = () => { setEditing(false); requestAnimationFrame(() => edit.current?.focus()); };
   return <section className="ap-notes" aria-label="Admin notes">
-    <header><h2>Admin Notes</h2><button ref={edit} type="button" className="btn btn-outline ae-edit" aria-label="Edit admin notes" aria-expanded={editing} onClick={() => { setDraft(person.notes || ''); setEditing(true); }}><EventAsset name="detail-pen" />Edit</button></header>
+    <header><h2>Admin Notes</h2><EditButton ref={edit} aria-label="Edit admin notes" aria-expanded={editing} onClick={() => { setDraft(person.notes || ''); setEditing(true); }} /></header>
     {editing ? <form className="ap-notes-box editing" onSubmit={(event) => { event.preventDefault(); saveAdminNotes(person.id, draft); finish(); toast('Admin notes saved', { ic: 'check' }); }}>
       <label className="sr" htmlFor="admin-profile-notes">Admin-only notes</label><textarea id="admin-profile-notes" autoFocus value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); finish(); } }} />
       <div><button type="button" className="btn btn-purple-outline" onClick={finish}>Cancel</button><button type="submit" className="btn btn-dark">Save notes</button></div>
@@ -104,9 +105,9 @@ export default function Profiles({ params }) {
     <TopNav />
     {!person ? <div className="ap-not-found"><h1>Profile not found</h1><p>This volunteer is not available in the prototype.</p><button className="btn btn-purple-outline" onClick={() => navigate('events')}>Back to Events</button></div> : <>
       <div className="ap-cover" aria-hidden="true" />
-      <div className="ap-masthead"><Portrait key={person.photo || person.id} person={person} />{admin && <button className="ap-photo-edit" aria-label="Edit profile photo" onClick={() => setEditor({ photoOnly: true })}><ProfileAsset name="photo-pen" /></button>}<div className="ap-joined"><span>Joined</span><span>{person.joined || 'Not recorded'}</span></div></div>
+      <div className="ap-masthead"><Portrait key={person.photo || person.id} person={person} />{admin && <EditButton iconOnly className="ap-photo-edit" aria-label="Edit profile photo" onClick={() => setEditor({ photoOnly: true })} />}<div className="ap-joined"><span>Joined</span><span>{person.joined || 'Not recorded'}</span></div></div>
       <div className="ap-content"><div className="ap-columns"><div className="ap-primary">
-        <section className="ap-intro"><div className="ap-identity-row"><div><div className="ap-name"><h1>{person.name}</h1>{person.verified && <ProfileAsset name={admin ? 'verified-admin' : 'verified-volunteer'} />}</div><p className="ap-subtitle">{admin ? person.jobTitle : person.kind} | {person.location}</p></div>{admin && <button className="btn btn-outline ae-edit ap-edit-profile" aria-label="Edit profile" onClick={() => setEditor({})}><EventAsset name="detail-pen" />Edit</button>}</div><p className="ap-bio">{person.bio}</p></section>
+        <section className="ap-intro"><div className="ap-identity-row"><div><div className="ap-name"><h1>{person.name}</h1>{person.verified && <ProfileAsset name={admin ? 'verified-admin' : 'verified-volunteer'} />}</div><p className="ap-subtitle">{admin ? person.jobTitle : person.kind} | {person.location}</p></div>{admin && <EditButton className="ap-edit-profile" aria-label="Edit profile" onClick={() => setEditor({})} />}</div><p className="ap-bio">{person.bio}</p></section>
         {!admin && <Statistics person={person} year={year} onYear={setYear} />}
         <section className="ap-events" aria-label={`${first}’s events`}><h2>{first}’s Events</h2>
           <EventTabs items={admin ? ['Upcoming', 'Previous'] : ['Upcoming', 'Attended', 'Awards']} value={tab} onChange={changeTab} label="Profile activity" panelId="profile-activity-panel" className="ap-tabs" badges={hasMissingSurvey ? { Attended: <SurveyWarning /> } : undefined} />

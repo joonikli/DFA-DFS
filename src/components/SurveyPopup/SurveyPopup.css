@@ -21,6 +21,7 @@
 /* Figma scrim: Neutral/Black at 50% */
 .svp-scrim { position: absolute; inset: 0; background: rgba(58, 57, 58, .5); transition: opacity 200ms var(--svp-ease); }
 .svp-panel {
+  zoom: 0.9; /* portals outside the app frame, so it takes the frame's 0.9 scale (--page-zoom, AppShell.css) */
   position: relative; display: flex; flex-direction: column; gap: 32px;
   width: 737px; max-width: 100%; max-height: calc(100vh - 48px); overflow-y: auto; overscroll-behavior: contain;
   margin: 0; padding: 32px 31px 40px; border: 1px solid var(--svp-gray); border-radius: 16px; background: var(--svp-white);

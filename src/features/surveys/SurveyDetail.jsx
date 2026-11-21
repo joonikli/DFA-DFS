@@ -4,6 +4,7 @@ import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
 import { navigate } from '../../lib/router.js';
 import EventAsset from '../events/EventAsset.jsx';
+import EditButton from '../../components/EditButton/EditButton.jsx';
 import { resultsFor } from './surveyData.js';
 
 const Asset = ({ name, className = '' }) => <img className={`ae-asset ${className}`} src={`/assets/surveys/${name}`} alt="" aria-hidden="true" />;
@@ -22,7 +23,7 @@ function Dropdown({ prefix, label, options, value, onChange }) {
 }
 
 function QuestionField({ n, title, onEdit }) {
-  return <div className="sd-question"><h2><span>Q #{n}</span>{title}</h2><button className="sd-icon-plain" aria-label={`Edit question ${n}`} onClick={onEdit}><Asset name="detail-pencil.svg" /></button></div>;
+  return <div className="sd-question"><h2><span>Q #{n}</span>{title}</h2><EditButton aria-label={`Edit question ${n}`} onClick={onEdit} /></div>;
 }
 
 export function Bars({ options, total }) {
@@ -110,7 +111,7 @@ export default function SurveyDetail({ survey, onCreate }) {
           <button className="btn btn-dark ae-create as-create" onClick={onCreate}>Create survey<EventAsset name="list-plus" /></button>
         </div>
         <div className="sd-actions-icons">
-          <button className="as-icon-select" aria-label="Edit survey" data-tip="Edit survey" onClick={() => notBuilt('Editing surveys')}><Asset name="detail-edit.svg" /></button>
+          <EditButton aria-label="Edit survey" onClick={() => notBuilt('Editing surveys')} />
           <button className="as-icon-select" aria-label="Filter responses" data-tip="Filter responses" onClick={() => notBuilt('Filtering responses')}><Asset name="detail-filter.svg" /></button>
         </div>
       </div>
