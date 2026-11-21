@@ -38,7 +38,7 @@ export default function VolunteerDashboard() {
   const toast = useToast();
   const vpRef = useRef(null);
   const recsRef = useRef(null);
-  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000, fit: false });
 
   const registered = useMemo(() => new Set(volunteer.registered), [volunteer.registered]);
   const saved = useMemo(() => new Set(volunteer.saved), [volunteer.saved]);
@@ -132,7 +132,7 @@ export default function VolunteerDashboard() {
       {!dismissed && survey && <Banner leave={survey.done} onSurvey={() => setSurveyOpen(true)} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
-          cal={cal} registered={registered} recommended={RECOMMENDED} flash={null}
+          cal={cal} registered={registered} attended={volunteer.attended} flash={null}
           onNav={calNav} onDay={calDay} onClear={calClear} onFind={findEvents} onAddCal={addCal} onCancel={cancelShift}
         />
       </section>

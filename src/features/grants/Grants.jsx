@@ -147,7 +147,7 @@ function DocumentsDialog({ grantId, onSwitch, onClosed }) {
 export default function Grants() {
   const pop = usePop(), notBuilt = useNotBuilt(), toast = useToast();
   const page = useRef(null);
-  useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
   const [grants, setGrants] = useGrantState('grants'), [applied, setApplied] = useGrantState('applied');
   const [tab, setTab] = useState('Your grants'), [query, setQuery] = useState(''), [sort, setSort] = useState(null), [docs, setDocs] = useState(null), [unread, setUnread] = useState(true);
   const popRef = useRef(pop); popRef.current = pop;

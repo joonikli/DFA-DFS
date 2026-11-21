@@ -106,7 +106,7 @@
 .as-section > header { display: flex; align-items: center; gap: 12px; height: 24px; margin-bottom: 36px; }
 .as-section h2 { margin: 0; font: 500 20px/24px var(--sans); color: var(--darker-gray); }
 .as-section > header span { font: 600 16px/19px var(--sans); color: var(--black); }
-.as-grid { display: grid; grid-template-columns: repeat(3, 437px); gap: 24px; }
+.as-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 437px)); gap: 24px; } /* shrinks under the shared page scale instead of overflowing */
 
 /* Survey card — 437 × 345 */
 .as-card { display: flex; flex-direction: column; align-items: flex-end; gap: 0; padding: 14px 24px 24px; border: 1px solid var(--gray); border-radius: 24px; background: var(--white); }

@@ -11,7 +11,7 @@ const MAIN_NAV = [
   { to: '/', label: 'Dashboard', Icon: House, end: true },
   { to: '/events', label: 'Events', Icon: Calendar },
   { to: '/surveys', label: 'Surveys', Icon: FilePen },
-  { to: '/grants', label: 'Grants', Icon: CircleDollarSign },
+  { to: '/grants', label: 'Grants', Icon: CircleDollarSign, adminOnly: true },
   { to: '/messages', label: 'Messages', Icon: MessagesSquare },
 ]
 
@@ -38,10 +38,11 @@ export default function Sidebar() {
   return (
     <nav className="sidebar" aria-label="Main">
       <div className="sidebar__logo">
-        <Logo />
+        {/* 60% of the default 64px */}
+        <Logo width={38} />
       </div>
       <div className="sidebar__items">
-        {MAIN_NAV.map((item) => (
+        {MAIN_NAV.filter((item) => !item.adminOnly || role === 'admin').map(({ adminOnly, ...item }) => (
           <NavItem key={item.to} {...item} badge={item.to === '/messages' ? unread : 0} />
         ))}
       </div>

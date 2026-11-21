@@ -1,15 +1,10 @@
 /* Figma: Volunteer - Single Event (2530:10615). Sizes are the Figma frame's at 1728px. */
-/* Matches the Your events page's rendered scale. That page zooms layout by 0.88 but its cards
-   also shrink type (24px titles, 15px text), so Figma type lands at ~0.8 there. 0.8 here makes
-   the 940px main column the same width as the events list (~750px) and the type the same size.
-   max-width is divided by the zoom so the page fills the same on-screen width. */
+/* Scale comes from the app frame (--page-zoom, AppShell.css), the same as every other page */
 .ved {
-  --page-zoom: 0.8;
-  zoom: var(--page-zoom);
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: calc(1381px / var(--page-zoom));
+  max-width: 1381px;
 }
 
 /* ---- Breadcrumb ("Page Nav") ---- */
@@ -54,8 +49,8 @@
   gap: 24px;
 }
 .ved__banner {
-  height: 65px;
-  border-radius: 12px 12px 0 0;
+  height: 130px;
+  border-radius: 12px;
   background: var(--primary-light-purple); /* fallback when an event has no photo */
   overflow: hidden;
 }
@@ -87,12 +82,6 @@
 .ved__subtitle {
   color: var(--neutral-darker-gray);
 }
-/* Shared components render at the events page's 0.88 (0.8 × 1.1) so they look identical there and here */
-.ved .event-cta,
-.ved .tag {
-  zoom: 1.1;
-}
-
 .ved__desc {
   display: flex;
   align-items: flex-end;
@@ -136,7 +125,7 @@
 }
 /* Heading 2 in #494949 (Figma literal, no token) */
 .ved__card h2,
-.ved__aside h2 {
+.ved__contacts h2 {
   color: #494949;
 }
 
@@ -189,12 +178,61 @@
   text-decoration: underline;
 }
 
-/* ---- Key Contacts ---- */
+/* ---- Right column: post-event survey card (Attended only) + Key Contacts ---- */
 .ved__aside {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 44px;
   flex: 0 0 363px;
+}
+
+/* "Post-event popup" (2532:41929) */
+.ved__survey {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 16px;
+  box-shadow: 0 4px 2px var(--neutral-drop-shadow);
+}
+.ved__survey-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ved__survey-head h2 {
+  margin: 0;
+  color: var(--neutral-black);
+}
+/* Same close affordance as the shared Modal's X */
+.ved__survey-close {
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: 6px;
+  color: var(--neutral-darker-gray);
+}
+.ved__survey-close:hover {
+  color: var(--neutral-black);
+  background: var(--neutral-light-gray);
+}
+.ved__survey-text {
+  margin: 6px 0 0;
+  padding: 8px 2px;
+  color: var(--neutral-darker-gray);
+}
+.ved__survey-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+/* ---- Key Contacts ---- */
+.ved__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 .ved__contact {
   display: flex;

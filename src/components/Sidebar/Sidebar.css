@@ -23,7 +23,7 @@
 .sidebar__items {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
 .sidebar__footer {

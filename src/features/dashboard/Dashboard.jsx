@@ -45,7 +45,7 @@ export default function Dashboard() {
   const toast = useToast();
   const notBuilt = useNotBuilt();
   const [unread, setUnread] = useState(true);
-  useFitZoom(dashRef, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(dashRef, { designWidth: 1488, minWidth: 1000, fit: false });
 
   // .editing is toggled imperatively so React never rewrites the class list useFitZoom owns (.fluid)
   useLayoutEffect(() => { dashRef.current.classList.toggle('editing', D.editing); });
@@ -60,7 +60,8 @@ export default function Dashboard() {
   useLayoutEffect(() => { popRef.current = pop; });
   useEffect(() => () => { dragCleanup.current?.(); popRef.current.close(null, true); hideTip(); }, []);
 
-  const zoom = () => parseFloat(dashRef.current?.style.zoom) || 1;
+  // Effective zoom from any ancestor (the app frame's page scale): screen px per layout px
+  const zoom = () => { const el = dashRef.current; return el?.offsetWidth ? el.getBoundingClientRect().width / el.offsetWidth : 1; };
   const commit = (next) => { D.views[D.view].layout = next; flushSync(bump); };
 
   // FLIP: animate widgets from where they were to where they are now (they're already on screen, so ease-in-out)

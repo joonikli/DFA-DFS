@@ -12,8 +12,9 @@
 .ap-own-admin .ap-joined { top: 30px; right: 91px; gap: 24px; font-weight: 400; }
 .ap-content { margin: 0 46px 40px 52px; }
 .ap-own-admin .ap-content { margin-left: 78px; margin-right: 91px; }
-.ap-columns { display: grid; grid-template-columns: 849px 371px; gap: 170px; align-items: start; }
-.ap-own-admin .ap-columns { grid-template-columns: 849px 300px; }
+/* At 1488px the columns sit 170px apart (Figma); narrower, the gap gives way first, then the main column */
+.ap-columns { display: grid; grid-template-columns: minmax(0, 849px) 371px; gap: 170px 48px; justify-content: space-between; align-items: start; }
+.ap-own-admin .ap-columns { grid-template-columns: minmax(0, 849px) 300px; }
 .ap-primary, .ap-aside { min-width: 0; }
 .ap-intro { min-height: 144px; }
 .ap-identity-row { display: flex; align-items: flex-end; gap: 24px; }

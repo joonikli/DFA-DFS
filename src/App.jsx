@@ -134,15 +134,8 @@ export default function App() {
           <Route path="events/:id" element={<ByRole admin={<EventLink />} volunteer={<VolunteerEventDetail />} />} />
           <Route path="surveys" element={<ByRole admin={<Lazy><ManagerSurveys /></Lazy>} volunteer={<VolunteerSurveys />} />} />
           <Route path="surveys/:id" element={<ByRole admin={<SurveyLink />} volunteer={<Navigate to="/surveys" replace />} />} />
-          <Route
-            path="grants"
-            element={
-              <ByRole
-                admin={<Lazy><ManagerGrants /></Lazy>}
-                volunteer={<Placeholder title="Grants" note="Grants are managed by Dress for Success staff. Switch to the admin view (avatar menu) to see them." />}
-              />
-            }
-          />
+          {/* Grants are staff-only: no volunteer tab, so volunteers are sent to their dashboard */}
+          <Route path="grants" element={<ByRole admin={<Lazy><ManagerGrants /></Lazy>} volunteer={<Navigate to="/" replace />} />} />
           {/* Profiles: volunteer view = Profile.jsx (Maureen's own); admin view = bev's profiles at
               /people (Bridget's own with type=admin, any volunteer with type=volunteer&id=…) */}
           <Route path="profile" element={<ByRole admin={<Navigate to="/people?type=admin" replace />} volunteer={<Profile />} />} />

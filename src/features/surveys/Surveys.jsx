@@ -156,7 +156,7 @@ export default function Surveys() {
   const page = useRef(null);
   const { params } = useRoute();
   const active = allSections.flatMap((s) => s.surveys).find((s) => s.id === params.get('survey'));
-  useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
   const [query, setQuery] = useState(''), [sort, setSort] = useState('Default'), [unread, setUnread] = useState(true);
   const popRef = useRef(pop); popRef.current = pop;
   useEffect(() => () => { popRef.current.close(null, true); hideTip(); }, []);
