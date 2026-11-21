@@ -81,7 +81,7 @@ function ListItems() {
     items.unshift(
       <li key="draft-row"><button className={`convo draft-row ${M.composing ? 'on' : ''}`} onClick={compose}><span className="av list draft-av"><Icon name="pen" size={18} /></span>
         <span className="convo-main"><span className="convo-top"><span className="convo-name">{M.tab === 'announcement' ? 'New announcement' : 'New message'}</span><span className="convo-time">Draft</span></span>
-          <span className="convo-bot"><span className="convo-prev">{to ? `To: ${to}` : 'No recipients yet'}{(nd?.body || '').trim() ? ` — ${nd.body}` : ''}</span></span></span></button></li>,
+          <span className="convo-bot"><span className="convo-prev">{to ? `To: ${to}` : 'No recipients yet'}{(nd?.body || '').trim() ? ` · ${nd.body}` : ''}</span></span></span></button></li>,
     );
   }
   return items.length ? items : <li className="empty-list">Nothing here{M.q ? ` for “${M.q}”` : ''}.</li>;

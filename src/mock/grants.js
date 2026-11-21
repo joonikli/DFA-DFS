@@ -237,7 +237,7 @@ export const impactReport = {
     {
       h: 'Client Story',
       p: 'Marisol, a mother of two, had been out of the workforce for six years when a shelter caseworker referred her to us. She was fitted for her first interview outfit, completed our workshop series, and practiced mock interviews with a volunteer. Within five weeks she was hired as a medical billing specialist. Today she is a PWG mentor.',
-      quote: ['“I walked in feeling invisible. I walked out feeling ready.”', ' — Marisol, client and mentor of 2 years'],
+      quote: ['“I walked in feeling invisible. I walked out feeling ready.”', ' Marisol, client and mentor of 2 years'],
     },
     {
       h: 'Financial Summary',

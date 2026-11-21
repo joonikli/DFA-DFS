@@ -115,7 +115,7 @@ export default function SurveyBuilder({ onClose, onCreate, eventOptions, default
 
   if (preview) {
     return (
-      <Modal open onClose={() => setPreview(false)} width={737} title={title || 'Untitled survey'} subtitle="Preview — this is what volunteers will see." transitionName={transitionName}>
+      <Modal open onClose={() => setPreview(false)} width={737} title={title || 'Untitled survey'} subtitle="Preview: this is what volunteers will see." transitionName={transitionName}>
         <div className="sb-preview">
           {questions.map((q, i) => (
             <SurveyQuestion key={q.id} number={i + 1} question={{ ...q, prompt: q.prompt || 'Untitled question' }} value={undefined} onChange={() => {}} />

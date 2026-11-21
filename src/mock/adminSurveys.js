@@ -33,7 +33,7 @@ const TEXT_ANSWERS = [
   'I told her I’m not comfortable in anything fitted around my arms, and she never made me feel awkward about it. We found a blazer that fit well and still looked polished.',
   'I was nervous and didn’t know what I wanted, but my stylist asked gentle questions and gave me options. She let me make the final choices, which made me feel in control.',
   'I’ve never had someone take the time to help me find clothes that matched my personality. She complimented my style and helped me add a scarf and jewelry that felt like me.',
-  'Check-in took a while — a second table at the door would help.',
+  'Check-in took a while. A second table at the door would help.',
   'Seeing a client light up when she tried on her interview suit. That’s why I keep coming back.',
   'More size-inclusive options in the 14–20 range would make a big difference.',
   'The volunteer lead was fantastic at keeping everyone on task without rushing anyone.',

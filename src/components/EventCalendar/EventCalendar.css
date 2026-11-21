@@ -185,7 +185,7 @@
 .ecd-tip {
   position: absolute;
   bottom: calc(100% + 8px);
-  left: 50%;
+  left: var(--ecd-tip-left, 50%);
   z-index: 5;
   padding: 5px 8px;
   border-radius: 6px;
@@ -199,12 +199,15 @@
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transform: translateX(-50%) scale(.97);
+  transform: translateX(var(--ecd-tip-x, -50%)) scale(.97);
   transition: opacity 125ms cubic-bezier(.23, 1, .32, 1), transform 125ms cubic-bezier(.23, 1, .32, 1);
 }
+/* Sunday / Saturday tips line up with the day's outer edge so long event names stay inside the card */
+.ecd-day:nth-child(7n + 1) { --ecd-tip-left: 0%; --ecd-tip-x: 0%; }
+.ecd-day:nth-child(7n) { --ecd-tip-left: 100%; --ecd-tip-x: -100%; }
 .ecd-day:focus-visible .ecd-tip {
   opacity: 1;
-  transform: translateX(-50%);
+  transform: translateX(var(--ecd-tip-x, -50%));
 }
 @media (hover: hover) and (pointer: fine) {
   .ecd-nav:hover { background: var(--neutral-light-gray); }
@@ -212,12 +215,12 @@
   .ecd-day:not(.sel):hover { color: var(--primary-dark-purple); }
   .ecd-day:hover .ecd-tip {
     opacity: 1;
-    transform: translateX(-50%);
+    transform: translateX(var(--ecd-tip-x, -50%));
     transition-delay: 500ms;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ecd-tip { transform: translateX(-50%); }
+  .ecd-tip { transform: translateX(var(--ecd-tip-x, -50%)); }
 }
 
 /* Dot whose tone just changed (registered / unregistered): same pulse + ring as the

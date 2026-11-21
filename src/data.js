@@ -10,7 +10,7 @@ export const ME = { first: 'Bridget', name: 'Bridget Moore' };
 
 export const VOLS = {
   sarah:   { name: 'Sarah Nkemelu', role: 'Volunteer for Mobile Services', kind: 'Individual', loc: 'Washington, PA', email: 'sarah.nkemelu@gmail.com', phone: '412-555-0148', tags: ['heavy lifting', 'spanish'], notes: 'Prefers weekend events. Good with the check-in table. Has helped at the Washington location multiple times.', upcoming: ['e12', 'e20', 'e15'], hours: 46 },
-  sophia:  { name: 'Sophia Chen', role: 'Career coach', kind: 'Individual', loc: 'Shadyside, Pittsburgh', email: 'sophia.chen@outlook.com', phone: '412-555-0193', tags: ['career coaching', 'mandarin'], notes: 'Former HR lead at UPMC. Great at mock interviews — pair her with first-time clients.', upcoming: ['e21', 'e19'], hours: 38 },
+  sophia:  { name: 'Sophia Chen', role: 'Career coach', kind: 'Individual', loc: 'Shadyside, Pittsburgh', email: 'sophia.chen@outlook.com', phone: '412-555-0193', tags: ['career coaching', 'mandarin'], notes: 'Former HR lead at UPMC. Great at mock interviews. Pair her with first-time clients.', upcoming: ['e21', 'e19'], hours: 38 },
   marie:   { name: 'Marie James', role: 'Warehouse lead', kind: 'Individual', loc: 'Mt. Lebanon, PA', email: 'mariejames@gmail.com', phone: '412-555-0112', tags: ['heavy lifting', 'team lead'], notes: 'Runs the Warehouse Wednesday sorting stations. Has a truck for large pickups.', upcoming: ['e17', 'e20'], hours: 61 },
   andre:   { name: 'Andre Dupont', role: 'Mobile Services driver', kind: 'Individual', loc: 'Bloomfield, Pittsburgh', email: 'andre.dupont@gmail.com', phone: '412-555-0177', tags: ['driver', 'french'], notes: 'Licensed to drive the styling van. Available Tuesdays and Saturdays.', upcoming: ['e12', 'e15'], hours: 29 },
   priya:   { name: 'Priya Raman', role: 'Stylist', kind: 'Individual', loc: 'Squirrel Hill, Pittsburgh', email: 'priya.raman@gmail.com', phone: '412-555-0130', tags: ['styling', 'tamil'], notes: 'Trained stylist; leads fittings at the Homestead boutique.', upcoming: ['e15', 'e21'], hours: 33 },
@@ -94,15 +94,15 @@ export const PAST_SHIFTS = events
 // Direct conversations ("Message" tab)
 export const CONVOS = [
   { id: 'c1', who: ['sarah'], unread: 0, time: '2 min ago', channel: 'inapp', msgs: [
-    { from: 'them', text: 'Hi Bridget — any chance I can switch from the Wednesday sort to Tuesday’s Mobile Services shift?', time: 'Yesterday 4:12 PM' },
-    { from: 'me', text: 'Of course! I’ll move you over — Andre is driving, so you’d be on intake with Elena.', time: '4:20 PM' },
+    { from: 'them', text: 'Hi Bridget, any chance I can switch from the Wednesday sort to Tuesday’s Mobile Services shift?', time: 'Yesterday 4:12 PM' },
+    { from: 'me', text: 'Of course! I’ll move you over. Andre is driving, so you’d be on intake with Elena.', time: '4:20 PM' },
     { type: 'divider', text: 'Today' },
-    { from: 'them', text: 'Hi Bridget — is the Tuesday shift still starting at 2?', time: '11:02' },
+    { from: 'them', text: 'Hi Bridget, is the Tuesday shift still starting at 2?', time: '11:02' },
     { from: 'me', text: 'Yes, 2pm sharp. I’ve attached the shift so you can add it to your calendar.', time: '11:04', reacts: { '🙏': ['sarah'] } },
     { from: 'me', type: 'shift', shift: 'e12', time: '11:05' },
   ]},
   { id: 'c2', who: ['sophia'], unread: 1, time: '18 min ago', channel: 'inapp', msgs: [
-    { from: 'me', text: 'Thanks again for running the mock interviews last week — clients loved it.', time: 'Mon 3:40 PM' },
+    { from: 'me', text: 'Thanks again for running the mock interviews last week. Clients loved it.', time: 'Mon 3:40 PM' },
     { from: 'them', text: 'Thanks for bringing me in! Could I take two more slots at the June Career Closet?', time: '10:46' },
   ]},
   { id: 'c3', who: ['marie'], unread: 0, time: '1 hr ago', channel: 'inapp', msgs: [
@@ -112,22 +112,22 @@ export const CONVOS = [
   ]},
   { id: 'c4', who: ['priya', 'tasha'], unread: 3, time: '3 hr ago', channel: 'inapp', name: 'Summer Suit Drive leads', about: 'Planning the drop-off line for the Summer Suit Drive: steamers, signs and sizing.', event: 'e15', created: 'May 14', msgs: [
     { from: 'priya', text: 'Do we have enough steamers for the 30th? Last year we had a line.', time: '8:02', replies: [
-      { who: 'tasha', when: '8:20', text: 'Checked the supply closet — we have three. I’ll bring two more from home.' },
+      { who: 'tasha', when: '8:20', text: 'Checked the supply closet. We have three. I’ll bring two more from home.' },
       { who: 'me', when: '8:31', text: 'Perfect. I’ll pick up the closet ones from Redmond Rd on Friday.' },
     ] },
     { from: 'tasha', text: 'I can bring two from home. Should we split the drop-off line into sizes?', time: '8:10', reacts: { '🙌': ['priya', 'me'], '👍': ['priya'] } },
     { from: 'priya', text: 'Love that. I’ll make signs.', time: '8:12' },
   ]},
   { id: 'c5', who: ['marcus'], unread: 0, time: 'Yesterday', channel: 'email', msgs: [
-    { from: 'them', type: 'email', subject: 'PNC team — Summer Suit Drive', text: 'Hi Bridget,\n\nWe have 12 confirmed for the 30th. Is there parking for a sprinter van?\n\nThanks,\nMarcus', time: 'Yesterday 2:18 PM' },
-    { from: 'me', type: 'email', subject: 'Re: PNC team — Summer Suit Drive', text: 'Hi Marcus — yes, there’s a loading zone at the Redmond Rd warehouse. I’ll send a parking map Friday.', time: 'Yesterday 3:02 PM' },
+    { from: 'them', type: 'email', subject: 'PNC team: Summer Suit Drive', text: 'Hi Bridget,\n\nWe have 12 confirmed for the 30th. Is there parking for a sprinter van?\n\nThanks,\nMarcus', time: 'Yesterday 2:18 PM' },
+    { from: 'me', type: 'email', subject: 'Re: PNC team: Summer Suit Drive', text: 'Hi Marcus, yes, there’s a loading zone at the Redmond Rd warehouse. I’ll send a parking map Friday.', time: 'Yesterday 3:02 PM' },
   ]},
   { id: 'c6', who: ['elena'], unread: 0, time: 'Mon', channel: 'inapp', msgs: [
-    { from: 'them', text: 'I translated the new intake form into Spanish — sending it over now.', time: 'Mon 1:20 PM' },
+    { from: 'them', text: 'I translated the new intake form into Spanish. Sending it over now.', time: 'Mon 1:20 PM' },
     { from: 'me', text: 'You’re a star. I’ll print 50 for Tuesday.', time: 'Mon 1:45 PM' },
   ]},
   { id: 'c7', who: ['andre'], unread: 0, time: 'Sun', channel: 'inapp', msgs: [
-    { from: 'them', text: 'Van needs gas before Tuesday — should I use the org card?', time: 'Sun 6:05 PM' },
+    { from: 'them', text: 'Van needs gas before Tuesday. Should I use the org card?', time: 'Sun 6:05 PM' },
     { from: 'me', text: 'Yes, keep the receipt in the glovebox envelope. Thanks Andre!', time: 'Sun 7:12 PM' },
   ]},
   { id: 'c8', who: ['janice'], unread: 1, time: 'May 13', channel: 'inapp', msgs: [
@@ -140,15 +140,15 @@ export const R = (a, b, c, d) => ({ '😄': a, '💞': b, '👍': c, '😎': d }
 // Announcement groups ("Announcements" tab)
 export const GROUPS = [
   { id: 'g1', name: 'Mobile Services volunteers', members: ['sarah', 'andre', 'elena', 'janice', 'rosaline'], count: 23, reach: { app: 18, email: 4, none: 1 }, unread: 2, time: '2 min ago', anns: [
-    { id: 'a1', seen: 21, date: 'Mon, 8:10 AM', title: 'Warehouse Wednesday: June sign-ups', body: 'Hi all — June Warehouse Wednesday shifts are open. We sort and tag donated workwear from 2:00 to 5:00 PM at Redmond Rd. Grab a spot while there’s room.', reacts: R(12, 9, 21, 4), more: 41, mine: [], replies: [
+    { id: 'a1', seen: 21, date: 'Mon, 8:10 AM', title: 'Warehouse Wednesday: June sign-ups', body: 'Hi all, June Warehouse Wednesday shifts are open. We sort and tag donated workwear from 2:00 to 5:00 PM at Redmond Rd. Grab a spot while there’s room.', reacts: R(12, 9, 21, 4), more: 41, mine: [], replies: [
       { who: 'rosaline', when: 'Mon at 9:02 AM', text: 'Signed up for the 3rd!' },
       { who: 'janice', when: 'Mon at 11:40 AM', text: 'Can I bring a friend who hasn’t registered yet?' },
     ]},
-    { id: 'a2', seen: 19, date: 'Friday, 6:20 PM', title: 'May 26 Mobile Services: arrival & parking', body: 'Hi all — thanks for signing up for Tuesday’s Mobile Services shift. We start at 2:00 sharp at the Downtown Career Center; use the side entrance on Sixth Avenue.\n\nThe lot on Penn Ave is free for volunteers. Wear comfortable shoes — coffee and everything else is on us.', reacts: R(12, 12, 12, 12), more: 59, mine: ['👍'], replies: [
+    { id: 'a2', seen: 19, date: 'Friday, 6:20 PM', title: 'May 26 Mobile Services: arrival & parking', body: 'Hi all, thanks for signing up for Tuesday’s Mobile Services shift. We start at 2:00 sharp at the Downtown Career Center; use the side entrance on Sixth Avenue.\n\nThe lot on Penn Ave is free for volunteers. Wear comfortable shoes. Coffee and everything else is on us.', reacts: R(12, 12, 12, 12), more: 59, mine: ['👍'], replies: [
       { who: 'rosaline', when: 'Fri at 6:32 PM', text: 'Cool! Got it!' },
       { who: 'janice', when: 'Fri at 6:41 PM', text: 'Sorry, I might be a bit late to the event, but let me know if you need help afterwards!' },
     ]},
-    { id: 'a3', seen: 14, date: 'Today, 10:30 AM', title: 'Tuesday shift reminder', body: 'Tuesday’s Mobile Services shift starts at 2pm at the Downtown Career Center. Park on Penn and come in the side entrance — I’ll be there from 1:30 if you need anything.', reacts: R(5, 3, 14, 2), more: 8, mine: [], replies: [] },
+    { id: 'a3', seen: 14, date: 'Today, 10:30 AM', title: 'Tuesday shift reminder', body: 'Tuesday’s Mobile Services shift starts at 2pm at the Downtown Career Center. Park on Penn and come in the side entrance. I’ll be there from 1:30 if you need anything.', reacts: R(5, 3, 14, 2), more: 8, mine: [], replies: [] },
   ]},
   { id: 'g2', name: 'Warehouse Wednesday 2026 crew', members: ['marie', 'tasha', 'janice'], count: 31, reach: { app: 26, email: 4, none: 1 }, unread: 1, time: '1 hr ago', anns: [
     { id: 'b1', date: 'Tue, 4:00 PM', title: 'New sorting stations', body: 'We’ve moved shoes and accessories to the back room so suits have more space up front. Marie will walk everyone through it at 2.', reacts: R(4, 6, 18, 1), more: 6, mine: [], replies: [{ who: 'marie', when: 'Tue at 4:12 PM', text: 'Bring gloves if you have them!' }] },
@@ -170,7 +170,7 @@ export const GROUPS = [
 // Dashboard data
 export const HOURS = {
   year: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], values: [88, 132, 214, 215, 262], note: 'Hours have grown every month of 2026, with May the year’s high' },
-  last: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], values: [71, 88, 120, 97, 110, 84, 101, 156, 92, 77, 143, 188], note: '2025 total: 1,327 hours — Jan–May 2026 is up 87% on the same months' },
+  last: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], values: [71, 88, 120, 97, 110, 84, 101, 156, 92, 77, 143, 188], note: '2025 total: 1,327 hours. Jan–May 2026 is up 87% on the same months' },
   q1:   { labels: ['Jan', 'Feb', 'Mar'], values: [88, 132, 214], note: 'Hours more than doubled from January to March' },
 };
 

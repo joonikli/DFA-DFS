@@ -1,13 +1,50 @@
-/* Staff profile: layout and type come from Profile.css; only the differences live here. */
+/* Staff profile (Figma 2324:48567): layout and type come from Profile.css; only the differences live here. */
+
+/* cover is a gradient here, not the volunteer profile's flat light purple */
+.staff-profile__cover {
+  background: linear-gradient(
+    to bottom,
+    var(--primary-light-purple) 0%,
+    var(--blue-light-blue) 76.923%,
+    var(--neutral-light-gray) 100%
+  );
+}
+
+/* name block on the left, Message button pushed to the right edge, vertically centred */
+.staff-profile__identity {
+  align-items: center;
+  justify-content: space-between;
+}
+.staff-profile .profile__name {
+  gap: 6px;
+}
+.staff-profile__verified {
+  display: block;
+  flex-shrink: 0;
+}
+
 /* Button wraps its children in a span: lay the label + icon out inside it */
+.staff-profile__message {
+  margin-bottom: 0;
+}
 .staff-profile__message > span {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
+
 .staff-profile .profile__bio {
+  max-width: none;
   margin-bottom: 0;
 }
+
+/* stacked This Week / This Month / Later groups */
+.staff-profile__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .staff-profile .profile__contact a {
   color: inherit;
   text-decoration: none;

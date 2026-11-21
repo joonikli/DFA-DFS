@@ -15,7 +15,7 @@ export const MANAGER_NAV = [
 
 export function useNotBuilt() {
   const toast = useToast();
-  return (label) => toast(`${label} isn’t part of this prototype — try Dashboard or Messages.`, { ic: 'info' });
+  return (label) => toast(`${label} isn’t part of this prototype. Try Dashboard or Messages.`, { ic: 'info' });
 }
 
 export function Shell({ route, nav = MANAGER_NAV, routes = ['dashboard', 'events', 'surveys', 'grants', 'messages'], switchTo, children, onNav, showBadges = true }) {

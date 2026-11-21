@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar/Sidebar.jsx'
 import TopNav from '../components/TopNav/TopNav.jsx'
+import Footer from '../components/Footer/Footer.jsx'
 import { EventFlowsProvider } from '../features/events/EventFlows.jsx'
 import './AppShell.css'
 import './embed.css'
@@ -16,6 +17,7 @@ export default function AppShell() {
           <main className="app-shell__content">
             <Outlet />
           </main>
+          <Footer />
         </div>
       </div>
     </EventFlowsProvider>

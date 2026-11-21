@@ -50,7 +50,7 @@ function SurveyCard() {
   return (
     <div className="card" data-card="survey"><div className="eyebrow-n">Post-event survey</div>
       <div className="bars">
-        {SURVEY.map((s, i) => <div key={i} className="bar grow" style={{ height: `${(s.n / maxS) * 100}%`, animationDelay: `${i * 40}ms` }} data-tip={`${s.event} — ${s.n} responses`} />)}
+        {SURVEY.map((s, i) => <div key={i} className="bar grow" style={{ height: `${(s.n / maxS) * 100}%`, animationDelay: `${i * 40}ms` }} data-tip={`${s.event} · ${s.n} responses`} />)}
       </div>
       <div className="bar-foot"><span>4.6 / 5 avg rating</span><span>248 responses</span></div>
       <button className="link" onClick={() => notBuilt('Surveys')}>View survey data <Icon name="arrow-r" size={14} /></button>
@@ -82,7 +82,7 @@ function ExecCard() {
       <p id="execText" ref={textRef}>{EXEC[shown]}</p>
       <button className="link" aria-expanded={D.execOpen} aria-controls="execMore" onClick={() => { D.execOpen = !D.execOpen; bump(); }}>View recommended action items <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.execOpen ? 'open' : ''}`} id="execMore"><div><ul className="actions-list">
-        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in April.</li>
+        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand: 3 routes were cut short in April.</li>
         <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts last fall but none since January.</li>
         <li><b>Fill the Summer Suit Drive</b>{SHIFTS.e15.filled} of {SHIFTS.e15.cap} spots filled for May 30. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('e15')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
       </ul></div></div>

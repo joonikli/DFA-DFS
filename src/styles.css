@@ -2124,8 +2124,8 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .list-head #tabSeg .tab-nav__tab { flex: none; width: auto; padding: 0 12px 12px; margin-bottom: -1px; text-align: center; border-bottom-width: 2px; }
 .list-head #tabSeg .tab-nav__label { justify-content: center; align-items: center; gap: 8px; }
 
-/* Conversation rows: 8px between the name line and the preview line; 24px between messages */
-.convo-main { display: flex; flex-direction: column; gap: 8px; }
+/* Conversation rows: 4px between the name line and the preview line; 24px between messages */
+.convo-main { display: flex; flex-direction: column; gap: 4px; }
 #stream:not(.posts) { gap: 24px; }
 
 /* Even rhythm around the tab row: 24px from the title row, 20px to the search */
@@ -2136,3 +2136,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .conv-head .sub { margin-top: 4px; }
 .conv-head > .av, .conv-head > .av.lg { width: 40px; height: 40px; font-size: 14px; flex: none; }
 .conv-head > .av-stack.lg { width: 40px; height: 40px; }
+/* Unread count badges one step smaller: 20px circle, 12px semibold number */
+.badge, .tab-badge, .nav-badge { min-width: 20px !important; height: 20px !important; padding: 0 6px !important; border-radius: 10px !important; font: 600 12px/20px var(--sans) !important; }

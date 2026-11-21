@@ -171,7 +171,7 @@ export const volunteerHistory = {
 
 // Surveys Maureen already submitted (eventId → answers).
 export const initialSurveyResponses = {
-  e01: { rating: { answer: 5 }, feedback: { answer: 'Loved styling clients — the new racks made it much easier.' } },
+  e01: { rating: { answer: 5 }, feedback: { answer: 'Loved styling clients. The new racks made it much easier.' } },
   e02: { rating: { answer: 4 }, feedback: { answer: 'More box cutters would help the sorting station.' } },
   e03: { rating: { answer: 5 }, feedback: { answer: '' } },
   e06: { rating: { answer: 4 }, feedback: { answer: 'Great turnout. A printed question list would help new volunteers.' } },

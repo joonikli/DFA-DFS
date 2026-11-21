@@ -35,8 +35,10 @@ const DEFAULT_LEGEND = [
  * manager.html dashboards (CalendarCard): today in purple bold, black circle only for
  * the picked day, dots under the number, dot key behind the info icon (darker dot first).
  * Needs `today` to mark today (the only day with a different number color).
+ * `tipFor(date)` gives a day's hover text; without it (or when it returns nothing)
+ * only signed-up days get one ("You’re signed up").
  */
-export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND, variant = 'default', today }) {
+export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND, variant = 'default', today, tipFor }) {
   // Day → last dot tone seen, and whether that tone arrived by a change (register / unregister)
   // rather than on first render. Changed dots replay the TabNav "new" pulse; the flag sticks
   // until the tone changes again so unrelated re-renders don't cut the animation short.
@@ -97,6 +99,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
             const pop = dotChanged(date, dot)
             const isSelected = selected && sameDay(date, selected)
             const isToday = today && sameDay(date, today)
+            const tip = tipFor?.(date) || (dot === 'registered' ? 'You’re signed up' : null)
             return (
               <button
                 key={date.getDate()}
@@ -110,7 +113,7 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
                 {/* keyed by tone so a change remounts the dot and restarts its pulse */}
                 {dot && <i key={dot} className={`ecd-dot ecd-dot--${dot}${pop ? ' ecd-dot--pop' : ''}`} aria-hidden="true" />}
                 {/* hover tooltip, same look and wording as the home calendar (styles.css .tip) */}
-                {dot === 'registered' && <span className="ecd-tip" aria-hidden="true">You’re signed up</span>}
+                {tip && <span className="ecd-tip" aria-hidden="true">{tip}</span>}
               </button>
             )
           })}

@@ -27,10 +27,10 @@ export const SUGGESTIONS = [
 ];
 export const INTENTS = [
   { re: /first[- ]?time|attend|which event|events?\b/i, kind: 'events', reply: 'Mobile Services drove the most first-time attendees (34), followed by the Spring Suit Drive (27). I added a breakdown by event.' },
-  { re: /sentiment|feel|satisf|march/i, kind: 'sentiment', reply: 'Positive sentiment climbed steadily this year — from 71% in January to 91% in May. Added it as a trend chart.' },
-  { re: /grant|impact|funder|metric|ytd|outcome/i, kind: 'impact', reply: 'Here are the grant-eligible metrics year to date. In-kind value uses $34.79/hr — change it if your funder uses a different rate.' },
+  { re: /sentiment|feel|satisf|march/i, kind: 'sentiment', reply: 'Positive sentiment climbed steadily this year, from 71% in January to 91% in May. Added it as a trend chart.' },
+  { re: /grant|impact|funder|metric|ytd|outcome/i, kind: 'impact', reply: 'Here are the grant-eligible metrics year to date. In-kind value uses $34.79/hr. Change it if your funder uses a different rate.' },
   { re: /top|most hours|leaderboard|who (volunteered|gave)|best/i, kind: 'top', reply: 'Added the five volunteers with the most hours this period.' },
-  { re: /retention|retain|churn|return|cohort/i, kind: 'retention', reply: 'Retention is strongest in the spring cohort (88%). Corporate groups return least often — worth a follow-up.' },
+  { re: /retention|retain|churn|return|cohort/i, kind: 'retention', reply: 'Retention is strongest in the spring cohort (88%). Corporate groups return least often, so they’re worth a follow-up.' },
   { re: /survey|rating|response/i, kind: 'survey', reply: 'Added the post-event survey results with a summary.' },
   { re: /engag|average|per volunteer/i, kind: 'engage', reply: 'Added the engagement breakdown.' },
   { re: /hour|trend|over time|growth/i, kind: 'hours', reply: 'Added volunteer hours over the period.' },
@@ -46,7 +46,7 @@ export const ENGAGE_ROWS = [
   ['New volunteers', '+12 vs last quarter', '31'],
   ['Volunteer retention rate', '+4 pts vs last quarter', '83%'], // hidden when compact
 ];
-export const EVENTS_SUB = '101 first-time volunteers this period — 34% of all attendees';
+export const EVENTS_SUB = '101 first-time volunteers this period, 34% of all attendees';
 export const EVENTS_ROWS = [['Mobile Services Route', 34], ['Spring Suit Drive', 27], ['Warehouse Wednesday', 19], ['MHCI Lunch & Learn', 12], ['Career Closet Styling', 9]];
 export const IMPACT_SUB = 'Year to date, Jan 1 – May 20, 2026';
 export const IMPACT_GRID = [['1,941', 'Volunteer hours'], ['$67.5k', 'In-kind value at $34.79/hr'], ['1,183', 'Women served'], ['3,420', 'Suits distributed']];
