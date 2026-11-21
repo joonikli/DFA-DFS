@@ -246,8 +246,7 @@ function GrantsCard() {
       <div className="impact-in">
         <h2 className="h2">Grants</h2>
         <div className="impact-hero">
-          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded this year</small></div>
-          <div className="impact-meta">{ACCEPTED.length} grants won</div>
+          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded across {ACCEPTED.length} grants</small></div>
         </div>
         <AwardSpark values={AWARD_MONTHS} />
         <div className="impact-label">Impact to report</div>
