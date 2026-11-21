@@ -23,6 +23,7 @@ const CSS_SCOPES = [
   ['src/components/CalendarKey/', null],
   ['src/components/Button/', ['a', 'manager']],
   ['src/components/SearchBar/', ['a', 'manager']],
+  ['src/components/Filter/', ['a', 'manager']],
   ['src/components/SubNav/', ['a', 'manager']],
   ['src/components/TabNav/', ['a', 'manager']],
   ['src/components/Notification/', ['a', 'volunteer']],

@@ -326,6 +326,7 @@ export default function VolunteerEvents() {
             <SearchBar value={query} onChange={setQuery} label="Search events" />
             <div className="volunteer-events__filter" ref={filterRef}>
               <Filter
+                label="Filter"
                 active={Boolean(selectedDay) || refined}
                 aria-label="Filter events by date, time, location and tags, or sort by distance"
                 aria-haspopup="dialog"
