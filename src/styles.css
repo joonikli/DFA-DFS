@@ -2134,3 +2134,9 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 
 /* Even rhythm around the tab row: 24px from the title row, 20px to the search */
 .list-head #tabSeg { margin-top: 4px; }
+/* Conversation header: 4px between name and description, 16px photo-to-text,
+   48px photo so it matches the two-line text block and centres on it */
+.conv-head { gap: 16px; align-items: center; }
+.conv-head .sub { margin-top: 4px; }
+.conv-head > .av, .conv-head > .av.lg { width: 48px; height: 48px; font-size: 16px; flex: none; }
+.conv-head > .av-stack.lg { width: 48px; height: 48px; }
