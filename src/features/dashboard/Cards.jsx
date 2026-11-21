@@ -8,7 +8,6 @@ import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
 import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, LOCATIONS, TODAY } from '../../data.js';
 import { grants as grantsData, impactReport } from '../../mock/grants.js';
-import Button from '../../components/Button/Button.jsx';
 import { reducedMotion } from '../../lib/store.js';
 import { useMsgShift } from './hooks.js';
 import { navigate } from '../../lib/router.js';
@@ -208,51 +207,43 @@ const IMPACT = Object.fromEntries(impactReport.sections.find((x) => x.table).tab
 const ACCEPTED = grantsData.filter((g) => g.status === 'accepted');
 const AWARDED = ACCEPTED.reduce((n, g) => n + g.amount, 0);
 const TO_SUBMIT = grantsData.filter((g) => g.status === 'to_submit').sort((a, b) => a.due - b.due);
-const fmtMoney = (n) => `$${n.toLocaleString('en-US')}`;
 const fmtDue = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 const goGrants = (path = '/grants', q = '') => { window.location.href = `${path}?as=admin${q}`; };
 
 function GrantsCard() {
-  const hours = IMPACT['Total volunteer hours'];
-  const stats = [
-    ['Women served', IMPACT['Women served']],
-    ['Found jobs', { v: IMPACT['Women who secured employment within 6 months'].v.match(/\((\d+%)\)/)?.[1] || '61%', d: IMPACT['Women who secured employment within 6 months'].d }],
-    ['Events held', IMPACT['Total events held']],
-  ];
+  // Research: lead with the number unique to grants (awarded), back it with the two outcomes funders ask
+  // for, keep the one to-do in its own zone, and give the card a single destination (the Grants page).
+  const jobs = IMPACT['Women who secured employment within 6 months'];
+  const served = IMPACT['Women served'];
+  const rows = [['Found jobs within 6 months', jobs.v.match(/\((\d+%)\)/)?.[1] || '61%', jobs.d], ['Women served', served.v, served.d]];
   const next = TO_SUBMIT[0];
-  const openFromCard = (e) => { if (!e.target.closest('a, button')) goGrants(); };
+  const open = () => goGrants('/grants', '&status=to_submit');
   return (
-    <section className="card grants-card impact-card" data-card="grants" onClick={openFromCard}>
+    <section className="card grants-card impact-card" data-card="grants" onClick={open}
+      role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') open(); }}
+      aria-label={`Grants: $${Math.round(AWARDED / 1000)}K awarded, ${TO_SUBMIT.length} applications to submit${next ? `, next due ${fmtDue(next.due)}` : ''}`}>
       <div className="impact-in">
-        <div className="impact-head">
-          <h2 className="h2">Your impact</h2>
-          <button className="impact-open text-label-1" onClick={() => goGrants()}>View grants <Icon name="arrow-r" size={14} /></button>
-        </div>
-        <p className="impact-sub text-label-2">FY 2025–26 · ready for grant applications</p>
+        <h2 className="h2">Grants</h2>
+        <div className="card-sub">FY 2025–26</div>
         <div className="impact-hero">
-          <span className="text-heading-1">{hours.v}</span>
-          <span className="text-label-2 impact-unit">volunteer hours</span>
-          <span className="text-label-2 impact-up"><Icon name="trend" size={14} /> {hours.d} from last year</span>
+          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded</small></div>
+          <div className="impact-meta">{ACCEPTED.length} grants won this year</div>
         </div>
-        <ul className="impact-stats">
-          {stats.map(([label, x]) => (
-            <li key={label}>
-              <span className="text-heading-2">{x.v}</span>
-              <span className="text-label-2 impact-label">{label}</span>
-              <span className="text-label-2 impact-up">{x.d}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="impact-awarded"><span className="text-heading-2">{fmtMoney(AWARDED)}</span><span className="text-label-2">awarded across {ACCEPTED.length} grants this year</span></p>
-      </div>
-      <footer className="impact-foot">
+        <div className="impact-label">Impact to report</div>
+        {rows.map(([label, v, d]) => (
+          <div className="stat-row" key={label}>
+            <div><div className="lbl">{label}</div><div className="trend"><Icon name="trend" size={14} /> {d} vs last year</div></div>
+            <div className="big">{v}</div>
+          </div>
+        ))}
         {next && (
-          <button className="impact-todo text-label-2" onClick={() => goGrants('/grants', '&status=to_submit')}>
-            <span><b className="text-label-1">{TO_SUBMIT.length} to submit</b> · due {fmtDue(next.due)}</span> <Icon name="arrow-r" size={14} />
-          </button>
+          <div className="impact-todo">
+            <Icon name="nav-calendar" size={18} />
+            <div><b>{TO_SUBMIT.length} applications to submit</b><span>Next due {fmtDue(next.due)}</span></div>
+            <span className="impact-cta">Review <Icon name="arrow-r" size={14} /></span>
+          </div>
         )}
-        <Button color="secondary" size="sm" onClick={() => goGrants('/grants/reports', '&type=Impact%20report')}>Impact report</Button>
-      </footer>
+      </div>
     </section>
   );
 }
