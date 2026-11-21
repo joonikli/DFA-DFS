@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { DemoProvider } from './store/DemoStore.jsx'
 import './tokens/tokens.css'
 import './index.css'
+import './styles/consistency.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

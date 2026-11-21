@@ -43,19 +43,19 @@
 /* Choices and the chat thread scroll together above the pinned input (bubbles reuse the dashboard composer's .chat-me / .chat-ai) */
 .grp-thread { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; overflow-y: auto; margin: 0 -24px; padding: 0 24px 8px; }
 .grp-thread .grp-choices { margin-bottom: 12px; }
-.grp-thread .chat-me, .grp-thread .chat-ai { font: 400 15px/20px var(--sans); color: var(--black); }
+.grp-thread .chat-me, .grp-thread .chat-ai { font: 400 16px/21px var(--sans); color: var(--black); }
 .grp-thread .chat-me { flex-shrink: 0; }
 .grp-thread .chat-ai p { margin: 0 0 8px; }
 .grp-thread .chat-ai p:last-of-type { margin-bottom: 0; }
 .grp-offer { margin: 12px 0 0 !important; gap: 8px !important; }
 .grp-choices button:disabled { cursor: default; }
-.grp-side-q { margin: 0 0 12px; font: 600 15px/20px var(--sans); color: var(--black); }
+.grp-side-q { margin: 0 0 12px; font: 600 16px/21px var(--sans); color: var(--black); }
 .grp-choices { display: flex; flex-direction: column; gap: 12px; }
-.grp-choices button { padding: 10px 12px; border: 1px solid var(--purple-light); border-radius: 12px; background: var(--purple-lightest); text-align: left; font: 400 15px/18px var(--sans); color: var(--purple-dark); transition: border-color var(--dur-micro), background-color var(--dur-micro); }
+.grp-choices button { padding: 10px 12px; border: 1px solid var(--purple-light); border-radius: 12px; background: var(--purple-lightest); text-align: left; font: 500 14px/17px var(--sans); color: var(--purple-dark); transition: border-color var(--dur-micro), background-color var(--dur-micro); }
 .grp-choices button.on { border-color: var(--purple-dark); background: var(--white); font-weight: 600; }
 @media (hover: hover) and (pointer: fine) { .grp-choices button:not(.on):hover { border-color: var(--purple); } }
 .grp-chat { display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 20px; border: 1px solid var(--gray); border-radius: 30px; background: var(--light-gray); }
-.grp-chat input { flex: 1; min-width: 0; height: 35px; border: 0; background: transparent; font: 400 15px/18px var(--sans); color: var(--black); outline: 0; }
+.grp-chat input { flex: 1; min-width: 0; height: 35px; border: 0; background: transparent; font: 400 16px/19px var(--sans); color: var(--black); outline: 0; }
 .grp-chat input::placeholder { color: #747474; }
 .grp-chat:focus-within { outline: 2px solid var(--purple-dark); outline-offset: 2px; }
 .grp-chat button { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #dbdbdb; flex-shrink: 0; }
