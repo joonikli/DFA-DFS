@@ -8,19 +8,20 @@ import { portalRoot } from '../lib/appScope.js';
 
 const FOCUS_SEL = 'input, textarea, button:not([data-act="close-modal"])';
 
-export function Modal({ label, onClosed, children }) {
+export function Modal({ label, onClosed, children, transitionName, onRequestClose }) {
   const [state, setState] = useState('closed');
   const panel = useRef(null);
   const closing = useRef(false);
   const timer = useRef(null);
 
   const close = useCallback((instant = false) => {
+    if (onRequestClose) { onRequestClose(instant); return; }
     if (closing.current) return;
     closing.current = true;
     if (instant || reducedMotion()) { onClosed(); return; }
     setState('closed');
     timer.current = setTimeout(onClosed, 160);
-  }, [onClosed]);
+  }, [onClosed, onRequestClose]);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => requestAnimationFrame(() => setState('open')));
@@ -45,7 +46,7 @@ export function Modal({ label, onClosed, children }) {
   return createPortal(
     <div className="modal" data-state={state}>
       <div className="modal-scrim" data-act="close-modal" onClick={() => close()} />
-      <div className="modal-panel" role="dialog" aria-modal="true" aria-label={label} ref={panel}>
+      <div className="modal-panel" role="dialog" aria-modal="true" aria-label={label} ref={panel} data-survey-step={transitionName ? '' : undefined} style={transitionName ? { viewTransitionName: transitionName } : undefined}>
         {typeof children === 'function' ? children(close) : children}
       </div>
     </div>,

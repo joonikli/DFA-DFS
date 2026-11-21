@@ -1,0 +1,33 @@
+[data-survey-direction]::view-transition { pointer-events: none; }
+[data-survey-direction]::view-transition-old(root),
+[data-survey-direction]::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+[data-survey-direction]::view-transition-old(root) { display: none; }
+[data-survey-direction]::view-transition-group(event-survey-step) {
+  overflow: clip;
+  border-radius: 16px;
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(.23, 1, .32, 1);
+}
+[data-survey-direction]::view-transition-image-pair(event-survey-step) { isolation: isolate; background: white; }
+[data-survey-direction]::view-transition-old(event-survey-step),
+[data-survey-direction]::view-transition-new(event-survey-step) {
+  mix-blend-mode: normal;
+  animation-duration: 350ms;
+  animation-timing-function: cubic-bezier(.23, 1, .32, 1);
+  animation-fill-mode: both;
+}
+[data-survey-direction="forward"]::view-transition-old(event-survey-step) { animation-name: survey-slide-out-left; }
+[data-survey-direction="forward"]::view-transition-new(event-survey-step) { animation-name: survey-slide-in-right; }
+[data-survey-direction="back"]::view-transition-old(event-survey-step) { animation-name: survey-slide-out-right; }
+[data-survey-direction="back"]::view-transition-new(event-survey-step) { animation-name: survey-slide-in-left; }
+[data-survey-direction] [data-survey-step],
+[data-survey-direction] .modal-backdrop:has([data-survey-step]) { animation: none; }
+@keyframes survey-slide-out-left { to { transform: translateX(-100%); opacity: 0; } }
+@keyframes survey-slide-in-right { from { transform: translateX(100%); opacity: 0; } }
+@keyframes survey-slide-out-right { to { transform: translateX(100%); opacity: 0; } }
+@keyframes survey-slide-in-left { from { transform: translateX(-100%); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  [data-survey-direction]::view-transition-group(event-survey-step),
+  [data-survey-direction]::view-transition-old(event-survey-step),
+  [data-survey-direction]::view-transition-new(event-survey-step) { animation: none; }
+}

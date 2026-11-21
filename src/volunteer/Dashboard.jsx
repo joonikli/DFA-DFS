@@ -32,7 +32,7 @@ const hours = (list) => list.reduce((s, e) => s + hoursBetween(e.start, e.end), 
 
 export default function VolunteerDashboard() {
   const { volunteer, submitSurvey, dismissAnnouncement } = useDemo();
-  const [showAward, setShowAward] = useState(false);
+  const [showAward, setShowAward] = useState(true); // the award popup greets the volunteer on each dashboard visit
   const { openRegistration, openCancelRegistration, toggleSave } = useEventFlows();
   const toast = useToast();
   const vpRef = useRef(null);

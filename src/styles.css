@@ -2067,3 +2067,47 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .btn.btn--secondary { background: var(--neutral-white); border-color: var(--primary-dark-purple); color: var(--primary-dark-purple); }
 .btn.btn--tertiary { background: rgb(96 120 241 / .2); color: var(--primary-darkest-purple); border-color: transparent; }
 @media (hover: hover) and (pointer: fine) { .btn.btn--primary:hover { background: #252425; } .btn.btn--secondary:hover { background: var(--primary-lightest-purple); } }
+
+/* Grants card: same anatomy and tokens as the other dashboard cards (title + sub, big number,
+   "Volunteer base"-style stat rows), plus one tinted to-do box. The whole card opens the Grants page. */
+.impact-card { display: flex; flex-direction: column; cursor: pointer; transition: border-color 120ms ease, box-shadow 120ms ease; }
+@media (hover: hover) and (pointer: fine) { .impact-card:hover { border-color: var(--primary-light-purple); box-shadow: var(--shadow-card-hover); } .impact-card:hover .impact-cta .ic { transform: translateX(2px); } }
+.impact-card:focus-visible { outline: 2px solid var(--primary-purple); outline-offset: 2px; }
+.impact-in { flex: 1; display: flex; flex-direction: column; }
+.impact-hero { margin-top: 20px; }
+.impact-hero .big small { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); margin-left: 6px; }
+.impact-meta { margin-top: 6px; font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.impact-label { margin: 22px 0 2px; font: 600 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.impact-card .stat-row .big { font: 600 28px/1 var(--serif); }
+.impact-card .stat-row .trend { font: 500 14px/normal var(--sans) !important; display: inline-flex; align-items: center; gap: 4px; }
+.impact-todo { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--neutral-very-light-gray); border: 1px solid var(--neutral-gray); color: var(--neutral-black); }
+.impact-todo > .ic { color: var(--neutral-darker-gray); flex: none; }
+.impact-todo > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.impact-todo b { font: 600 14px/normal var(--sans); }
+.impact-todo span:not(.impact-cta) { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.impact-cta { display: inline-flex; align-items: center; gap: 4px; font: 600 14px/normal var(--sans); color: var(--primary-dark-purple); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.impact-cta .ic { transition: transform 150ms cubic-bezier(.23, 1, .32, 1); }
+.card.impact-card { padding: 26px 29px 24px; overflow: visible; }
+.impact-hero { margin-top: 24px; }
+.impact-label { margin: 28px 0 4px; }
+.impact-card .stat-row { padding: 16px 0; }
+.impact-todo { margin-top: auto; }
+.impact-card .stat-row + .impact-todo, .impact-card .stat-row:last-of-type { margin-bottom: 20px; }
+/* Grants card refinements from the layout research: title only, sparkline under the hero, light-purple inset to-do */
+.impact-hero { margin-top: 16px; }
+.impact-spark { display: block; width: 100%; height: 48px; margin-top: 14px; overflow: visible; }
+.impact-spark__area { fill: var(--primary-lightest-purple); }
+.impact-spark__line { fill: none; stroke: var(--primary-purple); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.impact-spark__dot { fill: var(--primary-purple); stroke: var(--neutral-white); stroke-width: 2; }
+.impact-label { margin: 22px 0 2px; }
+.impact-card .stat-row { padding: 14px 0; }
+.impact-todo { background: var(--primary-lightest-purple); border-color: transparent; border-radius: 8px; padding: 12px; }
+.impact-todo > .ic { color: var(--primary-dark-purple); }
+.impact-spark { height: 64px; margin-top: 16px; }
+/* No card-level hover on the grants card: it behaves like the other dashboard cards */
+.impact-card, .impact-card:hover { border-color: var(--gray) !important; box-shadow: none !important; transition: none; }
+.impact-card:hover .impact-cta .ic { transform: none !important; }
+/* Bottom link, same as the other cards' "View survey data →" */
+.impact-link { margin-top: auto; align-self: flex-start; }
+/* Upcoming events: no hover effects — rows stay still, the action is always visible */
+.ev-item, .ev-item:hover { box-shadow: none !important; transition: none; }

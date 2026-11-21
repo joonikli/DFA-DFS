@@ -1,0 +1,28 @@
+@font-face { font-family: 'DFS Award Sans'; font-weight: 400; font-style: normal; font-display: swap; src: url('/assets/events/fonts/inter-400.ttf') format('truetype'); }
+@font-face { font-family: 'DFS Award Serif'; font-weight: 600; font-style: normal; font-display: swap; src: url('/assets/events/fonts/crimson-pro-600.ttf') format('truetype'); }
+.award-popup { padding: 18px 24px; color: var(--neutral-black); font: 400 16px/19px 'DFS Award Sans', 'Inter', sans-serif; }
+.award-popup > header { display: flex; justify-content: flex-end; height: 24px; }
+.award-popup__close { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 4px; background: transparent; cursor: pointer; }
+.award-popup img { display: block; flex-shrink: 0; max-width: none; }
+.award-popup__art { display: flex; align-items: center; justify-content: center; height: 142px; margin-top: 16px; border-radius: 12px; background: var(--primary-lightest-purple); }
+.award-popup h2 { margin: 24px 0 0; font: 600 28px/31px 'DFS Award Serif', 'Crimson Pro', Georgia, serif; }
+.award-popup__copy { margin-top: 4px; padding: 8px 2px; color: var(--neutral-darker-gray); }
+.award-popup__copy p { margin: 0; }
+.award-popup__copy p + p { margin-top: 19px; }
+.award-popup > footer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-top: 20px; }
+.award-popup .btn { height: 39px; min-height: 39px; padding: 9px 14px; border-radius: 48px; font: 400 16px/19px 'DFS Award Sans', 'Inter', sans-serif; white-space: nowrap; }
+.award-popup button:focus-visible { outline: 2px solid var(--primary-dark-purple); outline-offset: 3px; }
+.award-popup__close:hover { background: var(--neutral-light-gray); }
+.modal-panel:has(> .award-popup) { width: min(400px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 0; border: 1px solid var(--neutral-gray); border-radius: 16px; transition: opacity 250ms cubic-bezier(.23, 1, .32, 1), transform 250ms cubic-bezier(.23, 1, .32, 1); }
+.modal[data-state="closed"] > .modal-panel:has(> .award-popup) { opacity: 0; transform: translateY(16px) scale(.96); transition-duration: 150ms; }
+.modal:has(> .modal__body > .award-popup) { animation: award-popup-enter 250ms cubic-bezier(.23, 1, .32, 1); }
+@keyframes award-popup-enter { from { opacity: 0; transform: translateY(16px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) {
+  .modal-panel:has(> .award-popup),
+  .modal[data-state="closed"] > .modal-panel:has(> .award-popup) { transform: none; transition: opacity 150ms ease; }
+  .modal:has(> .modal__body > .award-popup) { animation: modal-fade 150ms ease; }
+}
+@media (max-width: 420px) {
+  .award-popup { padding: 18px 20px; }
+  .award-popup .btn { padding-right: 10px; padding-left: 10px; font-size: 14px; }
+}
