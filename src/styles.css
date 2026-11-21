@@ -1940,6 +1940,20 @@ a { color: inherit; }
 .post-head b { font: 600 14px/normal var(--sans); }
 .post-head time, .post-chip, .seen-btn, .thread-link, .thread-link .last, .thread-link .view { font: 500 14px/normal var(--sans); }
 .thread-link b { font-weight: 600; }
+/* Thread panel: same column + card frame as the profile panel (298 col, 282 card, 16 inset, 12 radius),
+   and the conversation's text sizes (body 16/1.45, name 14/600, time 14/500, avatar --av-msg) */
+.side.force { width: 298px; padding: 16px 16px 16px 0; border-left: 0; }
+.side .side-card.thread { border: 1px solid var(--gray); border-radius: 12px; overflow: hidden; }
+.thread-head b { font: 600 16px/normal var(--sans); }
+.thread-head span { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.thread .t-meta { gap: 8px; line-height: normal; }
+.thread .t-meta b { font: 600 14px/normal var(--sans); }
+.thread .t-meta time { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
+.thread .t-msg .t-title { font: 600 16px/1.45 var(--sans); }
+.thread .t-msg .t-text { font: 400 16px/1.45 var(--sans); color: var(--neutral-black); }
+.side-card .t-msg .av { width: var(--av-msg); height: var(--av-msg); font-size: 11px; margin-top: 0; }
+.thread .t-replies-label { font: 500 14px/normal var(--sans); }
+.thread .t-input input { font: 400 16px/normal var(--sans); height: 38px; }
 .reach-pill, .reach { font: 500 14px/normal var(--sans); }
 .reach-pill.none { font-weight: 600; }
 .icon-btn.plain { border-radius: 8px; }
