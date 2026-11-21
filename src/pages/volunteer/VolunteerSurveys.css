@@ -1,0 +1,88 @@
+/* Volunteer › Surveys — same frame as the volunteer Events page (VolunteerEvents.css):
+   the list fills the width, a 400px right column holds the calendar and upcoming events. */
+.volunteer-surveys {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.volunteer-surveys__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  column-gap: 48px;
+  align-items: start;
+}
+
+.volunteer-surveys__main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+}
+
+.volunteer-surveys__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.volunteer-surveys__label {
+  color: var(--neutral-darker-gray);
+}
+.volunteer-surveys__label span {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-black);
+}
+
+.volunteer-surveys__empty {
+  color: var(--neutral-darker-gray);
+}
+
+.volunteer-surveys__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volunteer-surveys__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Card frame matches the Snapshot card beside the calendar on the Events page */
+.volunteer-surveys__upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 15px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 8px var(--neutral-drop-shadow);
+}
+.volunteer-surveys__upcoming > .text-subheading {
+  padding: 0 8px 6px;
+  color: var(--neutral-black);
+}
+.volunteer-surveys__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-end;
+  margin-top: 6px;
+  color: var(--primary-darkest-purple);
+  text-decoration: none;
+}
+.volunteer-surveys__link:hover {
+  text-decoration: underline;
+}
+
+/* Narrow windows: the right column moves under the lists (as on the Events page) */
+@media (max-width: 1300px) {
+  .volunteer-surveys__body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+}

@@ -103,3 +103,23 @@
   gap: 8px;
 }
 .app-shell .app-shell__content .ae-toolbar .ae-create { margin-left: 0; }
+
+/* ---------- Page frame: content fills the width, 53px on both sides ----------
+   Every page starts 53px right of the sidebar (AppShell) and now ends 53px from the window
+   edge, at any window width: the 1380–1488px content caps are lifted, so wide windows no
+   longer leave an empty strip on the right. Messages keeps its full-bleed split layout. */
+.app-shell .app-shell__content:not(:has(> .app-embed)) { padding-right: 53px; }
+.app-shell .app-shell__content .profile__cover { margin-right: -53px; }
+.app-shell .app-shell__content :is(.profile, .volunteer-events, .ved, .ae-page, .ae-workspace, .dash, .as-summary, .as-sections > .ae-empty) {
+  max-width: none;
+}
+/* Embedded screens (no frame padding): their own workspace carries the 53px */
+.app-shell .app-shell__content :is(.ae-workspace, .as-workspace, .sd, .gr-workspace) {
+  padding-left: 53px;
+  padding-right: 53px;
+}
+.app-shell .app-shell__content .ap-content { margin-left: 53px; margin-right: 53px; }
+.app-shell .app-shell__content .dash { padding-left: 53px; padding-right: 53px; }
+/* Survey cards and results stretch with the page instead of stopping at their 1488px widths */
+.app-shell .app-shell__content .as-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.app-shell .app-shell__content .sd-questions { width: auto; }

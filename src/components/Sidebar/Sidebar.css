@@ -19,13 +19,15 @@
   align-items: flex-start; /* logo sits at the top of its slot; nav position unchanged */
   padding-top: 6px; /* logo centered on the top bar (68px tall: bell and avatar centered at 34px) */
   padding-left: 8px; /* lines the logo up with the nav icons (.nav-item padding) */
-  margin-bottom: 40px;
+  /* First nav item lines up with the page heading: top nav 68px + content top padding 41px × 0.9 zoom
+     puts the H2 at ~105–133px, so the 40px item sits at 99–139px (centers matched at ~119px) */
+  margin-bottom: 15px;
 }
 
 .sidebar__items {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 8px;
 }
 
 .sidebar__footer {
