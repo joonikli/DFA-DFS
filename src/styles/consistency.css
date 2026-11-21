@@ -1,0 +1,101 @@
+/* =====================================================================================
+   App-wide type and button rules — one system for every screen (admin and volunteer,
+   main-app and embedded). Values are the Figma text styles (src/styles/typography.css):
+     Heading 1   Crimson Pro 600 36   dashboard greeting only
+     Heading 2   Crimson Pro 600 28   page titles
+     Subheading  Inter 500 20         section labels ("My Events", "This week", "To do")
+     Card title  Crimson Pro 600 24   event / survey / recommended cards
+     Body 2      Inter 600 16 · Label 2 Inter 500 14
+   Buttons are the two Figma Button components, always 8px apart (sizes at design scale; the
+   app frame's --page-zoom 0.9 renders them at 37px / 35px):
+     Page action  Button     16px regular, 41px tall  (Create …, Generate report, Compose, Take our survey)
+     Card action  Button sm  14px semibold, 39px tall (View event, Register, See all, View survey …)
+   Selectors start at the app frame so they apply over each screen's own stylesheet without
+   !important; font families stay whatever the screen uses (Crimson Pro / Inter).
+   ===================================================================================== */
+
+/* ---------- Page titles: Heading 2 (the dashboard greeting stays Heading 1) ---------- */
+.app-shell .app-shell__content :is(.list-head h1.h1, .ap-name h1, h1.profile__name) {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 31px;
+}
+
+/* ---------- Section labels: Subheading ---------- */
+.app-shell .app-shell__content .ae-group > header > h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+/* ---------- Card titles ---------- */
+.app-shell .app-shell__content .vp-rec-title h3 {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+/* ---------- Page actions: Button, 16px regular, 41px tall ---------- */
+.app-shell .app-shell__content :is(
+  .dash-head .acts .btn,
+  .ae-create,
+  .sd-actions-main .btn,
+  .vp-thanks-cta,
+  .list-head .row .btn
+) {
+  height: 41px;
+  padding: 0 14px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 48px;
+}
+
+/* Toolbar controls beside a page action share its height */
+.app-shell .app-shell__content :is(
+  .ae-toolbar .ae-search.search,
+  .ae-toolbar .ae-filter,
+  .ae-toolbar .ae-views,
+  .as-toolbar .as-search,
+  .as-toolbar-actions .as-sort,
+  .as-toolbar-actions .as-views,
+  .gr-toolbar .search,
+  .gr-toolbar-actions .as-sort
+) {
+  height: 41px;
+}
+
+/* ---------- Card actions: Button sm, 14px semibold, 39px tall ---------- */
+.app-shell .app-shell__content :is(
+  .as-card-buttons .btn,
+  .ev-btns .btn,
+  .ev-acts .btn,
+  .ec-actions .btn,
+  .vp-rec-cta .btn,
+  .small-event-card__actions .pill-btn,
+  .banner__cta
+) {
+  height: 39px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: normal;
+  border-radius: 48px;
+}
+
+/* ---------- 8px between neighboring buttons ---------- */
+.app-shell .app-shell__content :is(
+  .dash-head .acts,
+  .ae-toolbar,
+  .as-toolbar-actions,
+  .gr-toolbar-actions,
+  .sd-actions-main,
+  .as-card-buttons,
+  .ev-btns,
+  .ev-acts,
+  .vp-rec-cta,
+  .small-event-card__actions,
+  .list-head .row
+) {
+  gap: 8px;
+}
+.app-shell .app-shell__content .ae-toolbar .ae-create { margin-left: 0; }

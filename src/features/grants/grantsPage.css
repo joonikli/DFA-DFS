@@ -19,13 +19,13 @@
 .gr-chips { display: flex; align-items: center; gap: 12px; }
 .gr-chip-group { display: flex; align-items: center; gap: 4px; }
 .gr-chip-group + .gr-chip-group { padding-left: 12px; border-left: 1px solid var(--gray); }
-.gr-chips button { height: 32px; padding: 6px 16px; border-radius: 18px; font: 400 15px/18px var(--sans); color: var(--darker-gray); transition: background-color var(--dur-micro), color var(--dur-micro); }
+.gr-chips button { height: 32px; padding: 6px 16px; border-radius: 18px; font: 500 14px/17px var(--sans); color: var(--darker-gray); transition: background-color var(--dur-micro), color var(--dur-micro); }
 .gr-chips button.on { border-radius: 12px; background: var(--light-gray); color: var(--black); font-weight: 600; }
 @media (hover: hover) and (pointer: fine) { .gr-chips button:not(.on):hover { color: var(--black); } }
 
 /* Table */
 .gr-table { margin-top: 32px; }
-.gr-row { display: grid; grid-template-columns: minmax(0, 261px) 118px 128px 120px 116px 130px 1fr; column-gap: 40px; justify-items: start; align-items: center; min-height: 52px; padding: 10px 0; border-bottom: 1px solid var(--gray); font: 400 15px/18px var(--sans); color: var(--black); }
+.gr-row { display: grid; grid-template-columns: minmax(0, 261px) 118px 128px 120px 116px 130px 1fr; column-gap: 40px; justify-items: start; align-items: center; min-height: 52px; padding: 10px 0; border-bottom: 1px solid var(--gray); font: 400 16px/19px var(--sans); color: var(--black); }
 .gr-head { min-height: 0; padding: 0 0 14px; }
 .gr-head button { display: inline-flex; align-items: center; gap: 8px; font: 600 14px/17px var(--sans); color: var(--black); border-radius: 4px; }
 .gr-head [role="columnheader"] { font: 600 14px/17px var(--sans); }
@@ -36,15 +36,15 @@
 .gr-pending { color: var(--darker-gray); }
 .gr-avatars { display: flex; gap: 6px; }
 .gr-avatars .av { width: 28px; height: 28px; font-size: 11px; background: var(--placeholder); color: #8b8f93; } /* not the design-system dark avatar */
-.gr-tag { display: inline-flex; justify-content: center; align-items: center; min-width: 102px; padding: 4px 8px; border-radius: 8px; font: 500 13px/16px var(--sans); white-space: nowrap; }
+.gr-tag { display: inline-flex; justify-content: center; align-items: center; min-width: 102px; padding: 4px 8px; border-radius: 8px; font: 500 14px/17px var(--sans); white-space: nowrap; }
 .gr-tag.blue { background: var(--blue-light); color: var(--blue-dark); }
 .gr-tag.yellow { background: #fffad6; color: #bb7a34; }
 .gr-tag.purple { background: var(--purple-lightest); color: var(--purple); }
 .gr-tag.green { background: #daf9df; color: var(--green-dark); }
 .gr-tag.pink { background: #ffddee; color: var(--pink); }
-.gr-docs-link { display: inline-flex; align-items: center; gap: 10px; font: 400 15px/18px var(--sans); color: var(--black); text-decoration: underline; text-underline-offset: 3px; }
+.gr-docs-link { display: inline-flex; align-items: center; gap: 10px; font: 400 16px/19px var(--sans); color: var(--black); text-decoration: underline; text-underline-offset: 3px; }
 .gr-docs-link img { width: 22px; height: 22px; }
-.gr-empty { padding: 32px 0; color: var(--darker-gray); font: 400 15px/18px var(--sans); }
+.gr-empty { padding: 32px 0; color: var(--darker-gray); font: 400 16px/19px var(--sans); }
 @media (hover: hover) and (pointer: fine) { .gr-docs-link:hover { color: var(--purple-dark); } }
 
 /* Pagination */
@@ -65,7 +65,7 @@
 .gr-op-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 .gr-op h2 { margin: 0; font: 600 24px/29px var(--serif); color: var(--black); }
 .gr-op-funder { margin: -4px 0 0; font: 400 14px/17px var(--sans); color: var(--darker-gray); }
-.gr-op-text { margin: 0; max-width: 995px; font: 400 15px/22px var(--sans); color: var(--black); }
+.gr-op-text { margin: 0; max-width: 995px; font: 400 16px/22px var(--sans); color: var(--black); }
 .gr-op-foot { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 4px; }
 .gr-op-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .gr-op-tags .gr-tag { min-width: 0; }
@@ -112,12 +112,12 @@
 .gr-doc { display: flex; align-items: flex-start; gap: 18px; }
 .gr-doc-state { width: 22px; height: 22px; margin-top: -1px; }
 .gr-doc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.gr-doc-title { margin: 0; font: 600 15px/18px var(--sans); color: var(--black); }
+.gr-doc-title { margin: 0; font: 600 16px/19px var(--sans); color: var(--black); }
 .gr-doc-note { margin: 2px 0 0; font: 400 14px/17px var(--sans); color: var(--darker-gray); }
 .gr-doc-files { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; }
 .gr-file { display: inline-flex; align-items: center; gap: 6px; }
 .gr-file > img { width: 20px; height: 20px; }
-.gr-file-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px; background: var(--vlight); font: 500 13px/16px var(--sans); color: var(--darker-gray); }
+.gr-file-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px; background: var(--vlight); font: 500 14px/17px var(--sans); color: var(--darker-gray); }
 .gr-file-chip img { width: 12px; height: 12px; }
 .gr-upload.btn { flex-shrink: 0; }
 .gr-docs-none { margin: 20px 0 0; font: 400 14px/17px var(--sans); color: var(--darker-gray); }
