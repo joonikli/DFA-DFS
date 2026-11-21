@@ -21,14 +21,12 @@
 }
 
 /* ---- List card: Direction D "Quiet column" ----
-   Values match the volunteer/manager card (.ve-d / .ae-card-*) 1:1. Those apps zoom their
-   1488px-wide pages to fit the window (~0.8 on a laptop); this app renders at 100%, so the
-   list card is zoomed to match — type, spacing and buttons alike. 0.88 = the ~0.8 match + 10%. */
+   Values match the volunteer/manager card (.ve-d / .ae-card-*) 1:1. Every page shares the app
+   frame's scale (--page-zoom, AppShell.css), so the card adds no zoom of its own. */
 .event-card--list {
   align-items: stretch;
   gap: 24px;
   padding: 18px 20px 18px 24px;
-  zoom: 0.88;
 }
 
 .event-card__time {

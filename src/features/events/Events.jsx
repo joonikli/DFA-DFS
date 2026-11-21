@@ -106,7 +106,7 @@ export default function Events() {
   const pop = usePop(), toast = useToast(), notBuilt = useNotBuilt();
   const { params } = useRoute();
   const page = useRef(null), list = useRef(null);
-  useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
   const [events, setEvents] = useEventState('events'), [saved, setSaved] = useEventState('saved');
   const [tab, setTab] = useState('Upcoming'), [query, setQuery] = useState(''), [selected, setSelected] = useState(''), [time, setTime] = useState(NO_TIME);
   const timeOn = Boolean(time.from || time.to);

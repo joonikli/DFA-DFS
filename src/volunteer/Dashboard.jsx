@@ -20,9 +20,10 @@ import { RECOMMENDED, firstName, surveyDate, surveyRow, vol } from './shared.js'
 import { Banner } from './Banner.jsx';
 import { CalendarCard } from './Calendar.jsx';
 import { RecommendedCard } from './Recommended.jsx';
-import { PastSurveys, SurveyCard } from './Surveys.jsx';
+import { PastSurveys } from './Surveys.jsx';
 import { Modal } from './Modal.jsx';
 import { AnnouncementModal, SurveyModal } from './Modals.jsx';
+import PortalSurveyPopup, { PortalSurveyCard } from '../components/SurveyPopup/PortalSurveyPopup.jsx';
 
 const inMonth = (e, offset) => {
   const m = new Date(TODAY.getFullYear(), TODAY.getMonth() + offset, 1);
@@ -37,7 +38,7 @@ export default function VolunteerDashboard() {
   const toast = useToast();
   const vpRef = useRef(null);
   const recsRef = useRef(null);
-  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000, fit: false });
 
   const registered = useMemo(() => new Set(volunteer.registered), [volunteer.registered]);
   const saved = useMemo(() => new Set(volunteer.saved), [volunteer.saved]);
@@ -52,6 +53,7 @@ export default function VolunteerDashboard() {
   // ---------- Survey: the most recent attended event without a response ----------
   const [surveyId] = useState(() => attended.find((e) => !volunteer.surveyResponses[e.id])?.id ?? null);
   const [draft, setDraft] = useState({ rating: 0, comment: '' });
+  const [surveyOpen, setSurveyOpen] = useState(false); // "Take our survey" opens the event-survey popup (Figma 2502:41346)
   const [freshKey, setFreshKey] = useState(null);
   const surveyEvent = surveyId && eventsById[surveyId];
   const answered = surveyId && volunteer.surveyResponses[surveyId];
@@ -65,14 +67,6 @@ export default function VolunteerDashboard() {
   const dismissBanner = () => {
     toast('Banner dismissed', { ic: 'check', action: 'Undo', onAction: () => setDismissed(false) });
   };
-  // "Take our survey": bring the survey card into view, ping it, focus the first star
-  const goSurvey = () => {
-    const card = document.getElementById('vpSurvey'); if (!card) return;
-    card.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'center' });
-    card.classList.remove('is-target'); void card.offsetWidth; card.classList.add('is-target');
-    setTimeout(() => card.querySelector('[role="radio"], button, textarea')?.focus({ preventScroll: true }), reducedMotion() ? 0 : 400);
-  };
-
   // ---------- Modals ----------
   const openModal = (m) => setModal({ ...m, key: ++modalSeq.current });
   const closedModal = useCallback(() => setModal(null), []);
@@ -135,10 +129,10 @@ export default function VolunteerDashboard() {
         </div>
       )}
       {showAward && <AwardPopup onClose={() => setShowAward(false)} />}
-      {!dismissed && survey && <Banner leave={survey.done} onSurvey={goSurvey} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
+      {!dismissed && survey && <Banner leave={survey.done} onSurvey={() => setSurveyOpen(true)} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
-          cal={cal} registered={registered} recommended={RECOMMENDED} flash={null}
+          cal={cal} registered={registered} attended={volunteer.attended} flash={null}
           onNav={calNav} onDay={calDay} onClear={calClear} onFind={findEvents} onAddCal={addCal} onCancel={cancelShift}
         />
       </section>
@@ -156,7 +150,7 @@ export default function VolunteerDashboard() {
       </div>
       <div className="vp-surveys">
         {survey && (
-          <SurveyCard
+          <PortalSurveyCard
             survey={survey}
             onRate={(n) => setDraft((s) => ({ ...s, rating: n }))}
             onComment={(v) => setDraft((s) => ({ ...s, comment: v }))}
@@ -165,6 +159,7 @@ export default function VolunteerDashboard() {
         )}
         <PastSurveys past={past} freshKey={freshKey} onView={(i) => openModal({ kind: 'survey', p: past[i] })} />
       </div>
+      {survey && <PortalSurveyPopup open={surveyOpen} survey={survey} onRate={(n) => setDraft((s) => ({ ...s, rating: n }))} onComment={(v) => setDraft((s) => ({ ...s, comment: v }))} onSubmit={submit} onClose={() => setSurveyOpen(false)} />}
       {modal && (
         <Modal key={modal.key} label={modal.kind === 'ann' ? 'Announcement' : `${modal.p.event} survey`} onClosed={closedModal}>
           {(close) => (modal.kind === 'ann' ? <AnnouncementModal close={close} /> : <SurveyModal p={modal.p} close={close} />)}

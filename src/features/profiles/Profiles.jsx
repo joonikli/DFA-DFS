@@ -81,7 +81,7 @@ export default function Profiles({ params }) {
   const admin = type === 'admin';
   const toast = useToast(), pop = usePop();
   const page = useRef(null), popRef = useRef(pop); popRef.current = pop;
-  useFitZoom(page, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
   const [tab, setTab] = useState('Upcoming'), [year, setYear] = useState(PROFILE_YEAR), [editor, setEditor] = useState(null);
   const [events] = useEventState('events'), [saved, setSaved] = useEventState('saved');
   const missingSurveyIds = new Set(!admin && person ? events.filter((event) => Boolean(event.surveyDefinition || event.survey) && event.surveyMissingIds?.includes(person.id)).map((event) => event.id) : []);

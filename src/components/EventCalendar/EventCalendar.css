@@ -40,8 +40,8 @@
 
 .calendar-dot {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -90,8 +90,10 @@
   border-radius: 50%;
 }
 
+/* hover: number turns dark purple, no circle */
+.event-calendar__num { transition: color 150ms ease; }
 .event-calendar__day:hover .event-calendar__num {
-  background: var(--neutral-light-gray);
+  color: var(--primary-dark-purple);
 }
 
 .event-calendar__day--selected .event-calendar__num,
@@ -100,12 +102,12 @@
   color: var(--neutral-white);
 }
 
-/* 10px dot above the number, on the top edge of the day circle (overlaid, so it doesn't shift it) */
+/* 9px dot above the number, on the top edge of the day circle (overlaid, so it doesn't shift it) */
 .event-calendar__day .calendar-dot {
   position: absolute;
   top: -2px;
   left: 50%;
-  margin-left: -5px;
+  margin-left: -4.5px;
 }
 
 /* variant="dashboard": Figma Event-calendar (node 2324:48218), plus the dashboard
@@ -160,14 +162,13 @@
   transition: background-color 150ms ease, color 150ms ease, transform 100ms cubic-bezier(.23, 1, .32, 1);
 }
 .ecd-day:active { transform: scale(.94); }
-.ecd-day.past { color: var(--neutral-dark-gray); }
 .ecd-day.today { color: var(--primary-dark-purple); font-weight: 600; }
 .ecd-day.sel { background: var(--neutral-black); color: var(--neutral-white); }
 .ecd-day.today.sel { background: var(--primary-dark-purple); } /* today stays purple, never the black circle */
 .ecd-dot {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--primary-light-purple);
 }
@@ -177,11 +178,46 @@
   position: absolute;
   top: -2px;
   left: 50%;
-  margin-left: -5px;
+  margin-left: -4.5px;
+}
+/* "You're signed up" tooltip on green days: same look and timing as the home calendar's
+   .tip (styles.css): black chip above the day, 500ms delay, quick fade + scale in. */
+.ecd-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 5;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--neutral-black);
+  color: var(--neutral-white);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: normal;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) scale(.97);
+  transition: opacity 125ms cubic-bezier(.23, 1, .32, 1), transform 125ms cubic-bezier(.23, 1, .32, 1);
+}
+.ecd-day:focus-visible .ecd-tip {
+  opacity: 1;
+  transform: translateX(-50%);
 }
 @media (hover: hover) and (pointer: fine) {
   .ecd-nav:hover { background: var(--neutral-light-gray); }
-  .ecd-day:not(.sel):hover { background: var(--neutral-light-gray); }
+  /* hover: number turns dark purple, no circle */
+  .ecd-day:not(.sel):hover { color: var(--primary-dark-purple); }
+  .ecd-day:hover .ecd-tip {
+    opacity: 1;
+    transform: translateX(-50%);
+    transition-delay: 500ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ecd-tip { transform: translateX(-50%); }
 }
 
 /* Dot whose tone just changed (registered / unregistered): same pulse + ring as the

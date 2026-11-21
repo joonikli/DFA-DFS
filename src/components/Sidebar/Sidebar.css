@@ -16,14 +16,15 @@
   width: 201px;
   height: 64px;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* logo sits at the top of its slot; nav position unchanged */
+  padding-left: 8px; /* lines the logo up with the nav icons (.nav-item padding) */
   margin-bottom: 40px;
 }
 
 .sidebar__items {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
 .sidebar__footer {

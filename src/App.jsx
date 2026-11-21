@@ -5,12 +5,7 @@ import Placeholder from './pages/Placeholder.jsx'
 import VolunteerEvents from './pages/volunteer/VolunteerEvents.jsx'
 import VolunteerEventDetail from './pages/volunteer/VolunteerEventDetail.jsx'
 import StaffProfile from './pages/volunteer/StaffProfile.jsx'
-import SurveysHome from './pages/admin/SurveysHome.jsx'
-import SurveyDetail from './pages/admin/SurveyDetail.jsx'
 import VolunteerSurveys from './pages/volunteer/VolunteerSurveys.jsx'
-import Grants from './pages/admin/Grants.jsx'
-import GenerateReports from './pages/admin/GenerateReports.jsx'
-import { EventFlowsProvider } from './features/events/EventFlows.jsx'
 import Profile from './pages/Profile.jsx'
 import { connectHost, hostChanged } from './lib/router.js'
 import { useDemo } from './store/DemoStore.jsx'
@@ -33,6 +28,9 @@ const ManagerMessages = embedded('ManagerMessages')
 const ManagerEvents = embedded('ManagerEvents')
 const ManagerReport = embedded('ManagerReport')
 const ManagerProfile = embedded('ManagerProfile')
+const ManagerSurveys = embedded('ManagerSurveys')
+const ManagerGrants = embedded('ManagerGrants')
+const ManagerGrantReport = embedded('ManagerGrantReport')
 const VolunteerHome = embedded('VolunteerHome')
 const VolunteerMessages = embedded('VolunteerMessages')
 
@@ -44,6 +42,7 @@ const ROUTE_PATHS = {
   profile: '/people',
   surveys: '/surveys',
   grants: '/grants',
+  'grant-report': '/grants/report',
   settings: '/settings',
 }
 const routeToPath = (to) => {
@@ -88,6 +87,17 @@ function EventLink() {
   return <Navigate to={`/events?event=${encodeURIComponent(id)}`} replace />
 }
 
+// Old survey links (/surveys/s01) open that survey's results on the Survey responses screen
+function SurveyLink() {
+  const { id } = useParams()
+  return <Navigate to={`/surveys?survey=${encodeURIComponent(id)}`} replace />
+}
+
+function GrantReportLink() {
+  const { search } = useLocation()
+  return <Navigate to={`/grants/report${search}`} replace />
+}
+
 // Old admin links to a volunteer (/volunteers/v01) open the admin profile. v01 is Maureen,
 // who is 'maureen' among the named contacts in src/data.js.
 function VolunteerLink() {
@@ -122,17 +132,10 @@ export default function App() {
           <Route index element={<ByRole admin={<Lazy><ManagerDashboard /></Lazy>} volunteer={<Lazy><VolunteerHome /></Lazy>} />} />
           <Route path="events" element={<ByRole admin={<Lazy><ManagerEvents /></Lazy>} volunteer={<VolunteerEvents />} />} />
           <Route path="events/:id" element={<ByRole admin={<EventLink />} volunteer={<VolunteerEventDetail />} />} />
-          <Route path="surveys" element={<ByRole admin={<SurveysHome />} volunteer={<VolunteerSurveys />} />} />
-          <Route path="surveys/:id" element={<ByRole admin={<SurveyDetail />} volunteer={<Navigate to="/surveys" replace />} />} />
-          <Route
-            path="grants"
-            element={
-              <ByRole
-                admin={<Grants />}
-                volunteer={<Placeholder title="Grants" note="Grants are managed by Dress for Success staff. Switch to the admin view (avatar menu) to see them." />}
-              />
-            }
-          />
+          <Route path="surveys" element={<ByRole admin={<Lazy><ManagerSurveys /></Lazy>} volunteer={<VolunteerSurveys />} />} />
+          <Route path="surveys/:id" element={<ByRole admin={<SurveyLink />} volunteer={<Navigate to="/surveys" replace />} />} />
+          {/* Grants are staff-only: no volunteer tab, so volunteers are sent to their dashboard */}
+          <Route path="grants" element={<ByRole admin={<Lazy><ManagerGrants /></Lazy>} volunteer={<Navigate to="/" replace />} />} />
           {/* Profiles: volunteer view = Profile.jsx (Maureen's own); admin view = bev's profiles at
               /people (Bridget's own with type=admin, any volunteer with type=volunteer&id=…) */}
           <Route path="profile" element={<ByRole admin={<Navigate to="/people?type=admin" replace />} volunteer={<Profile />} />} />
@@ -145,14 +148,9 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
         {/* Full-screen document workspaces — no sidebar in the Figma frames */}
-        <Route
-          path="grants/reports"
-          element={
-            <EventFlowsProvider>
-              <ByRole admin={<GenerateReports />} volunteer={<Navigate to="/" replace />} />
-            </EventFlowsProvider>
-          }
-        />
+        <Route path="grants/report" element={<ByRole admin={<WithParams as={ManagerGrantReport} />} volunteer={<Navigate to="/" replace />} />} />
+        {/* Older links to the report workspace open the same Generate impact report */}
+        <Route path="grants/reports" element={<GrantReportLink />} />
         <Route path="reports/new" element={<ByRole admin={<WithParams as={ManagerReport} />} volunteer={<Navigate to="/" replace />} />} />
       </Routes>
     </>

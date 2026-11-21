@@ -232,15 +232,17 @@ export function Segmented({ value, onChange, options, className = '', id, role =
 
 /* ---------------------------------------------------------------------------
    Scale-to-fit: lay a page out at its Figma frame width and zoom it to fit.
-   useFitZoom(ref, { designWidth, minWidth, fillHeight })
+   useFitZoom(ref, { designWidth, minWidth, fillHeight, fit })
+   fit: false — don't zoom (the app frame already sets the shared page scale, AppShell.css);
+   only switch to the .fluid layout when narrower than minWidth.
 --------------------------------------------------------------------------- */
-export function useFitZoom(ref, { designWidth, minWidth = 1000, measure = 'parent', fillHeight = false } = {}) {
+export function useFitZoom(ref, { designWidth, minWidth = 1000, measure = 'parent', fillHeight = false, fit: zoomToFit = true } = {}) {
   const [zoom, setZoom] = useState(1);
   useLayoutEffect(() => {
     const fit = () => {
       const el = ref.current; if (!el) return;
       const w = measure === 'window' ? innerWidth : el.parentElement.clientWidth;
-      const z = w >= minWidth ? Math.min(1, w / designWidth) : 1;
+      const z = zoomToFit && w >= minWidth ? Math.min(1, w / designWidth) : 1;
       el.style.zoom = z === 1 ? '' : z;
       el.classList.toggle('fluid', w < minWidth);
       if (fillHeight) el.style.height = `${innerHeight / z}px`;
