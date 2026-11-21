@@ -18,7 +18,7 @@ export default function VolunteerSurveys() {
 
   const section = (title, list, action) => (
     <section style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <h2 className="text-subheading" style={{ color: 'var(--neutral-darker-gray)', fontWeight: 400 }}>
+      <h2 className="text-subheading" style={{ color: 'var(--neutral-darker-gray)' }}>
         {title} <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--neutral-black)' }}>{list.length}</span>
       </h2>
       {list.length ? (

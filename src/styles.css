@@ -2120,7 +2120,23 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .list-head { padding-top: 32px; gap: 20px; }
 /* Message / Announcements tab line runs the full width of the list column */
 .list-head #tabSeg { margin: 0 -24px; }
-/* Tab labels start on the same left edge as the title, search and filters (24px), side by side */
-.list-head #tabSeg .tab-nav { padding: 0 24px; justify-content: flex-start; gap: 28px; }
-.list-head #tabSeg .tab-nav__tab { flex: none; width: auto; padding: 0 0 10px; text-align: left; }
-.list-head #tabSeg .tab-nav__label { justify-content: flex-start; }
+/* Fitted tabs (Polaris "fitted", Material fixed tabs): two equal halves, label + badge centred,
+   1px full-bleed divider, 2px indicator spanning the active half */
+/* Two tabs sized to their content and spaced evenly: the left edge, the gap between them and the
+   right edge are equal, so the row reads as centred even though the labels differ in length */
+.list-head #tabSeg .tab-nav { padding: 0; gap: 0; justify-content: space-evenly; border-bottom-width: 1px; }
+.list-head #tabSeg .tab-nav__tab { flex: none; width: auto; padding: 0 12px 12px; margin-bottom: -1px; text-align: center; border-bottom-width: 2px; }
+.list-head #tabSeg .tab-nav__label { justify-content: center; align-items: center; gap: 8px; }
+
+/* Conversation rows: 8px between the name line and the preview line; 24px between messages */
+.convo-main { display: flex; flex-direction: column; gap: 8px; }
+#stream:not(.posts) { gap: 24px; }
+
+/* Even rhythm around the tab row: 24px from the title row, 20px to the search */
+.list-head #tabSeg { margin-top: 4px; }
+/* Conversation header: 4px between name and description, 16px photo-to-text,
+   40px photo, centred on the two-line text block */
+.conv-head { gap: 16px; align-items: center; }
+.conv-head .sub { margin-top: 4px; }
+.conv-head > .av, .conv-head > .av.lg { width: 40px; height: 40px; font-size: 14px; flex: none; }
+.conv-head > .av-stack.lg { width: 40px; height: 40px; }
