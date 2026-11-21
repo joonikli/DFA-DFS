@@ -4,10 +4,11 @@
 // (src/features/profiles/, see src/App.jsx).
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BadgeCheck, ChevronDown, Handshake, Mail, Pencil, Phone, Star } from 'lucide-react'
+import { BadgeCheck, ChevronDown, Handshake, Mail, Phone, Star } from 'lucide-react'
 import TabNav from '../components/TabNav/TabNav.jsx'
 import Modal from '../components/Modal/Modal.jsx'
 import Button from '../components/Button/Button.jsx'
+import EditButton from '../components/EditButton/EditButton.jsx'
 import Avatar from '../components/Avatar/Avatar.jsx'
 import StatTile from '../components/StatTile/StatTile.jsx'
 import EventHeader from '../components/EventHeader/EventHeader.jsx'
@@ -161,9 +162,7 @@ export default function Profile() {
         <div className="profile__main">
           <div className="profile__avatar">
             {person.photo ? <img src={person.photo} alt="" /> : <Avatar name={person.fullName} size={200} tone="purple" />}
-            <button type="button" className="profile__avatar-edit" aria-label="Change photo" onClick={() => setEditing(true)}>
-              <Pencil size={14} strokeWidth={2} />
-            </button>
+            <EditButton iconOnly className="profile__avatar-edit" aria-label="Change photo" onClick={() => setEditing(true)} />
           </div>
 
           <div className="profile__identity">
@@ -177,9 +176,7 @@ export default function Profile() {
                 {person.title} <span aria-hidden="true">|</span> {person.city}
               </p>
             </div>
-            <Button color="secondary" size="sm" className="profile__edit" onClick={() => setEditing(true)}>
-              Edit profile
-            </Button>
+            <EditButton label="Edit profile" className="profile__edit" onClick={() => setEditing(true)} />
           </div>
           <p className="text-label-2 profile__bio">{person.bio}</p>
 

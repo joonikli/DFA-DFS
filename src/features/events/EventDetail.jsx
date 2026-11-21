@@ -5,6 +5,7 @@ import { EventAsset, EventDialog } from './EventEditor.jsx';
 import { dateLabel, timeLabel } from './eventData.js';
 import { profileRoute } from '../profiles/profileData.js';
 import SurveyStatus from './SurveyStatus.jsx';
+import EditButton from '../../components/EditButton/EditButton.jsx';
 
 export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage }) {
   const [expanded, setExpanded] = useState(false);
@@ -23,7 +24,7 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
   return <div className={`ae-detail ${roster.length ? 'ae-detail-populated' : ''}`}>
     <nav className="ae-breadcrumb" aria-label="Breadcrumb"><button onClick={onBack}>Events</button><EventAsset name="survey-page-chevron" /><span aria-current="page">{title}</span></nav>
     <div className="ae-detail-layout"><div className="ae-detail-content">
-      <header className="ae-detail-heading"><div><h1>{title}</h1><p>{event.type || event.title}</p></div><button className="btn btn-outline ae-edit" onClick={() => onEdit(event)}><EventAsset name="detail-pen" />Edit</button></header>
+      <header className="ae-detail-heading"><div><h1>{title}</h1><p>{event.type || event.title}</p></div><EditButton onClick={() => onEdit(event)} /></header>
       <div className={`ae-detail-description ${expanded ? 'expanded' : ''}`}>
         <p id="admin-event-description">{event.longDescription ?? (event.description || 'No description has been added to this event.')}</p>
         <button className="ae-description-toggle" aria-label={expanded ? 'Collapse description' : 'Expand description'} aria-expanded={expanded} aria-controls="admin-event-description" onClick={() => setExpanded((value) => !value)}><EventAsset name="detail-description-chevron" /></button>
@@ -44,7 +45,7 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
           {partialRoster && <p className="ae-roster-note">Showing {roster.length} demo profiles of {event.registered} sign-ups.</p>}
         </> : <div className="ae-roster-empty"><div className="ae-empty-icon"><EventAsset name="detail-handshake" /></div><p>No volunteers have signed up yet</p></div>}
       </section>
-    </div><aside className="ae-detail-aside" aria-label="Event details"><header><h2>Event Details</h2><button className="btn btn-outline ae-edit" onClick={() => onEdit(event)}><EventAsset name="detail-pen" />Edit</button></header>
+    </div><aside className="ae-detail-aside" aria-label="Event details"><header><h2>Event Details</h2><EditButton onClick={() => onEdit(event)} /></header>
       <dl className="ae-detail-facts">
         <div className="ae-detail-organizer"><dt><EventAsset name="detail-frame634" /><span className="sr">Organizer</span></dt><dd>{event.organizer} (Me)</dd></div>
         <div><dt><EventAsset name="detail-frame" /><span className="sr">Date</span></dt><dd>{dateLabel(event.date)}</dd></div>
