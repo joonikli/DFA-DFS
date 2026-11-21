@@ -2105,3 +2105,6 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .impact-card:hover .impact-cta .ic { transform: none !important; }
 /* Bottom link, same as the other cards' "View survey data →" */
 .impact-link { margin-top: auto; align-self: flex-start; }
+/* Upcoming events: no hover effects — rows stay still, the action is always visible */
+.ev-item, .ev-item:hover { box-shadow: none !important; transition: none; }
+.ev-act, .ev-item:hover .ev-act { opacity: 1 !important; }
