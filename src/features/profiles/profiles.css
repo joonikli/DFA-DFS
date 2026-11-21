@@ -38,8 +38,6 @@
 .ap-events { margin-top: 56px; }
 .ap-events > h2, .ap-contact > h2, .ap-notes h2 { margin: 0; font: 600 28px/31px var(--serif); }
 .ap-events > h2 { margin-bottom: 32px; }
-.ap-tabs.ae-tabs { height: 29px; }
-.ap-tabs.ae-tabs button { height: 28px; padding-bottom: 10px; }
 .ap-events-panel { padding-top: 25px; }
 .ap-events-panel > header { display: flex; align-items: center; justify-content: space-between; min-height: 23px; padding: 2px 8px; margin-bottom: 8px; font: 400 16px/19px var(--sans); color: var(--darker-gray); }
 .ap-page .ae-event-card { border-radius: 18px; box-shadow: 0 2px 3px rgba(239, 242, 245, .8); }

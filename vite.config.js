@@ -27,7 +27,7 @@ const CSS_SCOPES = [
   ['src/components/SearchBar/', ['a', 'manager']],
   ['src/components/Filter/', ['a', 'manager']],
   ['src/components/SubNav/', ['a', 'manager']],
-  ['src/components/TabNav/', ['a', 'manager']],
+  ['src/components/TabNav/', null],
   ['src/components/Notification/', ['a', 'volunteer']],
   ['src/volunteer/', ['volunteer']],
   ['src/styles.css', ['manager', 'volunteer']],

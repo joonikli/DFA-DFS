@@ -16,21 +16,6 @@
 .ae-heading h1, .ae-group h2, .ae-calendar h2, .ae-tasks h2 { margin: 0; }
 .ae-heading h1 { font: 600 28px/31px var(--serif); }
 .ae-heading p { margin: 4px 0 0; font-size: 16px; line-height: 19px; color: var(--darker-gray); }
-.ae-tabs { position: relative; display: flex; height: 34px; box-shadow: inset 0 -2px var(--gray); }
-.ae-tabs button { position: relative; width: 124px; height: 33px; padding-bottom: 12px; color: var(--darker-gray); font-size: 16px; font-weight: 600; transition: color var(--dur-micro) var(--ease-out); }
-/* Content-sized event tabs keep the visible gap between short/long labels even. */
-.ae-workspace > .ae-tabs button { flex: 0 0 auto; width: auto; padding-inline: 24px; }
-/* Match the volunteer tab bar (TabNav): label + 10px to the underline */
-.ae-workspace > .ae-tabs { height: auto; }
-.ae-workspace > .ae-tabs button { height: auto; padding-bottom: 10px; line-height: normal; }
-.ae-tabs button.on { color: var(--purple-dark); }
-.ae-tab-line { position: absolute; bottom: 0; left: 0; width: 124px; height: 2px; background: var(--purple-dark); pointer-events: none; transition: transform var(--dur-pop) var(--ease-out), width var(--dur-pop) var(--ease-out); }
-@media (prefers-reduced-motion: reduce) { .ae-tab-line, .ae-tabs button { transition: none; } }
-@media (max-width: 600px) {
-  .ae-page.fluid .ae-tabs { overflow-x: auto; height: auto; min-height: 36px; }
-  .ae-page.fluid .ae-tabs button { flex: 0 0 auto; width: auto; min-width: 96px; padding: 0 12px 12px; }
-  .ae-page.fluid .ae-workspace > .ae-tabs button { min-width: 0; padding-inline: 16px; }
-}
 /* At 1488px the columns sit 146px apart (Figma); narrower, the gap gives way first, then the list column */
 .ae-layout { display: grid; grid-template-columns: minmax(0, 849px) 400px; gap: 146px 24px; justify-content: space-between; margin-top: 16px; }
 .ae-list { min-width: 0; }
@@ -322,7 +307,6 @@
   .ae-bookmark:not(.on):hover { background: var(--purple-lightest); border-color: var(--purple-light); color: var(--purple-dark); }
   .ae-bookmark.on:hover { background: var(--purple-dark); border-color: var(--purple-dark); }
   .ae-task:hover { background: var(--light-gray); color: var(--black); }
-  .ae-tabs button:not(.on):hover { color: var(--black); }
   .ae-breadcrumb button:hover { color: var(--black); text-decoration: underline; text-underline-offset: 3px; }
 }
 .ae-page button:focus-visible, .ae-dialog button:focus-visible { outline: 2px solid var(--purple-dark); outline-offset: 3px; }
@@ -369,4 +353,4 @@
   .ae-page.fluid .ae-event-card { gap: 12px; }
 }
 @media (max-width: 850px) { .ae-page.fluid .ae-layout { grid-template-columns: 1fr; } .ae-page.fluid .ae-rail { padding-top: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } .ae-page.fluid .ae-tasks { margin-top: 0; } .ae-page.fluid .ae-cards.grid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .ae-page.fluid .ae-workspace { padding: 24px 16px 40px; } .ae-page.fluid .ae-rail { grid-template-columns: 1fr; } .ae-page .ae-top-nav { padding: 16px 24px; } .ae-tabs button { width: 25%; font-size: 13px; } .ae-form-logistics, .ae-form-pair { grid-template-columns: 1fr; } .ae-tags-field { width: 100%; } .ae-editor { padding: 20px; gap: 22px; } .ae-editor-footer { gap: 8px; flex-wrap: wrap; } .ae-dialog .ae-editor-footer .btn { font-size: 13px; padding: 0 10px; } .ae-stat-row { flex-wrap: wrap; } .ae-stat { width: 100%; } .ae-roster-row { flex-wrap: wrap; } .ae-roster-heading { gap: 12px; flex-wrap: wrap; } }
+@media (max-width: 600px) { .ae-page.fluid .ae-workspace { padding: 24px 16px 40px; } .ae-page.fluid .ae-rail { grid-template-columns: 1fr; } .ae-page .ae-top-nav { padding: 16px 24px; } .ae-form-logistics, .ae-form-pair { grid-template-columns: 1fr; } .ae-tags-field { width: 100%; } .ae-editor { padding: 20px; gap: 22px; } .ae-editor-footer { gap: 8px; flex-wrap: wrap; } .ae-dialog .ae-editor-footer .btn { font-size: 13px; padding: 0 10px; } .ae-stat-row { flex-wrap: wrap; } .ae-stat { width: 100%; } .ae-roster-row { flex-wrap: wrap; } .ae-roster-heading { gap: 12px; flex-wrap: wrap; } }
