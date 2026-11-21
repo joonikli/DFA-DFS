@@ -2100,3 +2100,6 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .impact-todo { background: var(--primary-lightest-purple); border-color: transparent; border-radius: 8px; padding: 12px; }
 .impact-todo > .ic { color: var(--primary-dark-purple); }
 .impact-spark { height: 64px; margin-top: 16px; }
+/* No card-level hover on the grants card: it behaves like the other dashboard cards */
+.impact-card, .impact-card:hover { border-color: var(--gray) !important; box-shadow: none !important; transition: none; }
+.impact-card:hover .impact-cta .ic { transform: none !important; }
