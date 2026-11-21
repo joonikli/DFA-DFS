@@ -76,7 +76,7 @@ export default function Grants() {
   const { grantCreate, showToast, admin } = useDemo()
   const all = useGrants()
   const [query, setQuery] = useState('')
-  const [status, setStatus] = useState('all')
+  const [status, setStatus] = useState(() => (STATUS_FILTERS.some((f) => f.value === params.get('status')) ? params.get('status') : 'all'))
   const [sort, setSort] = useState('default')
   const [openGrant, setOpenGrant] = useState(null)
   const [details, setDetails] = useState(null)

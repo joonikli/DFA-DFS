@@ -3,14 +3,14 @@
 // and every change re-renders subscribers through emit().
 import { CONVOS, GROUPS, SHIFTS, VOLS } from '../../data.js';
 import { emit, live, nowTime, reducedMotion } from '../../lib/store.js';
-import { navigate } from '../../lib/router.js';
+import { currentRoute, navigate } from '../../lib/router.js';
 import { createElement } from 'react';
 
 export const M = {
   tab: 'message', filter: 'all', channel: 'inapp', q: '',
   active: 'c1', activeGroup: 'g1', composing: false, channelFilter: 'all', rcptsOpen: false,
   sideTab: 'upcoming', sideClosed: false, thread: null, msgThread: null, newFrom: null, pinned: {}, drafts: {
-    c1: { body: 'Text me if you need any more help, or if something comes up on the day! I’ll also text you if there are any updates, and there will be reminders sent out as well.', subject: 'Your upcoming shift — Mobile Services Route, Dec 12' },
+    c1: { body: 'Text me if you need any more help, or if something comes up on the day! I’ll also text you if there are any updates, and there will be reminders sent out as well.', subject: 'Your upcoming shift — Mobile Services, May 26' },
   },
   fresh: { convo: null, msg: null, ann: null, reply: null },
   // React-port bookkeeping (what vanilla did by poking the DOM)
@@ -315,7 +315,7 @@ export function deliver(m, c) {
   }, 900);
 }
 
-const onMessages = () => location.hash.startsWith('#messages');
+const onMessages = () => currentRoute() === 'messages';
 
 function fakeReply(c, sent, email = false) {
   const replies = email

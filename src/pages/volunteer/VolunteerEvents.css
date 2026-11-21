@@ -2,11 +2,19 @@
    shell's 41px top / 40px bottom padding), so the header, tabs and search
    never move: only the event list (and, on short screens, the right column)
    scroll inside it. */
+/* The page is zoomed to 0.88 so it sits at the same scale as the Direction D list cards
+   (EventCard.css). Viewport-based height and max-width are divided by the zoom so the page
+   still fills the same on-screen area; cards inside reset their own zoom (no double-shrink). */
 .volunteer-events {
+  --page-zoom: 0.88;
+  zoom: var(--page-zoom);
   display: flex;
   flex-direction: column;
-  max-width: 1380px;
-  height: max(480px, calc(100vh - 68px - 41px - 40px));
+  max-width: calc(1380px / var(--page-zoom));
+  height: calc(max(480px, calc(100vh - 68px - 41px - 40px)) / var(--page-zoom));
+}
+.volunteer-events .event-card--list {
+  zoom: 1;
 }
 
 .volunteer-events__list {
@@ -93,10 +101,123 @@
 
 .volunteer-events__active-filter {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 0 8px;
   color: var(--neutral-darker-gray);
+}
+
+/* ---- Filter pill + popover (date, time, location, tags) ---- */
+.volunteer-events__filter {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.event-filter {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 50;
+  width: min(460px, calc(100vw - 32px));
+  padding: 18px;
+  background: var(--neutral-white);
+  border: 1px solid var(--neutral-gray);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgb(60 57 64 / 0.14);
+  color: var(--neutral-black);
+}
+.event-filter form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.event-filter__group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.event-filter__group legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+/* Date / From / To on one row */
+.event-filter__when {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.event-filter__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--neutral-darker-gray);
+}
+.event-filter__field .field,
+.event-filter__field .time-field {
+  width: 100%;
+  min-width: 0;
+  background: var(--neutral-light-gray);
+}
+.event-filter__field .field--text {
+  color: var(--neutral-black);
+}
+.event-filter__error {
+  margin: 8px 0 0;
+  color: var(--red-dark-red);
+}
+.event-filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.event-filter__chip {
+  padding: 4px 12px;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 18px;
+  color: var(--neutral-black);
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.event-filter__chip:hover {
+  background: var(--neutral-light-gray);
+}
+.event-filter__chip--on,
+.event-filter__chip--on:hover {
+  background: var(--primary-dark-purple);
+  border-color: var(--primary-dark-purple);
+  color: var(--neutral-white);
+}
+/* Distance sort: one chip that cycles Nearest → Furthest → off.
+   Tinted purple so it reads as a sort control, not another place to filter by. */
+.event-filter__chip--sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-lightest-purple);
+  border-color: var(--primary-light-purple);
+  color: var(--primary-dark-purple);
+}
+.event-filter__chip--sort:hover {
+  background: var(--primary-light-purple);
+}
+.event-filter__chip--sort.event-filter__chip--on,
+.event-filter__chip--sort.event-filter__chip--on:hover {
+  background: var(--primary-dark-purple);
+  border-color: var(--primary-dark-purple);
+  color: var(--neutral-white);
+}
+.event-filter__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.volunteer-events__clear {
+  display: block;
+  margin: 8px auto 0;
+  color: var(--primary-dark-purple);
+  text-decoration: underline;
 }
 
 /* Figma: the right column lines up with the search bar row */

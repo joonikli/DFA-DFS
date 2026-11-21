@@ -122,7 +122,7 @@ function SurveyCard({ survey, onNotBuilt }) {
       <div className="as-card-meta"><span><SurveyAsset name="card-question.svg" />{survey.questions} questions</span><span><EventAsset name="grid-users" />{survey.responses} responses</span></div>
       <hr />
       <div className="as-card-details"><p><span>Organized by </span><b>{survey.organizer}</b></p><p className="as-card-location"><EventAsset name="grid-location" /><span>{survey.location}</span></p></div>
-      <div className="as-card-tags">{survey.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
+      <div className="as-card-tags">{survey.tags.map((t, i) => <span key={i} className={`ae-tag ${t.tone}`}>{t.label}</span>)}</div>
     </div>
     <div className="as-card-buttons">
       <button className="btn as-view-event" onClick={() => navigate(`events?event=${survey.eventId}`)}>View event</button>
@@ -142,7 +142,7 @@ function CreateSurveyDialog({ eventId, onClosed }) {
     onDraft={(next) => { setDraft(next); toast('Survey saved as draft — it’ll be here next time you create a survey', { ic: 'check' }); close(); }}
     onCreate={(survey) => {
       const event = events.find((e) => e.id === survey.eventId), date = parseDate(event.date);
-      const card = { id: `survey-${Date.now()}`, title: event.title, surveyName: survey.title, month: date.toLocaleDateString('en-US', { month: 'short' }), day: date.getDate(), time: event.start && event.end ? timeRange(event.start, event.end) : event.time, status: survey.status, questions: survey.questions.length, responses: 0, organizer: event.organizer || 'Kelly Trow', location: event.address || 'Location to be added', eventId: event.id, tags: event.tags || [], definition: survey, event: { date: shortDate(event.date), time: (event.time || '').toUpperCase(), description: event.description || '' } };
+      const card = { id: `survey-${Date.now()}`, title: event.title, surveyName: survey.title, month: date.toLocaleDateString('en-US', { month: 'short' }), day: date.getDate(), time: event.start && event.end ? timeRange(event.start, event.end) : event.time, status: survey.status, questions: survey.questions.length, responses: 0, organizer: event.organizer || 'Kelly Trow', location: event.address || 'Location to be added', eventId: event.id, tags: (event.tags || []).map((tone, i) => ({ tone, label: (event.tagText || '').split(',')[i]?.trim() || event.type })), definition: survey, event: { date: shortDate(event.date), time: (event.time || '').toUpperCase(), description: event.description || '' } };
       setSections((sections) => sections.map((section) => section.id === 'week' ? { ...section, surveys: [card, ...section.surveys] } : section));
       setDraft(null); close();
       toast('Survey published', { ic: 'check', action: 'View', onAction: () => navigate(`surveys?survey=${card.id}`) });

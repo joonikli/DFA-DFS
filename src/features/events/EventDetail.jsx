@@ -4,15 +4,7 @@ import { VOLS } from '../../data.js';
 import { EventAsset, EventDialog } from './EventEditor.jsx';
 import { dateLabel, timeLabel } from './eventData.js';
 import { profileRoute } from '../profiles/profileData.js';
-
-function SurveyStatus({ status }) {
-  const labels = { missing: 'Survey missing', complete: 'Survey complete', pending: 'Survey pending', unassigned: 'No survey assigned' };
-  return <span className={`ae-survey-status ${status}`}>
-    {labels[status]}
-    {status === 'missing' && <EventAsset name="detail-survey-missing" />}
-    {status === 'complete' && <EventAsset name="detail-survey-complete" />}
-  </span>;
-}
+import SurveyStatus from './SurveyStatus.jsx';
 
 export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage }) {
   const [expanded, setExpanded] = useState(false);

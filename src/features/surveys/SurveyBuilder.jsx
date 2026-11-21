@@ -96,7 +96,7 @@ function QuestionEditor({ q, n, onChange, onRemove }) {
  * @param {'event'|'standalone'} [variant]  'event' (inside Create event): Preview + Create survey.
  *        'standalone' (Surveys page, Figma 2324:46040): Save as draft + Publish.
  */
-export default function SurveyBuilder({ onClose, onCreate, eventOptions, defaultEventId, defaultTitle = '', variant = 'event' }) {
+export default function SurveyBuilder({ onClose, onCreate, eventOptions, defaultEventId, defaultTitle = '', variant = 'event', transitionName, onEscape }) {
   const [eventId, setEventId] = useState(defaultEventId ?? eventOptions[0]?.value ?? '')
   const [title, setTitle] = useState(defaultTitle)
   const [status, setStatus] = useState('closed')
@@ -115,7 +115,7 @@ export default function SurveyBuilder({ onClose, onCreate, eventOptions, default
 
   if (preview) {
     return (
-      <Modal open onClose={() => setPreview(false)} width={737} title={title || 'Untitled survey'} subtitle="Preview — this is what volunteers will see.">
+      <Modal open onClose={() => setPreview(false)} width={737} title={title || 'Untitled survey'} subtitle="Preview — this is what volunteers will see." transitionName={transitionName}>
         <div className="sb-preview">
           {questions.map((q, i) => (
             <SurveyQuestion key={q.id} number={i + 1} question={{ ...q, prompt: q.prompt || 'Untitled question' }} value={undefined} onChange={() => {}} />
@@ -135,6 +135,8 @@ export default function SurveyBuilder({ onClose, onCreate, eventOptions, default
     <Modal
       open
       onClose={onClose}
+      onEscape={onEscape}
+      transitionName={transitionName}
       width={636}
       title={
         <span className="sb-title">

@@ -1,0 +1,17 @@
+/* Staff profile: layout and type come from Profile.css; only the differences live here. */
+/* Button wraps its children in a span: lay the label + icon out inside it */
+.staff-profile__message > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.staff-profile .profile__bio {
+  margin-bottom: 0;
+}
+.staff-profile .profile__contact a {
+  color: inherit;
+  text-decoration: none;
+}
+.staff-profile .profile__contact a:hover {
+  text-decoration: underline;
+}

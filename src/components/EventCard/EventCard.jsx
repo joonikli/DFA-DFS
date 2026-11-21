@@ -1,11 +1,10 @@
 // Figma: Components › Event card (node 1126:14497)
 // Variants (Color =): pink-default | blue | green (tag colors — driven by data here),
 // Hover (CSS :hover), Color7 / admin view (admin "15 Registered" CTA), empty (EventCardEmpty).
-import { Clock, MapPin, Users } from 'lucide-react'
+import { Clock, MapPin, Navigation, Users } from 'lucide-react'
 import { MONTHS, formatTimeRange } from '../../lib/dates.js'
 import Tags from '../Tags/Tags.jsx'
 import RecommendedTag from '../RecommendedTag/RecommendedTag.jsx'
-import LogisticsAtom from '../LogisticsAtom/LogisticsAtom.jsx'
 import './EventCard.css'
 
 /**
@@ -15,18 +14,19 @@ import './EventCard.css'
  * @param {number}   [registeredCount] renders the admin-view "N Registered" pill instead of `cta`
  * @param {string}   [flag]      short tag beside the title, e.g. "Newly saved"
  */
-export default function EventCard({ event, cta, layout = 'list', registeredCount, onOpen, flag }) {
+export default function EventCard({ event, cta, layout = 'list', registeredCount, onOpen, flag, notice }) {
   const { start, end } = event
-  if (layout === 'grid') return <GridCard {...{ event, cta, registeredCount, onOpen, flag }} />
+  if (layout === 'grid') return <GridCard {...{ event, cta, registeredCount, onOpen, flag, notice }} />
   return (
     <article
       className={`event-card event-card--${layout} ${onOpen ? 'event-card--clickable' : ''}`}
       onClick={onOpen}
     >
+      {/* Direction D "Quiet column": quiet month / day / weekday; the time moves into the meta row */}
       <div className="event-card__time">
-        <p className="event-card__month text-subheading">{MONTHS[start.getMonth()]}</p>
-        <p className="event-card__day text-label-large">{start.getDate()}</p>
-        <p className="event-card__hours text-label-2">{formatTimeRange(start, end)}</p>
+        <p className="event-card__month">{MONTHS[start.getMonth()].slice(0, 3)}</p>
+        <p className="event-card__day">{start.getDate()}</p>
+        <p className="event-card__weekday">{start.toLocaleDateString('en-US', { weekday: 'short' })}</p>
       </div>
 
       <div className="event-card__divider" aria-hidden="true" />
@@ -50,7 +50,22 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
               {cta}
             </div>
           </div>
-          <LogisticsAtom items={[event.location, event.distance]} />
+          <div className="event-card__meta text-body">
+            <span className="event-card__meta-time">
+              <Clock size={16} strokeWidth={1.75} aria-hidden="true" />
+              {formatTimeRange(start, end)}
+            </span>
+            <span className="event-card__meta-loc">
+              <MapPin size={16} strokeWidth={1.75} aria-hidden="true" />
+              <span>{event.location}</span>
+            </span>
+            {event.distance && (
+              <span className="event-card__meta-dist">
+                <Navigation size={16} strokeWidth={1.75} aria-hidden="true" />
+                {event.distance}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="event-card__bottom">
@@ -62,6 +77,7 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
               </Tags>
             ))}
           </div>
+          {notice && <div>{notice}</div>}
         </div>
       </div>
     </article>
@@ -75,7 +91,7 @@ export default function EventCard({ event, cta, layout = 'list', registeredCount
  * 2-line description → actions pinned to the bottom (primary left, save right).
  * Styling (type, tags, CTAs, border, shadow) comes from the final Event card.
  */
-function GridCard({ event, cta, registeredCount, onOpen, flag }) {
+function GridCard({ event, cta, registeredCount, onOpen, flag, notice }) {
   const { start, end } = event
   return (
     <article className={`event-card event-card--grid ${onOpen ? 'event-card--clickable' : ''}`} onClick={onOpen}>
@@ -113,6 +129,7 @@ function GridCard({ event, cta, registeredCount, onOpen, flag }) {
       </div>
 
       <p className="event-card__desc text-body">{event.description}</p>
+      {notice && <div>{notice}</div>}
 
       {/* stopPropagation so CTA clicks don't also open the card */}
       <div className="event-card__actions" onClick={(e) => e.stopPropagation()}>

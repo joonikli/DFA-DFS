@@ -1,4 +1,4 @@
-// Report composer (full page, no app shell): #report?tpl=board&period=q4[&from&to]
+// Report composer (full page, no app shell): #report?tpl=board&period=q1[&from&to]
 // Composer chat on the left, the document on the right. State lives in RP (reportData.js),
 // keyed by the query string, so it persists when navigating away and back.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';

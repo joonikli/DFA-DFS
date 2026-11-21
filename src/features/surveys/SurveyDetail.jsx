@@ -5,7 +5,6 @@ import { useNotBuilt } from '../../components/Shell.jsx';
 import { navigate } from '../../lib/router.js';
 import EventAsset from '../events/EventAsset.jsx';
 import { resultsFor } from './surveyData.js';
-import { useEventState } from '../events/eventState.js';
 
 const Asset = ({ name, className = '' }) => <img className={`ae-asset ${className}`} src={`/assets/surveys/${name}`} alt="" aria-hidden="true" />;
 const pct = (count, total) => Math.round((count / total) * 100);
@@ -100,8 +99,7 @@ const fromDefinition = (survey) => ({
 
 export default function SurveyDetail({ survey, onCreate }) {
   const notBuilt = useNotBuilt();
-  const [events] = useEventState('events');
-  const data = survey.definition ? fromDefinition(survey) : resultsFor(survey, events.find((e) => e.id === survey.eventId));
+  const data = survey.definition ? fromDefinition(survey) : resultsFor(survey);
   const closed = survey.status === 'Closed';
   return <div className="sd">
     <div className="sd-top">
@@ -122,7 +120,7 @@ export default function SurveyDetail({ survey, onCreate }) {
         <div className="sd-title"><h1>{survey.title}</h1><span className={`sd-status ${closed ? 'closed' : 'open'}`}><Asset name={closed ? 'detail-status-closed.svg' : 'card-status-dot.svg'} />{survey.status}</span></div>
         <p className="sd-manager">Managed by <b>{survey.organizer}</b></p>
         <p className="sd-description">{data.description}</p>
-        <div className="sd-tags">{survey.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
+        <div className="sd-tags">{survey.tags.map((t, i) => <span key={i} className={`ae-tag ${t.tone}`}>{t.label}</span>)}</div>
       </div>
       <div className="sd-info-meta">
         <p className="sd-responses"><Asset name="detail-users.svg" />{survey.responses} responses</p>

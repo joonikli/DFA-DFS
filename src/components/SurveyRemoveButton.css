@@ -1,0 +1,34 @@
+.survey-attachment { position: relative; transition: transform var(--dur-micro, 150ms) var(--ease-out, cubic-bezier(.23, 1, .32, 1)); }
+.ce-survey-chip.survey-attachment { display: inline-flex; }
+.survey-attachment__remove {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--neutral-gray);
+  border-radius: 50%;
+  background: var(--neutral-white);
+  color: var(--neutral-darker-gray);
+  cursor: pointer;
+  transition: transform var(--dur-press, 100ms) var(--ease-out, cubic-bezier(.23, 1, .32, 1));
+}
+.survey-attachment__remove:active { transform: translateY(1px) scale(.9); }
+.survey-attachment__remove:hover { background: var(--red-light-red); color: var(--red-dark-red); }
+.survey-attachment__remove:focus-visible { outline: 2px solid var(--primary-dark-purple); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .survey-attachment:hover { transform: translateY(-2px); }
+  .survey-attachment__remove { opacity: 0; pointer-events: none; }
+  .survey-attachment:hover .survey-attachment__remove,
+  .survey-attachment:focus-within .survey-attachment__remove { opacity: 1; pointer-events: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .survey-attachment,
+  .survey-attachment:hover,
+  .survey-attachment__remove,
+  .survey-attachment__remove:active { transform: none; transition: none; }
+}

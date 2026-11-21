@@ -1,88 +1,73 @@
-// Volunteer messaging center (Maureen's side of the manager's Messages screen).
-// Two tabs, same split as the manager: Messages (1:1 with coordinators + group chats she was added to)
-// and Announcements (read, react, reply; volunteers never post them).
-// Channel logic from this side: everything lands here; a message a coordinator also emailed says so,
-// and "How we reach you" is the preference the manager's composer reads to pick a channel.
+// Volunteer messaging (Maureen's side). Built from the SAME markup, classes and design-system
+// components as the manager's Messages screen (src/features/messages), rendered inside the manager
+// scope so both sides share one stylesheet: list column (Tab nav, Search bar, Sub nav), conversation
+// header, bubbles, "Today" / "New" dividers, composer, announcement posts.
+// Volunteer differences, kept deliberately small: no threads, no side panel; volunteers message
+// coordinators and react; announcements are read-only (react, or reply privately when the post asks).
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowUp, Check, ChevronDown, ChevronRight, Lock, Mail, Megaphone, MessageSquareReply, Search, Smile, SquarePen, X } from 'lucide-react'
-import { PageHeader } from '../../layout/AppShell.jsx'
-import Avatar from '../../components/Avatar/Avatar.jsx'
 import TabNav from '../../components/TabNav/TabNav.jsx'
 import Button from '../../components/Button/Button.jsx'
+import SearchBar from '../../components/SearchBar/SearchBar.jsx'
+import SubNav from '../../components/SubNav/SubNav.jsx'
+import { Icon } from '../../components/Icon.jsx'
 import { useDemo } from '../../store/DemoStore.jsx'
-import { useDismiss } from '../../lib/useDismiss.js'
 import { eventsById } from '../../mock/events.js'
 import { formatTimeRange, MONTHS } from '../../lib/dates.js'
-import { AUTO_REPLIES, PEOPLE, REACH_PREFS, STAFF } from '../../mock/messages.js'
+import { AUTO_REPLIES, PEOPLE, STAFF } from '../../mock/messages.js'
 import myPhoto from '../../assets/avatar-volunteer.png'
-import './VolunteerMessages.css'
 
-const EMOJI = ['👍', '❤️', '🙌', '😄', '🙏', '👀']
 const who = (id) => PEOPLE[id] || { name: 'Volunteer', first: 'Volunteer' }
 const convoName = (c) => c.name || who(c.who[0]).name
 const lastMsg = (c) => c.msgs[c.msgs.length - 1]
+const initials = (n) => n.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase()
 let seq = 0
 const uid = (p) => `${p}-${Date.now().toString(36)}-${++seq}`
 
-function Face({ id, size = 32 }) {
-  const p = id === 'me' ? null : who(id)
-  if (id === 'me') return <Avatar name={PEOPLE.me.name} src={myPhoto} size={size} />
-  return <Avatar name={p.name} src={p.photo} size={size} tone={p.staff ? 'purple' : 'gray'} />
+/** Same avatar element as the manager screen (.av sized by class) */
+function Av({ id, className = '' }) {
+  const p = id === 'me' ? { ...PEOPLE.me, photo: myPhoto } : who(id)
+  return <span className={`av ${className}`} aria-hidden="true">{p.photo ? <img src={p.photo} alt="" /> : initials(p.name)}</span>
 }
 
-/** Small anchored popover that closes on outside click / Escape */
-function Pop({ open, onClose, className = '', children, anchorRef }) {
-  const ref = useRef(null)
-  useDismiss(anchorRef || ref, open, onClose)
-  if (!open) return null
-  return <div ref={ref} className={`vm-pop ${className}`} role="dialog">{children}</div>
-}
-
-function ReactBar({ reacts, mine, onToggle, labelFor }) {
-  const [open, setOpen] = useState(false)
-  const wrap = useRef(null)
-  const entries = Object.entries(reacts).filter(([, v]) => (Array.isArray(v) ? v.length : v > 0))
-  return (
-    <div className={`vm-reacts ${entries.length ? '' : 'vm-reacts--empty'}`} ref={wrap}>
-      {entries.map(([e, v]) => {
-        const isMine = Array.isArray(v) ? v.includes('me') : mine.includes(e)
-        return (
-          <button key={e} type="button" className={`vm-react ${isMine ? 'vm-react--mine' : ''}`} aria-pressed={isMine} title={labelFor?.(v)} onClick={() => onToggle(e)}>
-            {e} <span>{Array.isArray(v) ? v.length : v}</span>
-          </button>
-        )
-      })}
-      <span className="vm-react-add-wrap">
-        <button type="button" className={`vm-react vm-react--add ${open ? 'is-on' : ''}`} aria-label="Add reaction" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          <Smile size={15} strokeWidth={2} />
-        </button>
-        <Pop open={open} onClose={() => setOpen(false)} anchorRef={wrap} className="vm-pop--emoji">
-          {EMOJI.map((e) => <button key={e} type="button" onClick={() => { onToggle(e); setOpen(false) }} aria-label={`React ${e}`}>{e}</button>)}
-        </Pop>
-      </span>
-    </div>
-  )
-}
-
-function EventAttachment({ id }) {
+/** Shift card (manager .event-card anatomy) */
+function EventCard({ id }) {
   const e = eventsById[id]
   const navigate = useNavigate()
   if (!e) return null
   return (
-    <button type="button" className="vm-event" onClick={() => navigate('/events?tab=registered')}>
-      <span className="vm-event__date"><small>{MONTHS[e.start.getMonth()].slice(0, 3)}</small><b>{e.start.getDate()}</b></span>
-      <span className="vm-event__text"><b>{e.title}</b><span>{formatTimeRange(e.start, e.end)} · {e.location}</span></span>
-      <ChevronRight size={16} aria-hidden="true" />
-    </button>
+    <div className="event-card" role="button" tabIndex={0} onClick={() => navigate(`/events/${id}`)} style={{ cursor: 'pointer' }}>
+      <div className="ec-date"><span className="ec-mon">{MONTHS[e.start.getMonth()].slice(0, 3)}</span><span className="ec-day">{e.start.getDate()}</span></div>
+      <div className="ec-body">
+        <div className="ec-meta">{formatTimeRange(e.start, e.end)}, {e.location}</div>
+        <div className="ec-title">{e.title}</div>
+      </div>
+    </div>
   )
 }
 
-function Composer({ placeholder, onSend, context, onClearContext, autoFocus }) {
+function Reacts({ reacts, mine = [], onToggle }) {
+  const entries = Object.entries(reacts).filter(([, v]) => (Array.isArray(v) ? v.length : v > 0))
+  if (!entries.length) return null
+  return (
+    <div className="reacts">
+      {entries.map(([e, v]) => {
+        const isMine = Array.isArray(v) ? v.includes('me') : mine.includes(e)
+        return (
+          <button key={e} className={`react ${isMine ? 'mine' : ''}`} aria-pressed={isMine} onClick={() => onToggle(e)}>
+            {e} <span className="n">{Array.isArray(v) ? v.length : v}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function Composer({ placeholder, onSend, context, onClearContext }) {
   const [text, setText] = useState('')
   const ref = useRef(null)
-  useEffect(() => { if (autoFocus) ref.current?.focus() }, [autoFocus])
-  const grow = (t) => { t.style.height = 'auto'; t.style.height = `${Math.min(t.scrollHeight, 140)}px` }
+  useEffect(() => { ref.current?.focus() }, [])
+  const grow = (t) => { t.style.height = 'auto'; t.style.height = `${Math.min(t.scrollHeight, 168)}px` }
   const send = () => {
     const v = text.trim()
     if (!v) return
@@ -91,48 +76,20 @@ function Composer({ placeholder, onSend, context, onClearContext, autoFocus }) {
     requestAnimationFrame(() => ref.current && grow(ref.current))
   }
   return (
-    <div className="vm-composer">
-      {context && (
-        <div className="vm-composer__context">
-          <Megaphone size={14} aria-hidden="true" /> Private reply to <b>{context}</b>
-          <button type="button" aria-label="Remove" onClick={onClearContext}><X size={14} /></button>
-        </div>
-      )}
-      <div className="vm-composer__row">
+    <div className="composer-wrap">
+      <div className="composer">
+        {context && (
+          <div className="priv-note"><Icon name="megaphone" size={12} /> Private reply to “{context}”
+            <button className="link" style={{ marginLeft: 'auto' }} onClick={onClearContext}>Remove</button></div>
+        )}
         <textarea
-          ref={ref} rows={1} value={text} placeholder={placeholder} aria-label={placeholder}
+          ref={ref} rows={2} value={text} placeholder={placeholder} aria-label={placeholder}
           onChange={(e) => { setText(e.target.value); grow(e.target) }}
           onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send() } }}
         />
-        <button type="button" className={`vm-send ${text.trim() ? 'is-ready' : ''}`} onClick={send} aria-label="Send" disabled={!text.trim()}>
-          <ArrowUp size={16} strokeWidth={2.25} />
-        </button>
+        <div className="comp-bar"><div className="grow" /><Button color="primary" size="sm" onClick={send}>Send</Button></div>
       </div>
     </div>
-  )
-}
-
-function ThreadPanel({ title, root, replies, onReply, onClose, note }) {
-  const scroll = useRef(null)
-  useLayoutEffect(() => { if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight }, [replies.length])
-  return (
-    <aside className="vm-thread" aria-label="Thread">
-      <header className="vm-thread__head">
-        <div><b className="text-label-1">Thread</b><span className="text-label-2">{title}</span></div>
-        <button type="button" className="vm-icon-btn" onClick={onClose} aria-label="Close thread"><X size={16} /></button>
-      </header>
-      <div className="vm-thread__scroll" ref={scroll}>
-        {root}
-        <div className="vm-thread__count">{replies.length} {replies.length === 1 ? 'reply' : 'replies'}</div>
-        {replies.map((r, i) => (
-          <div className="vm-tmsg" key={i}>
-            <Face id={r.who} size={28} />
-            <div><div className="vm-tmsg__meta"><b>{r.who === 'me' ? 'You' : who(r.who).name}</b><time>{r.time}</time></div><p>{r.text}</p></div>
-          </div>
-        ))}
-      </div>
-      {note ? <p className="vm-thread__note">{note}</p> : <Composer placeholder="Reply in thread…" onSend={onReply} autoFocus />}
-    </aside>
   )
 }
 
@@ -145,14 +102,11 @@ export default function VolunteerMessages() {
   const [activeConvo, setActiveConvo] = useState(messages.convos[0]?.id)
   const [activeGroup, setActiveGroup] = useState(() => (params.get('ann') && messages.groups.find((g) => g.anns.some((a) => a.id === params.get('ann')))?.id) || messages.groups[0]?.id)
   const [q, setQ] = useState('')
-  const [thread, setThread] = useState(null) // { kind: 'msg' | 'ann', id }
+  const [filter, setFilter] = useState('all')
   const [newFrom, setNewFrom] = useState(null) // { id, n } → "New" divider position
   const [composing, setComposing] = useState(false)
   const [reAnn, setReAnn] = useState(null) // { convoId, title } private reply context
-  const [typing, setTyping] = useState(null) // convo id where a coordinator is typing
   const [flash, setFlash] = useState(params.get('ann'))
-  const [prefOpen, setPrefOpen] = useState(false)
-  const prefRef = useRef(null)
   const streamRef = useRef(null)
   const viewing = useRef({}); viewing.current = { tab, activeConvo, composing }
 
@@ -166,7 +120,7 @@ export default function VolunteerMessages() {
   const setMsg = (cid, mid, fn) => setConvo(cid, (c) => ({ ...c, msgs: c.msgs.map((x) => (x.id === mid ? fn(x) : x)) }))
   const setAnn = (gid, aid, fn) => setGroup(gid, (g) => ({ ...g, anns: g.anns.map((x) => (x.id === aid ? fn(x) : x)) }))
 
-  // Opening something marks it read, remembering where the unread run started (Slack-style "New" line)
+  // Opening something marks it read, remembering where the unread run started ("New" divider)
   const openItem = tab === 'messages' ? (composing ? null : convo) : group
   useEffect(() => {
     if (!openItem || !openItem.unread) return
@@ -174,34 +128,32 @@ export default function VolunteerMessages() {
     ;(tab === 'messages' ? setConvo : setGroup)(openItem.id, (x) => ({ ...x, unread: 0 }))
   }, [openItem?.id, tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Keep the stream pinned to the newest message; a deep-linked announcement scrolls into view instead
-  const streamLen = tab === 'messages' ? (convo?.msgs.length ?? 0) + (typing === activeConvo ? 1 : 0) : group?.anns.length ?? 0
+  // Keep the stream at the newest message; a linked announcement scrolls into view instead
+  const streamLen = tab === 'messages' ? convo?.msgs.length ?? 0 : group?.anns.length ?? 0
   useLayoutEffect(() => {
     const s = streamRef.current
     if (!s) return
     const target = flash && s.querySelector(`[data-ann="${flash}"]`)
-    if (target) s.scrollTop = target.offsetTop - 24
-    else s.scrollTop = s.scrollHeight
+    s.scrollTop = target ? target.offsetTop - 24 : s.scrollHeight
   }, [tab, activeConvo, activeGroup, streamLen, composing]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // A link to a specific announcement (dashboard "View message", notifications) works even while you're here
+  // Links to a specific announcement (dashboard "View message") work even while you're here
   const annParam = params.get('ann')
   useEffect(() => {
     if (!annParam) return
     const g = messages.groups.find((x) => x.anns.some((a) => a.id === annParam))
     if (!g) return
-    setTab('announcements'); setComposing(false); setThread(null); setActiveGroup(g.id); setFlash(annParam)
+    setTab('announcements'); setComposing(false); setActiveGroup(g.id); setFlash(annParam)
   }, [annParam]) // eslint-disable-line react-hooks/exhaustive-deps
-
   useEffect(() => {
     if (!flash) return undefined
     const t = setTimeout(() => { setFlash(null); setParams({}, { replace: true }) }, 1800)
     return () => clearTimeout(t)
   }, [flash]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const switchTab = (t) => { setTab(t); setThread(null); setComposing(false); setNewFrom(null) }
-  const pickConvo = (id) => { setActiveConvo(id); setComposing(false); setThread(null); setNewFrom(null); if (reAnn?.convoId !== id) setReAnn(null) }
-  const pickGroup = (id) => { setActiveGroup(id); setThread(null); setNewFrom(null) }
+  const switchTab = (t) => { setTab(t); setComposing(false); setNewFrom(null); if (t === 'announcements' && filter === 'direct') setFilter('all') }
+  const pickConvo = (id) => { setActiveConvo(id); setComposing(false); setNewFrom(null); if (reAnn?.convoId !== id) setReAnn(null) }
+  const pickGroup = (id) => { setActiveGroup(id); setNewFrom(null) }
 
   // Start (or reopen) a 1:1 with a coordinator
   const openDirect = (staffId, context) => {
@@ -211,7 +163,7 @@ export default function VolunteerMessages() {
       id = uid('c')
       updateMessages((s) => ({ ...s, convos: [{ id, who: [staffId], unread: 0, last: 'Now', msgs: [] }, ...s.convos] }))
     }
-    setTab('messages'); setComposing(false); setThread(null); setNewFrom(null)
+    setTab('messages'); setComposing(false); setNewFrom(null)
     setActiveConvo(id)
     setReAnn(context ? { convoId: id, title: context } : null)
   }
@@ -223,22 +175,18 @@ export default function VolunteerMessages() {
     updateMessages((s) => ({ ...s, convos: [{ ...s.convos.find((x) => x.id === c.id), last: 'Now' }, ...s.convos.filter((x) => x.id !== c.id)].map((x) => (x.id === c.id ? { ...x, msgs: [...x.msgs, msg] } : x)) }))
     setReAnn(null)
     setNewFrom(null)
-    const solo = c.who.length === 1
-    if (solo) {
-      // The coordinator sees it, types, and answers
+    if (c.who.length === 1) {
+      // The coordinator sees it and answers
       const staff = c.who[0]
       setTimeout(() => setMsg(c.id, mid, (x) => ({ ...x, status: 'seen' })), 900)
-      setTimeout(() => setTyping(c.id), 1300)
       setTimeout(() => {
-        setTyping(null)
         const pool = AUTO_REPLIES[staff] || ['Thanks!']
         const reply = { id: uid('m'), from: staff, day: 'Today', time: 'Just now', text: pool[Math.floor(Math.random() * pool.length)], reacts: {}, replies: [] }
         const here = viewing.current.tab === 'messages' && !viewing.current.composing && viewing.current.activeConvo === c.id
         setConvo(c.id, (x) => ({ ...x, msgs: [...x.msgs, reply], unread: here ? 0 : x.unread + 1 }))
         if (!here) showToast({ variant: 'default', image: who(staff).photo, parts: [[who(staff).name, true], [' replied', false]], preview: `“${reply.text}”`, time: 'Now', category: 'Messages' })
-      }, 3200)
+      }, 2600)
     } else {
-      // Someone in the group reacts
       const reactor = c.who[1] || c.who[0]
       setTimeout(() => setMsg(c.id, mid, (x) => ({ ...x, status: 'seen', reacts: { ...x.reacts, '👍': [reactor] } })), 1600)
     }
@@ -255,254 +203,175 @@ export default function VolunteerMessages() {
     const mine = a.mine.includes(e)
     return { ...a, reacts: { ...a.reacts, [e]: (a.reacts[e] || 0) + (mine ? -1 : 1) }, mine: mine ? a.mine.filter((x) => x !== e) : [...a.mine, e] }
   })
-  const replyIn = (text) => {
-    const r = { who: 'me', time: 'Just now', text }
-    if (thread.kind === 'msg') setMsg(activeConvo, thread.id, (x) => ({ ...x, replies: [...x.replies, r] }))
-    else setAnn(activeGroup, thread.id, (a) => ({ ...a, replies: [...a.replies, r] }))
-  }
-
-  const setPref = (v) => {
-    updateMessages((s) => ({ ...s, reachPref: v }))
-    setPrefOpen(false)
-    showToast({ variant: 'success', parts: [['Saved. ', true], [REACH_PREFS[v][0], false]], time: 'Now', category: 'Messages' })
-  }
 
   /* ---------- list column ---------- */
   const needle = q.trim().toLowerCase()
-  const convoRows = messages.convos.filter((c) => !needle || convoName(c).toLowerCase().includes(needle) || (lastMsg(c)?.text || '').toLowerCase().includes(needle))
-  const groupRows = messages.groups.filter((g) => !needle || g.name.toLowerCase().includes(needle))
-
   const preview = (c) => {
     const m = lastMsg(c)
     if (!m) return 'No messages yet'
     const by = m.from === 'me' ? 'You: ' : c.who.length > 1 ? `${who(m.from).first}: ` : ''
     return by + (m.event && !m.text ? `Shared ${eventsById[m.event]?.title}` : m.text)
   }
+  const convoRows = messages.convos
+    .filter((c) => (filter !== 'unread' || c.unread || c.id === activeConvo) && (filter !== 'direct' || c.who.length === 1))
+    .filter((c) => !needle || convoName(c).toLowerCase().includes(needle) || preview(c).toLowerCase().includes(needle))
+  const groupRows = messages.groups
+    .filter((g) => filter !== 'unread' || g.unread || g.id === activeGroup)
+    .filter((g) => !needle || g.name.toLowerCase().includes(needle))
 
-  /* ---------- conversation pane ---------- */
+  const TabLabel = ({ label, n }) => <>{label}{n ? <span className="tab-badge" aria-label={`${n} unread`}>{n}</span> : null}</>
+
+  /* ---------- conversation ---------- */
   const renderConvo = () => {
-    if (!convo) return <div className="vm-empty">Pick a conversation</div>
+    if (!convo) return <div className="stream-empty" style={{ margin: 'auto' }}>Select a conversation</div>
     const solo = convo.who.length === 1
-    const head = solo ? who(convo.who[0]) : null
-    const ni = newFrom?.id === convo.id ? convo.msgs.length - convo.msgs.filter((x, i) => i >= convo.msgs.length - newFrom.n).length : -1
+    const ni = newFrom?.id === convo.id ? convo.msgs.length - newFrom.n : -1
     let prevDay = null
-    const threadMsg = thread?.kind === 'msg' && convo.msgs.find((x) => x.id === thread.id)
     return (
       <>
-        <header className="vm-pane__head">
-          {solo ? <Face id={convo.who[0]} size={40} /> : <span className="vm-stack">{convo.who.slice(0, 2).map((w) => <Face key={w} id={w} size={30} />)}</span>}
-          <div>
-            <h2 className="vm-pane__title">{convoName(convo)}</h2>
-            <p className="vm-pane__sub text-label-2">{solo ? head.role : `${convo.who.length + 1} people · Added by ${who(convo.addedBy).first}`}</p>
-          </div>
+        <header className="conv-head">
+          {solo ? <Av id={convo.who[0]} className="lg" /> : <span className="av-stack lg">{convo.who.slice(0, 2).map((w) => <Av key={w} id={w} />)}</span>}
+          <div><div className="h3">{convoName(convo)}</div><div className="sub">{solo ? who(convo.who[0]).role : `${convo.who.map((w) => who(w).first).join(', ')} · Group message`}</div></div>
         </header>
-        <div className="vm-pane__body">
-          <div className="vm-col">
-            <div className="vm-stream" ref={streamRef}>
-              {convo.msgs.length === 0 && (
-                <div className="vm-start">
-                  <Face id={convo.who[0]} size={56} />
-                  <h3 className="text-subheading">Message {who(convo.who[0]).first}</h3>
-                  <p className="text-label-2">{who(convo.who[0]).role}. Messages arrive in their inbox; replies show up here.</p>
-                </div>
-              )}
+        <div className="conv-body">
+          <div className="stream-col">
+            <div className="stream" id="stream" ref={streamRef}>
+              {convo.msgs.length === 0 && <div className="stream-empty" style={{ margin: 'auto' }}>Say hello to {who(convo.who[0]).first}. Replies show up here.</div>}
               {convo.msgs.map((m, i) => {
                 const me = m.from === 'me'
                 const showDay = m.day !== prevDay
                 prevDay = m.day
                 const prev = convo.msgs[i - 1]
-                const cont = !showDay && prev && prev.from === m.from && i !== ni
-                const p = who(m.from)
+                const cont = !showDay && i !== ni && prev && prev.from === m.from
                 return (
                   <Fragment key={m.id}>
-                    {showDay && <div className="vm-day">{m.day}</div>}
-                    {i === ni && <div className="vm-new" role="separator"><span>New</span></div>}
-                    <div className={`vm-msg ${me ? 'vm-msg--me' : ''} ${cont ? 'vm-msg--cont' : ''} ${m.time === 'Just now' ? 'is-fresh' : ''}`}>
-                      <span className="vm-msg__av">{!cont && <Face id={m.from} size={32} />}</span>
-                      <div className="vm-msg__col">
-                        {!cont && <div className="vm-msg__meta"><b>{me ? 'You' : p.name}</b>{!me && !solo && p.staff && <span className="vm-staff">Coordinator</span>}<time>{m.time}</time></div>}
-                        {m.reAnn && <div className="vm-msg__re"><Megaphone size={12} aria-hidden="true" /> Private reply to “{m.reAnn}”</div>}
-                        {m.text && (
-                          <div className="vm-bubble">
-                            {m.subject && <b className="vm-bubble__subj">{m.subject}</b>}
-                            {m.text}
-                          </div>
-                        )}
-                        {m.event && <EventAttachment id={m.event} />}
-                        <div className="vm-msg__foot">
-                          {m.emailed && <span className="vm-via" title={`${p.first} also emailed this to maureen.lee@gmail.com`}><Mail size={14} aria-hidden="true" /> Also sent to your email</span>}
-                          {me && m.status && <span className="vm-status">{m.status === 'seen' ? 'Seen' : 'Sent'}</span>}
+                    {showDay && <div className="day-div">{m.day}</div>}
+                    {i === ni && <div className="new-div" role="separator"><span>New</span></div>}
+                    <div className={`msg ${me ? 'me' : ''} ${cont ? 'cont' : ''} ${m.time === 'Just now' ? 'is-new-msg' : ''}`}>
+                      {!me && <Av id={m.from} />}
+                      <div className="msg-col">
+                        <div className="msg-tools" role="toolbar" aria-label="Message actions">
+                          <button className="icon-btn plain" onClick={() => toggleMsgReact(m.id, '👍')} aria-label="React with thumbs up"><Icon name="smile" size={16} /></button>
                         </div>
-                        <ReactBar reacts={m.reacts} mine={[]} onToggle={(e) => toggleMsgReact(m.id, e)} labelFor={(v) => v.map((w) => (w === 'me' ? 'You' : who(w).first)).join(', ')} />
-                        {m.replies.length > 0 && (
-                          <button type="button" className="vm-thread-link" onClick={() => setThread({ kind: 'msg', id: m.id })}>
-                            <span className="vm-stack sm">{[...new Set(m.replies.map((r) => r.who))].slice(0, 3).map((w) => <Face key={w} id={w} size={20} />)}</span>
-                            <b>{m.replies.length} {m.replies.length === 1 ? 'reply' : 'replies'}</b><span>View thread</span>
-                          </button>
-                        )}
+                        {!me && !cont && !solo && <div className="msg-name">{who(m.from).name}</div>}
+                        {m.reAnn && <div className="msg-re"><Icon name="megaphone" size={12} /> Private reply to your announcement · {m.reAnn}</div>}
+                        {m.text && <div className={`bubble ${m.subject ? 'email' : ''}`}>{m.subject && <span className="subj">{m.subject}</span>}{m.text}</div>}
+                        {m.event && <div style={{ marginTop: 8, width: '100%', minWidth: 360 }}><EventCard id={m.event} /></div>}
+                        <div className="msg-time">
+                          {m.emailed && <span className="via"><Icon name="mail" size={14} /> Also sent to your email</span>}
+                          {m.time}{me && m.status && <span className="st"> · {m.status === 'seen' ? 'Seen' : 'Sent'}</span>}
+                        </div>
+                        <Reacts reacts={m.reacts} onToggle={(e) => toggleMsgReact(m.id, e)} />
                       </div>
-                      {!solo && (
-                        <div className="vm-msg__tools">
-                          <button type="button" className="vm-icon-btn" onClick={() => setThread({ kind: 'msg', id: m.id })} aria-label="Reply in thread" title="Reply in thread"><MessageSquareReply size={16} /></button>
-                        </div>
-                      )}
                     </div>
                   </Fragment>
                 )
               })}
-              {typing === convo.id && (
-                <div className="vm-msg is-fresh"><span className="vm-msg__av"><Face id={convo.who[0]} size={32} /></span>
-                  <div className="vm-typing" aria-label={`${who(convo.who[0]).first} is typing`}><i /><i /><i /></div></div>
-              )}
             </div>
             <Composer
               key={convo.id}
-              placeholder={solo ? `Message ${who(convo.who[0]).first}` : `Message ${convoName(convo)}`}
+              placeholder="Write a message…"
               onSend={send}
-              autoFocus
               context={reAnn?.convoId === convo.id ? reAnn.title : null}
               onClearContext={() => setReAnn(null)}
             />
           </div>
-          {threadMsg && (
-            <ThreadPanel
-              title={convoName(convo)} replies={threadMsg.replies} onReply={replyIn} onClose={() => setThread(null)}
-              root={<div className="vm-tmsg vm-tmsg--root"><Face id={threadMsg.from} size={28} /><div><div className="vm-tmsg__meta"><b>{threadMsg.from === 'me' ? 'You' : who(threadMsg.from).name}</b><time>{threadMsg.time}</time></div><p>{threadMsg.text}</p></div></div>}
-            />
-          )}
         </div>
       </>
     )
   }
 
+  // New message: coordinators only (same guided empty state as the manager's compose screen)
   const renderNew = () => (
     <>
-      <header className="vm-pane__head"><div><h2 className="vm-pane__title">New message</h2><p className="vm-pane__sub text-label-2">Choose a coordinator</p></div>
-        <button type="button" className="vm-icon-btn" style={{ marginLeft: 'auto' }} onClick={() => setComposing(false)} aria-label="Cancel"><X size={18} /></button></header>
-      <div className="vm-new-msg">
-        <p className="text-body">You can message Dress for Success coordinators directly. Group chats for events are started by coordinators, and they’ll add you.</p>
-        <div className="vm-staff-list">
+      <div className="to-field"><label>To:</label><div className="to-chips"><span className="to-input" style={{ color: 'var(--neutral-dark-gray)' }}>Choose a coordinator</span></div>
+        <Button color="secondary" size="sm" onClick={() => setComposing(false)}>Discard</Button></div>
+      <div className="conv-body"><div className="stream-col"><div className="stream cmp-stream"><div className="cmp-wrap"><div className="cmp-empty">
+        <div className="cmp-icon"><Icon name="pen" size={22} /></div>
+        <h3>New message</h3>
+        <p>Message a Dress for Success coordinator. Group chats are started by coordinators, and they’ll add you.</p>
+        <div className="cmp-sugg">
           {STAFF.map((id) => (
-            <button key={id} type="button" className="vm-staff-opt" onClick={() => openDirect(id)}>
-              <Face id={id} size={40} /><span><b>{who(id).name}</b><small>{who(id).role}</small></span><ChevronRight size={18} aria-hidden="true" />
+            <button key={id} className="cmp-opt" onClick={() => openDirect(id)}>
+              <span className="cmp-avs"><Av id={id} /></span>
+              <span className="cmp-txt"><b>{who(id).name}</b><small>{who(id).role}</small></span><Icon name="plus" size={16} />
             </button>
           ))}
         </div>
-      </div>
+      </div></div></div></div></div>
     </>
   )
 
   const renderGroup = () => {
-    if (!group) return <div className="vm-empty">Pick a group</div>
+    if (!group) return <div className="stream-empty" style={{ margin: 'auto' }}>Select a group</div>
     const ni = newFrom?.id === group.id ? group.anns.length - newFrom.n : -1
-    const threadAnn = thread?.kind === 'ann' && group.anns.find((a) => a.id === thread.id)
     return (
       <>
-        <header className="vm-pane__head">
-          <span className="vm-group-ic"><Megaphone size={20} /></span>
-          <div><h2 className="vm-pane__title">{group.name}</h2><p className="vm-pane__sub text-label-2">{group.count} members · Only coordinators post here</p></div>
+        <header className="conv-head">
+          <span className="av lg grp-ic"><Icon name="megaphone" size={20} /></span>
+          <div><div className="h3">{group.name}</div><div className="sub">{group.count} members · Only coordinators post here</div></div>
         </header>
-        <div className="vm-pane__body">
-          <div className="vm-col">
-            <div className="vm-stream vm-stream--posts" ref={streamRef}>
+        <div className="conv-body">
+          <div className="stream-col">
+            <div className="stream posts" id="stream" ref={streamRef}>
               {group.anns.map((a, i) => {
                 const author = who(a.from)
                 return (
                   <Fragment key={a.id}>
-                    {i === ni && <div className="vm-new" role="separator"><span>New</span></div>}
-                    <article className={`vm-post ${flash === a.id ? 'is-flash' : ''}`} data-ann={a.id}>
-                      <header className="vm-post__head">
-                        <Face id={a.from} size={36} />
-                        <div><b className="text-label-1">{author.name}</b><span className="text-label-2">{author.role} · {a.day}, {a.time}</span></div>
-                      </header>
-                      <h3 className="vm-post__title">{a.title}</h3>
-                      <p className="vm-post__body text-body">{a.body}</p>
-                      <ReactBar reacts={a.reacts} mine={a.mine} onToggle={(e) => toggleAnnReact(a.id, e)} />
-                      <footer className="vm-post__foot">
-                        {a.replyMode === 'thread' ? (
-                          <button type="button" className="vm-thread-link" onClick={() => setThread({ kind: 'ann', id: a.id })}>
-                            {a.replies.length > 0 && <span className="vm-stack sm">{[...new Set(a.replies.map((r) => r.who))].slice(0, 3).map((w) => <Face key={w} id={w} size={20} />)}</span>}
-                            <b>{a.replies.length ? `${a.replies.length} ${a.replies.length === 1 ? 'reply' : 'replies'}` : 'Reply in thread'}</b><span>Visible to the group</span>
-                          </button>
-                        ) : (
-                          <button type="button" className="vm-private-btn" onClick={() => openDirect(a.from, a.title)}>
-                            <Lock size={14} aria-hidden="true" /> Reply privately to {author.first}
-                          </button>
-                        )}
-                      </footer>
+                    {i === ni && <div className="new-div" role="separator"><span>New</span></div>}
+                    {(i === 0 || group.anns[i - 1].day !== a.day) && <div className="day-div">{a.day}</div>}
+                    <article className={`post ${flash === a.id ? 'is-new-msg' : ''}`} data-ann={a.id}>
+                      <Av id={a.from} className="post-av" />
+                      <div className="post-main">
+                        <header className="post-head"><b>{author.name}</b><time>{a.time}</time>
+                          {a.replyMode === 'private' && <span className="post-chip"><Icon name="lock" size={12} /> Private replies</span>}
+                        </header>
+                        <div className="post-card"><h3 className="ann-title">{a.title}</h3><div className="ann-body">{a.body}</div></div>
+                        <Reacts reacts={a.reacts} mine={a.mine} onToggle={(e) => toggleAnnReact(a.id, e)} />
+                        <div className="post-foot">
+                          {a.replyMode === 'private'
+                            ? <Button color="secondary" size="sm" onClick={() => openDirect(a.from, a.title)}>Reply privately to {author.first}</Button>
+                            : a.replies.length > 0 && <span className="thread-link" style={{ cursor: 'default' }}><b>{a.replies.length} {a.replies.length === 1 ? 'reply' : 'replies'}</b><span className="last">from the group</span></span>}
+                        </div>
+                      </div>
                     </article>
                   </Fragment>
                 )
               })}
             </div>
           </div>
-          {threadAnn && (
-            <ThreadPanel
-              title={group.name} replies={threadAnn.replies} onReply={replyIn} onClose={() => setThread(null)}
-              root={<div className="vm-tmsg vm-tmsg--root"><Face id={threadAnn.from} size={28} /><div><div className="vm-tmsg__meta"><b>{who(threadAnn.from).name}</b><time>{threadAnn.day}</time></div><p><b>{threadAnn.title}</b><br />{threadAnn.body}</p></div></div>}
-            />
-          )}
         </div>
       </>
     )
   }
 
-  const tabs = [
-    { value: 'messages', label: <>Messages{unreadMsgs ? <span className="vm-tab-badge">{unreadMsgs}</span> : null}</> },
-    { value: 'announcements', label: <>Announcements{unreadAnns ? <span className="vm-tab-badge">{unreadAnns}</span> : null}</> },
-  ]
-
+  const filters = tab === 'messages' ? ['all', 'unread', 'direct'] : ['all', 'unread']
   return (
-    <div className="vm">
-      <PageHeader
-        title="Messages"
-        subtitle="Talk with coordinators and keep up with your event groups."
-        actions={(
-          <>
-            <span className="vm-pref" ref={prefRef}>
-              <button type="button" className="vm-pref__btn text-label-1" aria-expanded={prefOpen} aria-haspopup="dialog" onClick={() => setPrefOpen((o) => !o)}>
-                <Mail size={16} aria-hidden="true" /> Email: {REACH_PREFS[messages.reachPref][2]} <ChevronDown size={16} aria-hidden="true" />
-              </button>
-              <Pop open={prefOpen} onClose={() => setPrefOpen(false)} anchorRef={prefRef} className="vm-pop--pref">
-                <p className="vm-pop__label">How coordinators reach you</p>
-                {Object.entries(REACH_PREFS).map(([v, [title, help]]) => (
-                  <button key={v} type="button" role="menuitemradio" aria-checked={messages.reachPref === v} className={`vm-pref__opt ${messages.reachPref === v ? 'is-on' : ''}`} onClick={() => setPref(v)}>
-                    <span className="vm-pref__check">{messages.reachPref === v && <Check size={14} strokeWidth={2.5} />}</span>
-                    <span><b>{title}</b><small>{help}</small></span>
-                  </button>
-                ))}
-              </Pop>
-            </span>
-            <Button color="primary" onClick={() => { setTab('messages'); setComposing(true); setThread(null) }}>
-              New message
-            </Button>
-          </>
-        )}
-      />
-      <TabNav tabs={tabs} value={tab} onChange={switchTab} label="Messages sections" />
-
-      <div className="vm-frame">
-        <section className="vm-list" aria-label={tab === 'messages' ? 'Conversations' : 'Announcement groups'}>
-          <label className="vm-search">
-            <Search size={16} aria-hidden="true" />
-            <input type="search" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
-          </label>
-          <ul>
+    <div className="msgs">
+        <section className="list-col">
+          <div className="list-head">
+            <div className="row"><h1 className="h1">Messages</h1><Button color="primary" size="sm" onClick={() => { setTab('messages'); setComposing(true) }}>Compose</Button></div>
+            <div id="tabSeg"><TabNav label="Messages sections" value={tab} onChange={switchTab} tabs={[{ value: 'messages', label: <TabLabel label="Message" n={unreadMsgs} /> }, { value: 'announcements', label: <TabLabel label="Announcements" n={unreadAnns} /> }]} /></div>
+            <SearchBar value={q} onChange={setQ} placeholder="Search" label="Search conversations" />
+            <div className="filters">
+              <SubNav label="Filter conversations" value={filter} onChange={setFilter} items={filters.map((f) => ({ value: f, label: f[0].toUpperCase() + f.slice(1) }))} />
+            </div>
+          </div>
+          <ul className="convos" id="convList">
             {tab === 'messages' && composing && (
-              <li><button type="button" className="vm-row is-on"><span className="vm-row__ic"><SquarePen size={18} /></span><span className="vm-row__main"><span className="vm-row__top"><b>New message</b></span><span className="vm-row__prev">Choose a coordinator</span></span></button></li>
+              <li><button className="convo draft-row on"><span className="av list draft-av"><Icon name="pen" size={18} /></span>
+                <span className="convo-main"><span className="convo-top"><span className="convo-name">New message</span><span className="convo-time">Draft</span></span>
+                  <span className="convo-bot"><span className="convo-prev">Choose a coordinator</span></span></span></button></li>
             )}
             {tab === 'messages' && convoRows.map((c) => {
               const m = lastMsg(c)
               return (
                 <li key={c.id}>
-                  <button type="button" className={`vm-row ${!composing && c.id === activeConvo ? 'is-on' : ''} ${c.unread ? 'is-unread' : ''}`} onClick={() => pickConvo(c.id)}>
-                    {c.who.length > 1 ? <span className="vm-stack">{c.who.slice(0, 2).map((w) => <Face key={w} id={w} size={28} />)}</span> : <Face id={c.who[0]} size={40} />}
-                    <span className="vm-row__main">
-                      <span className="vm-row__top"><b>{convoName(c)}</b><time>{c.last}</time></span>
-                      <span className="vm-row__bot">
-                        <span className="vm-row__prev">{m?.emailed && m.from !== 'me' && <Mail size={12} aria-label="Also emailed" />} {preview(c)}</span>
-                        {c.unread > 0 && <span className="vm-badge">{c.unread}</span>}
-                      </span>
+                  <button className={`convo ${!composing && c.id === activeConvo ? 'on' : ''} ${c.unread ? 'unread' : ''}`} onClick={() => pickConvo(c.id)}>
+                    {c.who.length > 1 ? <span className="av-stack">{c.who.slice(0, 2).map((w) => <Av key={w} id={w} />)}</span> : <Av id={c.who[0]} className="list" />}
+                    <span className="convo-main">
+                      <span className="convo-top"><span className="convo-name">{convoName(c)}</span><span className="convo-time">{c.last}</span></span>
+                      <span className="convo-bot"><span className="convo-prev">{m?.emailed && m.from !== 'me' && <><Icon name="mail" size={12} /> </>}{preview(c)}</span>{c.unread ? <span className="badge">{c.unread}</span> : null}</span>
                     </span>
                   </button>
                 </li>
@@ -510,22 +379,21 @@ export default function VolunteerMessages() {
             })}
             {tab === 'announcements' && groupRows.map((g) => (
               <li key={g.id}>
-                <button type="button" className={`vm-row ${g.id === activeGroup ? 'is-on' : ''} ${g.unread ? 'is-unread' : ''}`} onClick={() => pickGroup(g.id)}>
-                  <span className="vm-group-ic sm"><Megaphone size={18} /></span>
-                  <span className="vm-row__main">
-                    <span className="vm-row__top"><b>{g.name}</b><time>{g.last}</time></span>
-                    <span className="vm-row__bot"><span className="vm-row__prev">{g.anns[g.anns.length - 1]?.title}</span>{g.unread > 0 && <span className="vm-badge">{g.unread}</span>}</span>
+                <button className={`convo ${g.id === activeGroup ? 'on' : ''} ${g.unread ? 'unread' : ''}`} onClick={() => pickGroup(g.id)}>
+                  <span className="av list grp-ic"><Icon name="megaphone" size={20} /></span>
+                  <span className="convo-main">
+                    <span className="convo-top"><span className="convo-name">{g.name}</span><span className="convo-time">{g.last}</span></span>
+                    <span className="convo-bot"><span className="convo-prev">{g.anns[g.anns.length - 1]?.title}</span>{g.unread ? <span className="badge">{g.unread}</span> : null}</span>
                   </span>
                 </button>
               </li>
             ))}
-            {(tab === 'messages' ? convoRows : groupRows).length === 0 && <li className="vm-list__empty text-label-2">Nothing matches “{q}”.</li>}
+            {(tab === 'messages' ? convoRows : groupRows).length === 0 && <li className="empty-list">Nothing here{q ? ` for “${q}”` : ''}.</li>}
           </ul>
         </section>
-        <section className="vm-pane">
+        <section className="conv" id="conv">
           {tab === 'messages' ? (composing ? renderNew() : renderConvo()) : renderGroup()}
         </section>
-      </div>
     </div>
   )
 }

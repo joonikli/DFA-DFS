@@ -3,7 +3,6 @@ import { Fragment } from 'react';
 import { Icon } from '../components/Icon.jsx';
 import CalendarKey from '../components/CalendarKey/CalendarKey.jsx';
 import { SHIFTS, SHIFT_DATES, TODAY } from '../data.js';
-import { registrationTime, useRegistration } from './Registration.jsx';
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthKey = (iso) => new Date(`${iso}T12:00`).toLocaleString('en-US', { month: 'long', year: 'numeric' });
@@ -12,17 +11,16 @@ export function myShifts(registered) {
   return [...registered].filter((id) => SHIFT_DATES[id] >= TODAY).sort((a, b) => SHIFT_DATES[a].localeCompare(SHIFT_DATES[b]));
 }
 
-// "Can't make it" now asks via the cancel-registration popup (Registration.jsx › openCancel).
+// "Can't make it" asks via the main app's cancel-registration popup (EventFlows › openCancelRegistration).
 
 function EvItem({ id, flash, onAddCal, onCancel }) {
   const s = SHIFTS[id];
-  const { records } = useRegistration();
   return (
     <div className={`ev-item ${flash ? 'is-new-msg' : ''}`} data-ev={id}>
       <div className="ev-date"><small>{s.mon}</small><b>{s.day}</b></div>
       <div className="ev-main">
         <div className="ev-title">{s.title}</div>
-        <div className="ev-time">{registrationTime(records[id], s.time)}</div>
+        <div className="ev-time">{s.time}</div>
         <div className="ev-meta">
           <span><Icon name="check" size={14} /> You’re registered · {s.roles.split(',')[0]}</span>
           <span><Icon name="pin" size={14} /> {s.addr}</span>
@@ -60,7 +58,7 @@ export function CalendarCard({ cal, registered, recommended, flash, onNav, onDay
         data-tip={tip || undefined}
         onClick={() => onDay(k)}
       >
-        {d}{mine.has(k) ? <i className="dot needs" /> : recs.has(k) ? <i className="dot" /> : null}
+        {d}{mine.has(k) ? <i className="dot reg" /> : recs.has(k) ? <i className="dot" /> : null}
       </button>,
     );
   }
@@ -74,12 +72,12 @@ export function CalendarCard({ cal, registered, recommended, flash, onNav, onDay
     <>
       <div className="cal">
         <div className="cal-head">
-          <button className="icon-btn plain" data-act="cal-nav" data-v="-1" aria-label="Previous month" onClick={() => onNav(-1)}><Icon name="chev-r" size={22} /></button>
+          <button className="icon-btn plain" data-act="cal-nav" data-v="-1" aria-label="Previous month" onClick={() => onNav(-1)}><Icon name="chev-r" size={24} /></button>
           <span className="calendar-title">
             <span>{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
-            <CalendarKey><span><i className="dot needs" /> Signed up</span><span><i className="dot" /> Recommended</span></CalendarKey>
+            <CalendarKey><span><i className="dot reg" /> Signed up</span><span><i className="dot" /> Recommended</span></CalendarKey>
           </span>
-          <button className="icon-btn plain" data-act="cal-nav" data-v="1" aria-label="Next month" onClick={() => onNav(1)}><Icon name="chev-r" size={22} /></button>
+          <button className="icon-btn plain" data-act="cal-nav" data-v="1" aria-label="Next month" onClick={() => onNav(1)}><Icon name="chev-r" size={24} /></button>
         </div>
         <div className="cal-grid cal-dow">{DOW.map((d) => <span key={d}>{d}</span>)}</div>
         <div className="cal-grid">{cells}</div>

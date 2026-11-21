@@ -41,11 +41,33 @@ function formatTime(value) {
   const [h, m] = value.split(':').map(Number)
   return `${pad2(h % 12 || 12)}:${pad2(m)} ${h < 12 ? 'AM' : 'PM'}`
 }
-function timeOptions(step, current) {
+// min / max ("HH:MM", inclusive) limit the list; omitted = the whole day
+function timeOptions(step, current, min = '00:00', max = '23:59') {
   const list = []
-  for (let mins = 0; mins < 24 * 60; mins += step) list.push(`${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`)
+  for (let mins = 0; mins < 24 * 60; mins += step) {
+    const t = `${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`
+    if (t >= min && t <= max) list.push(t)
+  }
   if (current && !list.includes(current)) list.push(current)
   return list.sort()
+}
+/** Typed time → "HH:MM" within min / max, or null. Accepts "6pm", "6:30 pm", "630p", "18:30", "1830".
+    A bare hour ("6") reads as PM when only the PM time fits min / max. */
+function parseTime(text, min = '00:00', max = '23:59') {
+  const match = text.trim().toLowerCase().replace(/\./g, '').match(/^(\d{1,2})(?::?(\d{2}))?\s*([ap])?m?$/)
+  if (!match) return null
+  let h = Number(match[1])
+  const mins = Number(match[2] ?? 0)
+  if (mins > 59) return null
+  if (match[3]) {
+    if (h < 1 || h > 12) return null
+    h = (h % 12) + (match[3] === 'p' ? 12 : 0)
+  } else if (h > 23) return null
+  const fmt = (hours) => `${pad2(hours)}:${pad2(mins)}`
+  const fits = (t) => t >= min && t <= max
+  let t = fmt(h)
+  if (!match[3] && h >= 1 && h < 12 && !fits(t) && fits(fmt(h + 12))) t = fmt(h + 12)
+  return fits(t) ? t : null
 }
 
 /**
@@ -53,15 +75,37 @@ function timeOptions(step, current) {
  * No Figma frame for the open state, so the list reuses the app's menu panel
  * (tag picker / avatar menu) instead of the browser's native time popup.
  * Value is "HH:MM"; onChange receives an input-like event ({ target: { value } }).
+ * Optional min / max ("HH:MM", inclusive) limit which times the list offers.
+ * `editable` turns the trigger into a text box: type a time ("6pm", "18:30") or pick one from
+ * the list. A typed time is applied on Enter / leaving the field; one that can't be read or is
+ * outside min / max reverts to the last valid time. Clearing the text clears the value.
  */
-export function TimeField({ showIcon = true, value = '', onChange, step = 15, name, required, className = '', ...rest }) {
+export function TimeField({ showIcon = true, value = '', onChange, step = 15, min, max, editable = false, name, required, className = '', ...rest }) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
   const ref = useRef(null)
   const listRef = useRef(null)
   const triggerRef = useRef(null)
   const listId = useId()
-  const options = useMemo(() => timeOptions(step, value), [step, value])
+  const options = useMemo(() => timeOptions(step, value, min, max), [step, value, min, max])
+  // Editable mode: text in the box while typing; shows the formatted value otherwise
+  const [draft, setDraft] = useState(formatTime(value))
+  const typing = useRef(false)
+  useEffect(() => {
+    if (!typing.current) setDraft(formatTime(value))
+  }, [value])
+  const emit = (next) => onChange?.({ target: { value: next, name, type: 'time' } })
+  function commit(text) {
+    typing.current = false
+    if (!text.trim()) {
+      if (value) emit('')
+      setDraft('')
+      return
+    }
+    const t = parseTime(text, min, max)
+    if (t && t !== value) emit(t)
+    setDraft(formatTime(t || value))
+  }
   // Outside-click dismiss. Capture phase because Modal stops mousedown from
   // bubbling, which would hide it from a document-level bubble listener.
   // (Escape is handled in onKeyDown so it doesn't also close the modal.)
@@ -78,7 +122,9 @@ export function TimeField({ showIcon = true, value = '', onChange, step = 15, na
     setOpen(true)
   }
   function pick(next) {
-    onChange?.({ target: { value: next, name, type: 'time' } })
+    typing.current = false
+    emit(next)
+    setDraft(formatTime(next))
     setOpen(false)
     triggerRef.current?.focus()
   }
@@ -104,7 +150,41 @@ export function TimeField({ showIcon = true, value = '', onChange, step = 15, na
     }
   }, [open, active])
 
+  // Editable: arrows move through the list (and fill the box), Enter applies the text.
+  // Space / Home / End stay with the text box.
+  function onEditKeyDown(e) {
+    const last = options.length - 1
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (!open) return show()
+      const next = e.key === 'ArrowDown' ? Math.min(active + 1, last) : Math.max(active - 1, 0)
+      setActive(next)
+      typing.current = true
+      setDraft(formatTime(options[next]))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      commit(draft)
+      setOpen(false)
+    } else if (e.key === 'Escape' && open) {
+      e.stopPropagation()
+      setOpen(false)
+    } else if (e.key === 'Tab') {
+      setOpen(false)
+    }
+  }
+  function onType(e) {
+    const text = e.target.value
+    typing.current = true
+    setDraft(text)
+    // Highlight the closest listed time to what's been typed so far
+    const t = parseTime(text, min, max)
+    const index = t ? options.findIndex((o) => o >= t) : -1
+    if (index >= 0) setActive(index)
+    if (!open) setOpen(true)
+  }
+
   function onKeyDown(e) {
+    if (editable) return onEditKeyDown(e)
     const last = options.length - 1
     if (!open) {
       if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
@@ -131,6 +211,34 @@ export function TimeField({ showIcon = true, value = '', onChange, step = 15, na
 
   return (
     <span className={`time-field ${className}`} ref={ref} onKeyDown={onKeyDown}>
+      {editable ? (
+        <span className="field field--time field--time-edit text-body" onMouseDown={(e) => e.target === e.currentTarget && e.preventDefault()} onClick={() => triggerRef.current?.focus()}>
+          {showIcon && <Clock size={16} strokeWidth={2} aria-hidden="true" />}
+          <input
+            ref={triggerRef}
+            type="text"
+            inputMode="text"
+            autoComplete="off"
+            className="field--time__input"
+            placeholder="--:-- --"
+            value={draft}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={open}
+            aria-controls={listId}
+            aria-required={required || undefined}
+            aria-activedescendant={open && active >= 0 ? `${listId}-${active}` : undefined}
+            onChange={onType}
+            onClick={() => !open && show()}
+            onBlur={(e) => {
+              if (ref.current?.contains(e.relatedTarget)) return
+              setOpen(false)
+              commit(draft)
+            }}
+            {...rest}
+          />
+        </span>
+      ) : (
       <button
         type="button"
         ref={triggerRef}
@@ -147,6 +255,7 @@ export function TimeField({ showIcon = true, value = '', onChange, step = 15, na
         {showIcon && <Clock size={16} strokeWidth={2} aria-hidden="true" />}
         <span className="field--time__value">{formatTime(value) || '--:-- --'}</span>
       </button>
+      )}
       {open && (
         <ul className="time-field__menu" role="listbox" id={listId} ref={listRef} aria-label={rest['aria-label']}>
           {options.map((t, i) => (

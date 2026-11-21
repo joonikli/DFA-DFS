@@ -11,10 +11,10 @@ import './Modal.css'
  * @param {string} [title]     Heading 2 title; omit for popups whose header is custom
  * @param {ReactNode} [subtitle]
  */
-export default function Modal({ open, onClose, title, subtitle, width = 750, padding = '24px 28px 32px', children, footer }) {
+export default function Modal({ open, onClose, title, subtitle, width = 750, padding = '24px 28px 32px', children, footer, showClose = true, transitionName, onEscape, label }) {
   useEffect(() => {
     if (!open) return
-    const onKey = (e) => e.key === 'Escape' && onClose()
+    const onKey = (e) => e.key === 'Escape' && !e.defaultPrevented && (onEscape || onClose)()
     window.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -22,7 +22,7 @@ export default function Modal({ open, onClose, title, subtitle, width = 750, pad
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
     }
-  }, [open, onClose])
+  }, [open, onClose, onEscape])
 
   if (!open) return null
 
@@ -32,16 +32,17 @@ export default function Modal({ open, onClose, title, subtitle, width = 750, pad
         className="modal"
         role="dialog"
         aria-modal="true"
-        aria-label={typeof title === 'string' ? title : undefined}
-        style={{ width, padding }}
+        aria-label={label || (typeof title === 'string' ? title : undefined)}
+        style={{ width, padding, viewTransitionName: transitionName }}
+        data-survey-step={transitionName ? '' : undefined}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="modal__header">
+        {(title || showClose) && <div className="modal__header">
           {title ? <h2 className="text-heading-2">{title}</h2> : <span />}
-          <button type="button" className="modal__close" onClick={onClose} aria-label="Close">
+          {showClose && <button type="button" className="modal__close" onClick={onClose} aria-label="Close">
             <X size={24} strokeWidth={1.75} />
-          </button>
-        </div>
+          </button>}
+        </div>}
         {subtitle && <div className="modal__subtitle text-body">{subtitle}</div>}
         <div className="modal__body">{children}</div>
         {footer && <div className="modal__footer">{footer}</div>}

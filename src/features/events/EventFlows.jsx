@@ -29,16 +29,18 @@ function longTime(d) {
 const ampm = (d) => (d.getHours() < 12 ? 'am' : 'pm')
 
 /* ---------- event-registration-popup (Figma 2324:49791) ---------- */
-function RegistrationPopup({ event, onClose }) {
-  const { register, showToast } = useDemo()
+// `editing` reopens the same form filled with the saved details ("Edit registration").
+function RegistrationPopup({ event, editing = false, onClose }) {
+  const { volunteer, register, updateRegistration, showToast } = useDemo()
   const p = PERSONAS.volunteer
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => ({
     contact: 'phone',
     from: toTimeInput(event.start),
     to: toTimeInput(event.end),
     notes: '',
     notify: false,
-  })
+    ...(editing ? volunteer.registrations[event.id] : null),
+  }))
   const [error, setError] = useState('')
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
 
@@ -50,14 +52,25 @@ function RegistrationPopup({ event, onClose }) {
       setError('Choose a start time that is before your end time.')
       return
     }
-    register(event.id, form)
-    showToast({
-      variant: 'success',
-      parts: [['Registered!', true]],
-      preview: `${event.title} is now in your Registered events.`,
-      time: 'Now',
-      category: 'Event',
-    })
+    if (editing) {
+      updateRegistration(event.id, form)
+      showToast({
+        variant: 'success',
+        parts: [['Registration updated', true]],
+        preview: `Your details for ${event.title} were saved.`,
+        time: 'Now',
+        category: 'Event',
+      })
+    } else {
+      register(event.id, form)
+      showToast({
+        variant: 'success',
+        parts: [['Registered!', true]],
+        preview: `${event.title} is now in your Registered events.`,
+        time: 'Now',
+        category: 'Event',
+      })
+    }
     onClose()
   }
 
@@ -66,10 +79,10 @@ function RegistrationPopup({ event, onClose }) {
       open
       onClose={onClose}
       width={750}
-      title={`${event.title} Registration`}
+      title={editing ? `Edit ${event.title} Registration` : `${event.title} Registration`}
       subtitle={
         <>
-          Registering for event on{' '}
+          {editing ? 'Registered for event on' : 'Registering for event on'}{' '}
           <strong>
             {MONTHS[event.start.getMonth()]} {event.start.getDate()}, {range}
           </strong>{' '}
@@ -126,7 +139,7 @@ function RegistrationPopup({ event, onClose }) {
           <Button color="tertiary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">Register</Button>
+          <Button type="submit">{editing ? 'Save changes' : 'Register'}</Button>
         </div>
       </form>
     </Modal>
@@ -135,8 +148,8 @@ function RegistrationPopup({ event, onClose }) {
 
 /* ---------- Cancel-registration confirm ----------
    No Figma frame for this one, so it reuses the registration popup's shell,
-   header and footer (tertiary "keep" left, primary action right). */
-function CancelRegistrationPopup({ event, onClose }) {
+   header and footer (tertiary "edit" left, primary action right). */
+function CancelRegistrationPopup({ event, onClose, onEdit }) {
   const { unregister, showToast } = useDemo()
   const range = `${longTime(event.start)} - ${longTime(event.end)} ${ampm(event.end)}`
   function confirm() {
@@ -169,8 +182,8 @@ function CancelRegistrationPopup({ event, onClose }) {
         Your spot will open up for another volunteer. You can register again while spots are available.
       </p>
       <div className="modal__footer">
-        <Button color="tertiary" onClick={onClose} autoFocus>
-          Keep registration
+        <Button color="tertiary" onClick={onEdit} autoFocus>
+          Edit registration
         </Button>
         <Button onClick={confirm}>Cancel registration</Button>
       </div>
@@ -362,7 +375,7 @@ function Toaster() {
 }
 
 export function EventFlowsProvider({ children }) {
-  const [flow, setFlow] = useState(null) // { kind: 'register'|'cancel'|'unsave'|'survey'|'thanks'|'response', event }
+  const [flow, setFlow] = useState(null) // { kind: 'register'|'edit'|'cancel'|'unsave'|'survey'|'thanks'|'response', event }
   const close = () => setFlow(null)
   const { volunteer, toggleSaved, showToast } = useDemo()
   const savedRef = useRef(volunteer.saved)
@@ -392,7 +405,10 @@ export function EventFlowsProvider({ children }) {
     <FlowContext.Provider value={api}>
       {children}
       {flow?.kind === 'register' && <RegistrationPopup event={flow.event} onClose={close} />}
-      {flow?.kind === 'cancel' && <CancelRegistrationPopup event={flow.event} onClose={close} />}
+      {flow?.kind === 'edit' && <RegistrationPopup key="edit" event={flow.event} editing onClose={close} />}
+      {flow?.kind === 'cancel' && (
+        <CancelRegistrationPopup event={flow.event} onClose={close} onEdit={() => setFlow({ kind: 'edit', event: flow.event })} />
+      )}
       {flow?.kind === 'unsave' && <UnsavePopup event={flow.event} onClose={close} />}
       {flow?.kind === 'survey' && <RouterSurveyPopup event={flow.event} onClose={close} />}
       {flow?.kind === 'response' && <SurveyResponsePopup event={flow.event} onClose={close} />}

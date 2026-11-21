@@ -6,7 +6,8 @@ import { Icon } from '../../components/Icon.jsx';
 import { LineChart } from '../../components/LineChart.jsx';
 import { usePop, usePopClose } from '../../components/ui.jsx';
 import { useNotBuilt } from '../../components/Shell.jsx';
-import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, GRANTS, GRANTS_MORE, LOCATIONS, TODAY } from '../../data.js';
+import { SURVEY, HOURS, PARTICIPATION, PARTICIPATION_MORE, LOCATIONS, SHIFTS, TODAY } from '../../data.js';
+import { grants as grantsData, impactReport } from '../../mock/grants.js';
 import { reducedMotion } from '../../lib/store.js';
 import { useMsgShift } from './hooks.js';
 import { navigate } from '../../lib/router.js';
@@ -81,9 +82,9 @@ function ExecCard() {
       <p id="execText" ref={textRef}>{EXEC[shown]}</p>
       <button className="link" aria-expanded={D.execOpen} aria-controls="execMore" onClick={() => { D.execOpen = !D.execOpen; bump(); }}>View recommended action items <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.execOpen ? 'open' : ''}`} id="execMore"><div><ul className="actions-list">
-        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in November.</li>
-        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts in spring but none since September.</li>
-        <li><b>Fill the Holiday Suit Drive</b>11 of 24 spots filled for Dec 19. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('hs19')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
+        <li><b>Recruit 6 more drivers</b>Mobile Services is capped by drivers, not demand — 3 routes were cut short in April.</li>
+        <li><b>Re-engage 14 lapsed volunteers</b>They logged 2+ shifts last fall but none since January.</li>
+        <li><b>Fill the Summer Suit Drive</b>{SHIFTS.e15.filled} of {SHIFTS.e15.cap} spots filled for May 30. <button className="link" style={{ color: '#fff', marginTop: 6 }} onClick={() => msgShift('e15')}>Message volunteers <Icon name="arrow-r" size={12} /></button></li>
       </ul></div></div>
     </section>
   );
@@ -108,13 +109,13 @@ function EngageCard() {
 
 function RecCard() {
   return (
-    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q1</h3>
-      <p>Add two Allegheny County routes and a second styling suite; the December cohort has capacity for roughly 180 more hours.</p>
+    <div className="card insight rec" data-card="rec"><div className="eyebrow-n">Recommendations</div><h3>Expand Mobile Services into Q3</h3>
+      <p>Add two Allegheny County routes and a second styling suite; the May cohort has capacity for roughly 180 more hours.</p>
       <button className="link" aria-expanded={D.planOpen} aria-controls="planMore" onClick={() => { D.planOpen = !D.planOpen; bump(); }}>View action plan <Icon name="arrow-r" size={14} /></button>
       <div className={`expand ${D.planOpen ? 'open' : ''}`} id="planMore"><div><ul className="actions-list dark" style={{ gridTemplateColumns: '1fr' }}>
-        <li><b>Jan · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
-        <li><b>Feb · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
-        <li><b>Mar · Open second styling suite</b>Homestead back room, after the spring sort.</li>
+        <li><b>Jun · Confirm two shelter partners</b>McKeesport and Braddock have asked for visits.</li>
+        <li><b>Jul · Train 4 new drivers</b>Andre has offered to lead ride-alongs.</li>
+        <li><b>Aug · Open second styling suite</b>Homestead back room, after the summer sort.</li>
       </ul></div></div>
     </div>
   );
@@ -199,63 +200,66 @@ function ParticipationCard() {
   );
 }
 
-const gInitials = (name) => name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join('');
-const GRANTS_ALL = [...GRANTS, ...GRANTS_MORE];
-// Days from TODAY to a "Mon D" due date (December is 2026, everything else 2027)
-const daysUntil = (due) => {
-  const [mon, day] = due.split(' ');
-  const y = mon === 'Dec' ? 2026 : 2027;
-  const d = new Date(`${mon} ${day}, ${y} 12:00`), t = new Date(`${TODAY}T12:00`);
-  return Math.round((d - t) / 86400000);
-};
-function GrantsCard() {
-  const [hot, setHot] = useState(null);
-  const [tip, setTip] = useState({ on: false, i: null, top: 0 });
-  const list = D.grantsOpen ? GRANTS_ALL : GRANTS;
-  const draft = () => { Object.assign(D.gen, { tpl: 'funder', period: 'q4' }); navigate('report?tpl=funder&period=q4'); };
-  const over = (e) => {
-    const card = e.currentTarget;
-    const row = e.target.closest('.grant[data-g]');
-    if (!row) { setHot(null); setTip((t) => ({ ...t, on: false })); return; }
-    const i = +row.dataset.g;
-    if (i === hot) return;
-    const box = card.getBoundingClientRect(), r = row.getBoundingClientRect();
-    const k = card.offsetWidth / box.width; // undo dashboard zoom
-    setHot(i);
-    setTip({ on: true, i, top: (r.top - box.top + r.height / 2) * k });
-  };
-  const leave = () => { setHot(null); setTip((t) => ({ ...t, on: false })); };
-  const g = tip.i != null ? GRANTS_ALL[tip.i] : null;
-  const days = g ? daysUntil(g.due) : 0;
+// Grants card: leads with the program's wins (the same numbers the Impact report uses, so the
+// dashboard and the grant documents never disagree), then hands off to the Grants page (/grants).
+const IMPACT = Object.fromEntries(impactReport.sections.find((x) => x.table).table.rows.map(([k, v, d]) => [k, { v, d }]));
+const ACCEPTED = grantsData.filter((g) => g.status === 'accepted');
+const AWARDED = ACCEPTED.reduce((n, g) => n + g.amount, 0);
+// Awards adding up over the year (accepted grants by the month they were decided), for the sparkline
+const AWARD_MONTHS = (() => {
+  const by = Array(12).fill(0);
+  ACCEPTED.forEach((g) => { if (g.applied) by[g.applied.getMonth()] += g.amount; });
+  const last = by.reduce((m, v, i) => (v ? i : m), 0);
+  let run = 0;
+  return by.slice(0, last + 1).map((v) => (run += v));
+})();
+function AwardSpark({ values }) {
+  const W = 300, H = 48, max = Math.max(...values), n = values.length;
+  const pts = values.map((v, i) => [(i / (n - 1)) * W, H - 4 - (v / max) * (H - 10)]);
+  const line = pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join('');
+  const [ex, ey] = pts[n - 1];
   return (
-    <section className="card grants-card" data-card="grants" onPointerOver={over} onPointerLeave={leave}>
-      <div className="grants-in">
-        <h2 className="h2">Grant commitments</h2>
-        <div className="card-sub">1,292 of 1,350 match hours delivered.</div>
-        <div className="grant-list" id="grantList">
-          {list.map((gr, i) => {
-            const extra = i >= GRANTS.length;
-            return (
-              <div key={i} className={`grant ${extra ? 'reveal' : ''} ${hot === i ? 'hot' : ''}`} data-g={i} style={extra ? { animationDelay: `${(i - GRANTS.length) * 30}ms` } : undefined}>
-                <span className="g-logo">{gInitials(gr.name)}</span>
-                <div className="g-main"><div className="g-top"><b>{gr.name}</b><span>{gr.due}</span></div><div className="g-sub">{gr.sub}</div>
-                  <div className="g-track"><div className={gr.pct >= 100 ? 'done' : ''} style={{ width: `${Math.min(gr.pct, 100)}%` }} /></div></div>
-              </div>
-            );
-          })}
-          <button className="g-more" onClick={() => { D.grantsOpen = !D.grantsOpen; bump(); }}>{D.grantsOpen ? 'Show less' : `+${GRANTS_MORE.length} more`}</button>
+    <svg className="impact-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label="Grant awards adding up across the year">
+      <path d={`${line}L${W},${H}L0,${H}Z`} className="impact-spark__area" />
+      <path d={line} className="impact-spark__line" vectorEffect="non-scaling-stroke" />
+      <circle cx={ex} cy={ey} r="3.5" className="impact-spark__dot" />
+    </svg>
+  );
+}
+const TO_SUBMIT = grantsData.filter((g) => g.status === 'to_submit').sort((a, b) => a.due - b.due);
+const fmtDue = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const goGrants = (q = '') => navigate(`grants${q}`);
+
+function GrantsCard() {
+  // Research: lead with the number unique to grants (awarded), back it with the two outcomes funders ask
+  // for, keep the one to-do in its own zone, and give the card a single destination (the Grants page).
+  const jobs = IMPACT['Women who secured employment within 6 months'];
+  const served = IMPACT['Women served'];
+  const hrs = IMPACT['Total volunteer hours'];
+  const rows = [['Found jobs within 6 months', jobs.v.match(/\((\d+%)\)/)?.[1] || '61%', jobs.d], ['Women served', served.v, served.d], ['Volunteer hours', hrs.v, hrs.d]];
+  const next = TO_SUBMIT[0];
+  const open = () => goGrants('?status=to_submit');
+  return (
+    <section className="card grants-card impact-card" data-card="grants" onClick={open}
+      role="link" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') open(); }}
+      aria-label={`Grants: $${Math.round(AWARDED / 1000)}K awarded, ${TO_SUBMIT.length} applications to submit${next ? `, next due ${fmtDue(next.due)}` : ''}`}>
+      <div className="impact-in">
+        <h2 className="h2">Grants</h2>
+        <div className="impact-hero">
+          <div className="big">${Math.round(AWARDED / 1000)}K<small>awarded across {ACCEPTED.length} grants</small></div>
         </div>
-      </div>
-      <div className={`g-tip ${tip.on ? "on" : ""}`} id="gTip" aria-hidden="true" style={{ translate: `0 ${tip.top}px` }}>
-        {g && <>
-          <div className="m">{g.name}</div><b>{Math.min(g.pct, 100)}%</b> of commitment
-          <div className="g-tip-row">
-            <span className={`g-status ${g.pct >= 100 ? 'met' : g.pct < 60 ? 'behind' : g.pct < 80 ? 'push' : ''}`}>{g.pct >= 100 ? 'Target met' : g.pct >= 80 ? 'On track' : g.pct >= 60 ? 'Needs a push' : 'Behind'}</span>
-            <span>Report due in {days} {days === 1 ? 'day' : 'days'}</span>
+        <AwardSpark values={AWARD_MONTHS} />
+        <div className="impact-label">Impact to report</div>
+        {rows.map(([label, v, d]) => (
+          <div className="stat-row" key={label}>
+            <div><div className="lbl">{label}</div><div className="trend"><Icon name="trend" size={14} /> {d} vs last year</div></div>
+            <div className="big">{v}</div>
           </div>
-        </>}
+        ))}
+        {next && (
+          <button className="link impact-link" onClick={open}>Review {TO_SUBMIT.length} applications due {fmtDue(next.due)} <Icon name="arrow-r" size={14} /></button>
+        )}
       </div>
-      <footer className="grants-foot"><span><Icon name="nav-calendar" size={16} /> Next report due December 12</span><button className="link" onClick={draft}>Draft report <Icon name="arrow-r" size={14} /></button></footer>
     </section>
   );
 }

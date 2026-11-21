@@ -2,6 +2,7 @@
 import { useLayoutEffect } from 'react';
 import { CONVOS, GROUPS, SHIFTS, VOLS } from '../../data.js';
 import { Avatar, Icon } from '../../components/Icon.jsx';
+import Button from '../../components/Button/Button.jsx';
 import {
   M, UI, addAttach, addRcpt, closePops, firstName, group, openRcpts, syncChannel, rcptOptions,
   renderConv, rerender,
@@ -47,7 +48,7 @@ function ComposeEmpty() {
   if (!rc.length) {
     const sugg = ann
       ? GROUPS.slice(0, 3).map((g) => ({ kind: 'group', id: g.id, label: g.name, sub: `${g.count} members`, avs: g.members.slice(0, 3) }))
-      : ['ms12', 'hs19', 'ww9'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
+      : ['e12', 'e15', 'e17'].map((id) => { const sh = SHIFTS[id]; return { kind: 'shift', id, label: `${sh.title} · ${sh.mon} ${sh.day}`, sub: `${sh.vols.length} volunteers signed up`, avs: sh.vols.slice(0, 3) }; });
     return (
       <div className="cmp-empty">
         <div className="cmp-icon"><Icon name={ann ? 'users' : 'pen'} size={22} /></div>
@@ -63,7 +64,7 @@ function ComposeEmpty() {
                 <span className="sec-card__subtitle">{x.sub}</span>
                 <span className="sec-card__logistics"><span><Icon name="clock" size={14} /><span>{SHIFTS[x.id].time}</span></span><span><Icon name="pin" size={14} /><span>{SHIFTS[x.id].addr}</span></span></span>
               </span>
-              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span><Icon name="plus" size={16} /></span>
+              <span className="sec-card__actions"><span className="cmp-avs">{x.avs.map((w) => <Avatar key={w} id={w} />)}</span></span>
             </button>
           ) : (
             <button key={x.id} className="cmp-opt" onClick={() => pick(x.kind, x.id)}>
@@ -141,7 +142,7 @@ export function ComposeView() {
             onKeyDown={onKeyDown}
           />
         </div>
-        <button className="btn btn-outline btn-xs" onClick={discard}>Discard</button>
+        <Button color="secondary" size="sm" onClick={discard}>Discard</Button>
       </div>
       <div className="conv-body"><div className="stream-col">
         <div className="stream cmp-stream"><div className="cmp-wrap" id="cmpEmpty"><ComposeEmpty /></div></div>

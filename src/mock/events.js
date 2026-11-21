@@ -23,6 +23,10 @@ const programs = {
     title: 'Warehouse Wednesday',
     location: REDMOND,
     description: 'Sort, tag and shelve donated workwear in the warehouse. Sign up for a minimum of 1/5 shifts.',
+    // Single event page copy (Figma: Volunteer - Single Event, 2530:10615)
+    longDescription:
+      'Join us for a hands-on volunteer event to sort, label, and organize our donated goods! Volunteers will help check items for quality, sort them into categories such as clothing, household goods, and non-perishables, and shelve everything so it’s ready for distribution. No experience is needed, just a willingness to pitch in. Gloves, labels, and refreshments will be provided. Whether you can stay for an hour or the entire shift, your help will make sure donations reach the people who need them most, quickly and efficiently.',
+    weekly: true, // "(every Wednesday)" on the single event page
     tags: [['heavy lifting', 'pink']],
   },
   clothingDistribution: {
@@ -137,6 +141,8 @@ export const events = schedule.map(([id, key, date, start, end, extras = {}], i)
     location: p.location,
     distance: `${distances[i % distances.length]} from you`,
     description: p.description,
+    longDescription: p.longDescription,
+    weekly: Boolean(p.weekly),
     tags: p.tags.map(([label, tone]) => ({ label, tone })),
     start: at(date, start),
     end: at(date, end),
