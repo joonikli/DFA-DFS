@@ -3,9 +3,8 @@
    main-app and embedded). Values are the Figma text styles (src/styles/typography.css):
      Heading 1   Crimson Pro 600 36   dashboard greeting only
      Heading 2   Crimson Pro 600 28   page titles
-     Subheading  Inter 500 20         section labels ("This week", "To do"); event-list labels
-                                      ("My Events", "This Month") stay Body 16 per the Figma
-                                      Event subcategories component
+     Subheading  Inter 500 20         section labels ("This week", "To do", "My Events",
+                                      "This Month"); the event count beside them stays Body 16
      Card title  Crimson Pro 600 24   event / survey / recommended cards
      Body 2      Inter 600 16 · Label 2 Inter 500 14
    Buttons are the two Figma Button components, always 8px apart (sizes at design scale; the
@@ -21,6 +20,17 @@
   font-size: 28px;
   font-weight: 600;
   line-height: 31px;
+}
+
+/* ---------- Section labels: Subheading (event lists: admin, volunteer, profiles) ---------- */
+.app-shell .app-shell__content :is(
+  .ae-group > header > h2,
+  .event-subcategories > span:first-child,
+  .ap-events-panel > header > span:first-child
+) {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: normal;
 }
 
 /* ---------- Card titles ---------- */

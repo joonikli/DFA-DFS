@@ -6,7 +6,6 @@ import './Banner.css'
 export default function Banner({ type = 'pink', title, cta, onCta, onClose }) {
   return (
     <section className={`banner banner--${type}`} aria-label={title}>
-      <span className="banner__art" aria-hidden="true" />
       <h2 className="banner__title">{title}</h2>
       {cta && (
         <button type="button" className="banner__cta text-label-1" onClick={onCta}>
