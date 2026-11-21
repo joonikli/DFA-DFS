@@ -5,6 +5,9 @@
 }
 
 .app-shell__main {
+  /* Positioned descendants (calendar dots, chart tips) anchor here, so they scroll and clip with the
+     page instead of stretching the whole document (empty space under the last card) */
+  position: relative;
   flex: 1;
   min-width: 0;
   overflow-y: auto;
