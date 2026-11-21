@@ -176,7 +176,7 @@ export default function Profile() {
                 {person.title} <span aria-hidden="true">|</span> {person.city}
               </p>
             </div>
-            <EditButton label="Edit profile" className="profile__edit" onClick={() => setEditing(true)} />
+            <EditButton aria-label="Edit profile" className="profile__edit" onClick={() => setEditing(true)} />
           </div>
           <p className="text-label-2 profile__bio">{person.bio}</p>
 
