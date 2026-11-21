@@ -1940,9 +1940,10 @@ a { color: inherit; }
 .post-head b { font: 600 14px/normal var(--sans); }
 .post-head time, .post-chip, .seen-btn, .thread-link, .thread-link .last, .thread-link .view { font: 500 14px/normal var(--sans); }
 .thread-link b { font-weight: 600; }
-/* Thread panel: same column + card frame as the profile panel (298 col, 282 card, 16 inset, 12 radius),
-   and the conversation's text sizes (body 16/1.45, name 14/600, time 14/500, avatar --av-msg) */
-.side.force { width: 298px; padding: 16px 16px 16px 0; border-left: 0; }
+/* Thread panel: the profile panel's card frame (16 inset, 12 radius) in a wider column (360, so it
+   balances the 340–400 conversation list), and the conversation's text sizes (body 16/1.45, name 14/600,
+   time 14/500, avatar --av-msg) */
+.side.force { width: 360px; padding: 16px 16px 16px 0; border-left: 0; }
 .side .side-card.thread { border: 1px solid var(--gray); border-radius: 12px; overflow: hidden; }
 .thread-head b { font: 600 16px/normal var(--sans); }
 .thread-head span { font: 500 14px/normal var(--sans); color: var(--neutral-darker-gray); }
