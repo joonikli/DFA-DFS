@@ -12,8 +12,13 @@
   flex-direction: column;
 }
 
-/* Figma frames: content starts 53px right of the sidebar, 41px below the top nav */
+/* Figma frames: content starts 53px right of the sidebar, 41px below the top nav.
+   Every screen (admin and volunteer, main-app and embedded) renders at one scale: Figma
+   values at --page-zoom. Pages must not add their own zoom on top. Viewport-based sizes
+   inside (100vh …) are in zoomed px, so divide them by var(--page-zoom). */
 .app-shell__content {
+  --page-zoom: 0.9;
+  zoom: var(--page-zoom);
   flex: 1;
   padding: 41px 56px 40px 53px;
 }

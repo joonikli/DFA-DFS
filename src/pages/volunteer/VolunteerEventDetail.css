@@ -1,15 +1,10 @@
 /* Figma: Volunteer - Single Event (2530:10615). Sizes are the Figma frame's at 1728px. */
-/* Matches the Your events page's rendered scale. That page zooms layout by 0.88 but its cards
-   also shrink type (24px titles, 15px text), so Figma type lands at ~0.8 there. 0.8 here makes
-   the 940px main column the same width as the events list (~750px) and the type the same size.
-   max-width is divided by the zoom so the page fills the same on-screen width. */
+/* Scale comes from the app frame (--page-zoom, AppShell.css), the same as every other page */
 .ved {
-  --page-zoom: 0.8;
-  zoom: var(--page-zoom);
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: calc(1381px / var(--page-zoom));
+  max-width: 1381px;
 }
 
 /* ---- Breadcrumb ("Page Nav") ---- */
@@ -87,12 +82,6 @@
 .ved__subtitle {
   color: var(--neutral-darker-gray);
 }
-/* Shared components render at the events page's 0.88 (0.8 × 1.1) so they look identical there and here */
-.ved .event-cta,
-.ved .tag {
-  zoom: 1.1;
-}
-
 .ved__desc {
   display: flex;
   align-items: flex-end;

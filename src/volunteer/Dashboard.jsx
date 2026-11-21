@@ -37,7 +37,7 @@ export default function VolunteerDashboard() {
   const toast = useToast();
   const vpRef = useRef(null);
   const recsRef = useRef(null);
-  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000 });
+  useFitZoom(vpRef, { designWidth: 1488, minWidth: 1000, fit: false });
 
   const registered = useMemo(() => new Set(volunteer.registered), [volunteer.registered]);
   const saved = useMemo(() => new Set(volunteer.saved), [volunteer.saved]);

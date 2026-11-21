@@ -1051,8 +1051,9 @@ a { color: inherit; }
 .dash [data-card="hours"] .hr { margin: 18px 0 12px; }
 .dash [data-card="survey"] .bars { height: 78px; } .dash [data-card="survey"] .bar-foot { margin: 6px 0 8px; }
 
-/* Dashboard renders at the Figma frame size and is scaled by Dash.fit() */
-.dash { width: 1488px; max-width: none; padding: 72px 85px 40px 75px; }
+/* Dashboard is laid out at the Figma frame size (1488px) where it fits; the app frame's page
+   scale (AppShell.css) sizes it on screen */
+.dash { width: 100%; max-width: 1488px; padding: 72px 85px 40px 75px; }
 .dash.fluid { width: auto; padding: 40px 24px; }
 
 /* Cards fill their Figma height: content distributes to the bottom edge instead of leaving dead space */

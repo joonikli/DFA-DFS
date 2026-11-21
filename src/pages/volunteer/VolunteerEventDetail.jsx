@@ -78,9 +78,15 @@ export default function VolunteerEventDetail() {
   const from = params.get('from')
   const tab = tabs.includes(from) ? from : tabs[0]
 
-  // Admin-facing name ("Donation Inventory Organizing") with the program as the subtitle
+  const { start, end } = event
+
+  // Admin-facing name ("Donation Inventory Organizing") with the program as the subtitle.
+  // Events with no name of their own (title = program) show their date and time instead.
   const name = admin?.name || event.title
-  const subtitle = name !== event.title ? event.title : null
+  const subtitle =
+    name !== event.title
+      ? event.title
+      : `${weekday(start)}, ${MONTHS[start.getMonth()]} ${start.getDate()} · ${clock(start)} - ${clock(end)}`
 
   // Counts include the volunteer's own registration / save
   const index = Number(event.id.slice(1)) || 0
@@ -92,8 +98,6 @@ export default function VolunteerEventDetail() {
 
   // Attended frame (2532:41578): "Post-event popup" card above Key Contacts until the survey is sent
   const showSurveyCard = status === 'attended' && !volunteer.surveyResponses[event.id] && surveyDismissedFor !== event.id
-
-  const { start, end } = event
 
   return (
     <div className="ved">
@@ -119,7 +123,7 @@ export default function VolunteerEventDetail() {
               <div className="ved__heading">
                 <div className="ved__titles">
                   <h1 className="text-heading-1">{name}</h1>
-                  {subtitle && <p className="ved__subtitle text-subheading">{subtitle}</p>}
+                  <p className="ved__subtitle text-subheading">{subtitle}</p>
                 </div>
                 <EventCta
                   status={status}
