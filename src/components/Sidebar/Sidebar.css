@@ -7,7 +7,7 @@
   width: var(--sidebar-width);
   height: 100vh;
   flex-shrink: 0;
-  padding: 20px 0 72px;
+  padding: 20px 0 20px; /* Settings sits 20px off the bottom, matching the 20px top inset */
   background: var(--neutral-white);
   border-right: 1px solid var(--neutral-gray);
 }
