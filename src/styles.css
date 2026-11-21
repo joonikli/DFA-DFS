@@ -2140,3 +2140,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .conv-head .sub { margin-top: 4px; }
 .conv-head > .av, .conv-head > .av.lg { width: 40px; height: 40px; font-size: 14px; flex: none; }
 .conv-head > .av-stack.lg { width: 40px; height: 40px; }
+/* Unread count badges one step smaller: 20px circle, 12px semibold number */
+.badge, .tab-badge, .nav-badge { min-width: 20px !important; height: 20px !important; padding: 0 6px !important; border-radius: 10px !important; font: 600 12px/20px var(--sans) !important; }
