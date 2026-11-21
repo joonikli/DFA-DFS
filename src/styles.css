@@ -2111,3 +2111,5 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .impact-link { margin-top: auto; align-self: flex-start; }
 /* Upcoming events: no hover effects — rows stay still, the action is always visible */
 .ev-item, .ev-item:hover { box-shadow: none !important; transition: none; }
+/* Announcement groups have no faces: a megaphone avatar (volunteer messages) */
+.av.grp-ic { display: grid; place-items: center; background: var(--primary-lightest-purple) !important; color: var(--primary-dark-purple) !important; }

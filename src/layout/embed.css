@@ -23,3 +23,9 @@
   border: 0 !important;
   overflow: hidden !important;
 }
+
+/* Messages screens (manager and volunteer) fill the frame's height, however short the list is */
+.app-shell__content:has(> .app-embed .msgs) { display: flex; flex-direction: column; }
+.app-embed:has(.msgs) { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.app-embed:has(.msgs) > .route-enter { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.app-embed .msgs { flex: 1; min-height: 0; }

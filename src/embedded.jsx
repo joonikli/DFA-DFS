@@ -9,6 +9,7 @@ import Report from './features/report/Report.jsx'
 import Events from './features/events/Events.jsx'
 import Profiles from './features/profiles/Profiles.jsx'
 import VolunteerDashboard from './volunteer/Dashboard.jsx'
+import VolunteerMessagesScreen from './pages/volunteer/VolunteerMessages.jsx'
 import './styles.css'
 
 function Tooltips() {
@@ -36,6 +37,8 @@ export const ManagerMessages = () => <Screen app="manager"><Messages /></Screen>
 export const ManagerEvents = () => <Screen app="manager"><Events /></Screen>
 export const ManagerReport = ({ params }) => <Screen app="manager"><Report params={params} /></Screen>
 export const VolunteerHome = () => <Screen app="volunteer"><VolunteerDashboard /></Screen>
+// Volunteer messages use the manager messaging screen's markup + styles, so they render in the manager scope
+export const VolunteerMessages = () => <Screen app="manager"><VolunteerMessagesScreen /></Screen>
 export const ManagerProfile = ({ params }) => (
   <Screen app="manager"><Profiles key={`${params.get('type')}/${params.get('id')}`} params={params} /></Screen>
 )

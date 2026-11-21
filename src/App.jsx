@@ -8,7 +8,6 @@ import StaffProfile from './pages/volunteer/StaffProfile.jsx'
 import SurveysHome from './pages/admin/SurveysHome.jsx'
 import SurveyDetail from './pages/admin/SurveyDetail.jsx'
 import VolunteerSurveys from './pages/volunteer/VolunteerSurveys.jsx'
-import VolunteerMessages from './pages/volunteer/VolunteerMessages.jsx'
 import Grants from './pages/admin/Grants.jsx'
 import GenerateReports from './pages/admin/GenerateReports.jsx'
 import { EventFlowsProvider } from './features/events/EventFlows.jsx'
@@ -35,6 +34,7 @@ const ManagerEvents = embedded('ManagerEvents')
 const ManagerReport = embedded('ManagerReport')
 const ManagerProfile = embedded('ManagerProfile')
 const VolunteerHome = embedded('VolunteerHome')
+const VolunteerMessages = embedded('VolunteerMessages')
 
 const ROUTE_PATHS = {
   dashboard: '/',
@@ -140,7 +140,7 @@ export default function App() {
           {/* Volunteer-facing staff profile ("Managed by" on an event page); admins use their own profile screen */}
           <Route path="staff/:id" element={<ByRole admin={<Navigate to="/people?type=admin" replace />} volunteer={<StaffProfile />} />} />
           <Route path="people"element={<ByRole admin={<WithParams as={ManagerProfile} />} volunteer={<Navigate to="/profile" replace />} />} />
-          <Route path="messages" element={<ByRole admin={<Lazy><ManagerMessages /></Lazy>} volunteer={<VolunteerMessages />} />} />
+          <Route path="messages" element={<ByRole admin={<Lazy><ManagerMessages /></Lazy>} volunteer={<Lazy><VolunteerMessages /></Lazy>} />} />
           <Route path="settings" element={<Placeholder title="Settings" note="Not in the Figma designs yet." />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

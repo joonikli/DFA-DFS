@@ -5,6 +5,7 @@
 // also emailed is marked "Also sent to your email" (email is a route, not a separate inbox).
 // Volunteers message coordinators and reply in groups they were added to; only coordinators post
 // announcements and start group chats.
+import { ME } from '../data.js'
 import annaClaire from '../assets/people/anna-claire.png'
 import madison from '../assets/people/madison-f.png'
 import kyla from '../assets/people/kyla.png'
@@ -14,7 +15,8 @@ import johnDoe from '../assets/people/john-doe.png'
 
 export const PEOPLE = {
   me: { name: 'Maureen Lee', first: 'Maureen' },
-  bridget: { name: 'Bridget Moore', first: 'Bridget', role: 'Volunteer Manager', staff: true },
+  // Same photo the manager screens use for Bridget (data.js ME)
+  get bridget() { return { name: 'Bridget Moore', first: 'Bridget', role: 'Volunteer Manager', staff: true, photo: ME.photo } },
   mariko: { name: 'Mariko Takahashi', first: 'Mariko', role: 'Warehouse Wednesday lead', staff: true, photo: mariko },
   anna: { name: 'Anna Claire', first: 'Anna', role: 'Program Coordinator', staff: true, photo: annaClaire },
   kyla: { name: 'Kyla Brooks', first: 'Kyla', role: 'Fill-A-Bag Coordinator', staff: true, photo: kyla },
