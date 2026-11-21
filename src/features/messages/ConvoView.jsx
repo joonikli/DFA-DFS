@@ -11,6 +11,7 @@ import { AttachInline, EventCard, MsgReacts, NewDiv, Status, ThreadPanel, toggle
 import { MsgReactPicker } from './pops.jsx';
 import { Composer } from './Composer.jsx';
 import { GroupDetails } from './GroupDetails.jsx';
+import TabNav from '../../components/TabNav/TabNav.jsx';
 
 // After the pane (re)builds: scroll to the bottom, or to the "New" divider if there is one
 export function useStreamInit() {
@@ -140,11 +141,7 @@ function Profile({ id }) {
         <div className="prof-line"><Icon name="phone" size={14} /> {v.phone}</div>
         <div className="prof-line"><Icon name="tags" size={14} /> {v.tags.map((t) => <span className="tag blue" key={t}>{t}</span>)}</div></div>
       <div className="prof-sec"><h4>Notes</h4><div className="prof-notes">{v.notes}</div></div>
-      <div className="tabs">
-        <button className={M.sideTab === 'upcoming' ? 'on' : ''} onClick={() => setTab('upcoming')}>Upcoming</button>
-        <button className={M.sideTab === 'attended' ? 'on' : ''} onClick={() => setTab('attended')}>Attended</button>
-        <span className="tab-line" style={{ transform: `translateX(${M.sideTab === 'upcoming' ? 0 : 100}%)` }} />
-      </div>
+      <TabNav className="message-detail-tabs" label="Contact events" value={M.sideTab} onChange={setTab} tabs={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'attended', label: 'Attended' }]} />
       <div className="mini-shifts">
         {M.sideTab === 'upcoming'
           ? (v.upcoming.length ? v.upcoming.map((s) => (

@@ -1,17 +1,26 @@
 .tab-nav {
+  position: relative;
   display: flex;
   align-items: flex-end;
-  border-bottom: 2px solid var(--neutral-gray);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  box-shadow: inset 0 -2px var(--neutral-gray);
 }
 
 .tab-nav__tab {
-  width: 124px;
-  flex-shrink: 0;
-  padding-bottom: 10px;
-  margin-bottom: -2px;
-  border-bottom: 2px solid transparent;
+  position: relative;
+  flex: 0 0 auto;
+  width: auto;
+  padding: 0 24px 10px;
+  border: 0;
+  background: none;
+  font: 600 16px/normal var(--sans, 'Inter', system-ui, sans-serif);
+  white-space: nowrap;
   text-align: center;
   color: var(--neutral-darker-gray);
+  cursor: pointer;
+  transition: color var(--dur-micro, 150ms) var(--ease-out, cubic-bezier(.23, 1, .32, 1));
 }
 
 .tab-nav__tab:hover {
@@ -21,13 +30,25 @@
 .tab-nav__tab--active,
 .tab-nav__tab--active:hover {
   color: var(--primary-dark-purple);
-  /* Figma "Emphsis" line is primary/purple (#6078F1), not the dark-purple label */
-  border-bottom-color: var(--primary-purple);
+}
+
+.tab-nav__tab:focus-visible { outline: 2px solid var(--primary-purple); outline-offset: -3px; border-radius: 4px; }
+
+.tab-nav__indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--primary-dark-purple);
+  pointer-events: none;
+  transition: transform var(--dur-pop, 200ms) var(--ease-out, cubic-bezier(.23, 1, .32, 1)), width var(--dur-pop, 200ms) var(--ease-out, cubic-bezier(.23, 1, .32, 1));
 }
 
 .tab-nav__label {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Dot: the tab a card was just saved / registered into. Sits left of the label,
@@ -62,12 +83,15 @@
   to   { transform: scale(2.6); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .tab-nav__indicator, .tab-nav__tab { transition: none; }
   .tab-nav__dot,
   .tab-nav__dot::after {
     animation: none;
   }
   .tab-nav__dot::after { opacity: 0; }
 }
+
+@media (max-width: 600px) { .tab-nav__tab { padding-inline: 16px; } }
 
 .tab-nav__sr {
   position: absolute;

@@ -9,6 +9,7 @@ import { Avatar, Icon } from '../../components/Icon.jsx';
 import { hideTip } from '../../components/ui.jsx';
 import { M, UI, closePops, convo, convoName, firstName, renderConv, rerender } from './state.js';
 import { openConvo } from './actions.js';
+import TabNav from '../../components/TabNav/TabNav.jsx';
 
 const reachable = (w) => (VOLS[w].appDays != null ? 'app' : 'email');
 
@@ -117,11 +118,7 @@ export function GroupDetails({ c }) {
         </ul>
       </div>
 
-      <div className="tabs">
-        <button className={tab === 'shifts' ? 'on' : ''} onClick={() => setTab('shifts')}>Shifts</button>
-        <button className={tab === 'shared' ? 'on' : ''} onClick={() => setTab('shared')}>Shared</button>
-        <span className="tab-line" style={{ transform: `translateX(${tab === 'shifts' ? 0 : 100}%)` }} />
-      </div>
+      <TabNav className="message-detail-tabs" label="Group details" value={tab} onChange={setTab} tabs={[{ value: 'shifts', label: 'Shifts' }, { value: 'shared', label: 'Shared' }]} />
       <div className="mini-shifts">
         {tab === 'shifts'
           ? (shiftIds.length
