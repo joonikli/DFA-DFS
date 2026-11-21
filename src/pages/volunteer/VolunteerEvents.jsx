@@ -48,12 +48,12 @@ function membersOf(volunteer) {
   }
 }
 
-// Empty-state copy per tab, per bucket ("This Week" / "This Month")
+// Empty-state copy per tab, per bucket ("This Week" / "This Month", or the single distance-sorted list)
 const EMPTY = {
-  upcoming: { icon: Handshake, week: 'No events scheduled this week. Check back soon', month: 'No more events scheduled this month' },
-  saved: { icon: Bookmark, week: 'You haven’t saved any events this week yet', month: 'You haven’t saved any events this month yet' },
-  registered: { icon: Handshake, week: 'You’re not registered for anything this week yet', month: 'You’re not registered for anything this month yet' },
-  attended: { icon: BookOpen, week: 'You haven’t attended any event yet this week!', month: 'You haven’t attended any events this month yet' },
+  upcoming: { icon: Handshake, week: 'No events scheduled this week. Check back soon', month: 'No more events scheduled this month', distance: 'No events scheduled yet. Check back soon' },
+  saved: { icon: Bookmark, week: 'You haven’t saved any events this week yet', month: 'You haven’t saved any events this month yet', distance: 'You haven’t saved any events yet' },
+  registered: { icon: Handshake, week: 'You’re not registered for anything this week yet', month: 'You’re not registered for anything this month yet', distance: 'You’re not registered for any events yet' },
+  attended: { icon: BookOpen, week: 'You haven’t attended any event yet this week!', month: 'You haven’t attended any events this month yet', distance: 'You haven’t attended any events yet' },
 }
 
 function matchesQuery(e, q) {
@@ -140,6 +140,8 @@ export default function VolunteerEvents() {
       .sort((a, b) => compareDistance(a, b, filters.sort) || a.start - b.start)
     // A day picked on the calendar (or in the filter) shows every event that day, regardless of tab.
     if (selectedDay) return [{ key: 'day', label: formatShortDate(selectedDay), items: list, alwaysShow: true }]
+    // A distance sort orders the whole list by the cards' "x mi from you", so skip the date buckets
+    if (filters.sort) return [{ key: 'distance', label: sortLabel(filters.sort), items: list, alwaysShow: true }]
     return group(list, tab === 'attended')
   }, [pool, tab, query, filters, selectedDay])
 
@@ -362,8 +364,7 @@ export default function VolunteerEvents() {
           </div>
 
           {(selectedDay || refined) && (
-            <div className="volunteer-events__active-filter text-body">
-              {selectedDay ? 'Showing all events on' : filtersOn ? 'Filtered by' : 'Sorted by'}
+            <div className="volunteer-events__active-filter">
               {selectedDay && (
                 <Tags color="purple" onRemove={() => setSelectedDay(null)}>
                   {formatShortDate(selectedDay)}

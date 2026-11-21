@@ -100,7 +100,6 @@
   align-items: center;
   gap: 8px;
   padding: 0 8px;
-  color: var(--neutral-darker-gray);
 }
 
 /* ---- Filter pill + popover (date, time, location, tags) ---- */
@@ -184,24 +183,9 @@
   border-color: var(--primary-dark-purple);
   color: var(--neutral-white);
 }
-/* Distance sort: one chip that cycles Nearest → Furthest → off.
-   Tinted purple so it reads as a sort control, not another place to filter by. */
-.event-filter__chip--sort {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--primary-lightest-purple);
-  border-color: var(--primary-light-purple);
-  color: var(--primary-dark-purple);
-}
-.event-filter__chip--sort:hover {
-  background: var(--primary-light-purple);
-}
-.event-filter__chip--sort.event-filter__chip--on,
-.event-filter__chip--sort.event-filter__chip--on:hover {
-  background: var(--primary-dark-purple);
-  border-color: var(--primary-dark-purple);
-  color: var(--neutral-white);
+/* "Nearest first" checkbox sits above the location chips */
+.event-filter__group > .check {
+  margin-bottom: 8px;
 }
 .event-filter__actions {
   display: flex;
