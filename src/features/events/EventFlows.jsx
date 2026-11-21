@@ -15,6 +15,7 @@ import { surveyForEvent } from '../../mock/surveys.js'
 import { MONTHS } from '../../lib/dates.js'
 import { PERSONAS, useDemo } from '../../store/DemoStore.jsx'
 import './EventFlows.css'
+import RouterSurveyPopup from '../../components/SurveyPopup/RouterSurveyPopup.jsx'
 
 const FlowContext = createContext(null)
 export const useEventFlows = () => useContext(FlowContext)
@@ -409,7 +410,7 @@ export function EventFlowsProvider({ children }) {
         <CancelRegistrationPopup event={flow.event} onClose={close} onEdit={() => setFlow({ kind: 'edit', event: flow.event })} />
       )}
       {flow?.kind === 'unsave' && <UnsavePopup event={flow.event} onClose={close} />}
-      {flow?.kind === 'survey' && <SurveyPopup event={flow.event} onClose={close} />}
+      {flow?.kind === 'survey' && <RouterSurveyPopup event={flow.event} onClose={close} />}
       {flow?.kind === 'response' && <SurveyResponsePopup event={flow.event} onClose={close} />}
       {flow?.kind === 'thanks' && (
         <PostEventPopup event={flow.event} onClose={close} onTakeSurvey={() => setFlow({ kind: 'survey', event: flow.event })} />

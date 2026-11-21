@@ -21,6 +21,7 @@ const CSS_SCOPES = [
   ['src/styles/', null],
   ['src/layout/embed.css', null],
   ['src/components/CalendarKey/', null],
+  ['src/components/SurveyPopup/', null],
   ['src/components/Button/', ['a', 'manager']],
   ['src/components/SearchBar/', ['a', 'manager']],
   ['src/components/Filter/', ['a', 'manager']],
@@ -34,6 +35,9 @@ const CSS_SCOPES = [
   ['src/features/dashboard/', ['manager', 'volunteer']],
   ['src/features/messages/', ['manager', 'volunteer']],
   ['src/features/report/', ['manager', 'volunteer']],
+  ['src/features/surveys/surveys.css', ['manager']],
+  ['src/features/grants/grantsPage.css', ['manager']],
+  ['src/features/grants/grantReport.css', ['manager']],
   ['src/', ['a']],
 ]
 const WRAPPERS = ['manager', 'volunteer']
