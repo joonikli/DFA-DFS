@@ -2142,3 +2142,7 @@ body .rp-input .send-circle { background: var(--neutral-gray); }
 .conv-head > .av-stack.lg { width: 40px; height: 40px; }
 /* Unread count badges one step smaller: 20px circle, 12px semibold number */
 .badge, .tab-badge, .nav-badge { min-width: 20px !important; height: 20px !important; padding: 0 6px !important; border-radius: 10px !important; font: 600 12px/20px var(--sans) !important; }
+/* Conversation rows: 20px vertical padding; names one step up the type scale = Subheading (Inter 20/500), unread 600 */
+.convo { padding-top: 20px !important; padding-bottom: 20px !important; }
+.convo-name { font: 500 20px/normal var(--sans) !important; }
+.convo.unread .convo-name { font-weight: 600 !important; }
