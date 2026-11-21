@@ -21,10 +21,9 @@
 .event-calendar__nav {
   display: inline-flex;
   border-radius: 6px;
-  color: var(--neutral-darker-gray);
+  color: var(--neutral-dark-gray);
 }
 .event-calendar__nav:hover {
-  color: var(--neutral-black);
   background: var(--neutral-light-gray);
 }
 
@@ -41,20 +40,21 @@
 
 .calendar-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 .calendar-dot--event { background: var(--primary-light-purple); }
-.calendar-dot--registered { background: var(--primary-dark-purple); }
+.calendar-dot--registered { background: var(--green-dark-green); }
 .calendar-dot--none { visibility: hidden; }
 
 .event-calendar__grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 3px;
-  padding: 8px 8px 0;
+  row-gap: 7px;
+  justify-items: center;
+  padding: 8px 0;
 }
 
 .event-calendar__weekday {
@@ -63,17 +63,21 @@
   font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
   font-weight: 590;
   font-size: 13px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  margin-bottom: -4px; /* 3px to the first week, per Figma */
   color: var(--neutral-dark-gray);
 }
 
 .event-calendar__day {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
-  height: 44px;
+  width: 100%;
+  max-width: 44px;
+  aspect-ratio: 1;
   color: var(--neutral-black);
 }
 
@@ -81,9 +85,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-top: 6px; /* leaves room for the event dot above */
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
 
@@ -97,25 +100,21 @@
   color: var(--neutral-white);
 }
 
-/* overlay the dot above the number so it doesn't shift the circle */
+/* 10px dot above the number, on the top edge of the day circle (overlaid, so it doesn't shift it) */
 .event-calendar__day .calendar-dot {
   position: absolute;
-  top: 0;
+  top: -2px;
+  left: 50%;
+  margin-left: -5px;
 }
 
-/* variant="dashboard": same design as the volunteer.html / manager.html dashboard
-   calendar (.cal in styles.css), inside this component's card frame */
-.event-calendar--dashboard {
-  display: block;
-  padding: 20px 24px;
-}
+/* variant="dashboard": Figma Event-calendar (node 2324:48218), plus the dashboard
+   cues (today, past days, dot key popover). Uses the base card frame (16px 14px, gap 8px). */
 .ecd-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
-  font-size: 20px;
-  font-weight: 500;
+  padding: 8px;
   color: var(--neutral-black);
 }
 .ecd-nav {
@@ -123,6 +122,7 @@
   place-items: center;
   width: 36px;
   height: 36px;
+  margin: -6px; /* 24px chevron in the layout, 36px hit area */
   border-radius: 8px;
   color: var(--neutral-dark-gray);
   transition: background-color 150ms ease;
@@ -130,13 +130,21 @@
 .ecd-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  row-gap: 4px;
+  row-gap: 7px;
   justify-items: center;
 }
+.ecd-grid:last-child { padding-bottom: 8px; }
+.ecd-dow {
+  height: 20px;
+  margin-top: 8px;
+  margin-bottom: 3px;
+  align-items: center;
+}
 .ecd-dow span {
-  padding: 6px 0;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: -apple-system, 'SF Pro Text', 'SF Pro', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 590;
+  line-height: 18px;
   text-transform: uppercase;
   color: var(--neutral-dark-gray);
 }
@@ -145,10 +153,9 @@
   display: grid;
   place-items: center;
   width: 100%;
-  max-width: 42px;
+  max-width: 44px;
   aspect-ratio: 1;
   border-radius: 50%;
-  font-size: 18px;
   color: var(--neutral-black);
   transition: background-color 150ms ease, color 150ms ease, transform 100ms cubic-bezier(.23, 1, .32, 1);
 }
@@ -156,22 +163,51 @@
 .ecd-day.past { color: var(--neutral-dark-gray); }
 .ecd-day.today { color: var(--primary-dark-purple); font-weight: 600; }
 .ecd-day.sel { background: var(--neutral-black); color: var(--neutral-white); }
+.ecd-day.today.sel { background: var(--primary-dark-purple); } /* today stays purple, never the black circle */
 .ecd-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--primary-light-purple);
 }
-.ecd-dot--registered { background: var(--primary-dark-purple); }
+.ecd-dot--registered { background: var(--green-dark-green); }
+/* dot sits above the number, on the top edge of the day circle */
 .ecd-day .ecd-dot {
   position: absolute;
-  bottom: -2px;
+  top: -2px;
   left: 50%;
-  margin-left: -3.5px;
+  margin-left: -5px;
 }
-.ecd-day.sel .ecd-dot { background: var(--neutral-white); }
 @media (hover: hover) and (pointer: fine) {
   .ecd-nav:hover { background: var(--neutral-light-gray); }
   .ecd-day:not(.sel):hover { background: var(--neutral-light-gray); }
+}
+
+/* Dot whose tone just changed (registered / unregistered): same pulse + ring as the
+   TabNav "new" dot (.tab-nav__dot), in the dot's own colour. */
+.ecd-dot--pop {
+  animation: ecd-dot-pop 600ms cubic-bezier(0.3, 0.7, 0.4, 1) 120ms both;
+}
+.ecd-dot--pop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: ecd-dot-ring 700ms ease-out 180ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ecd-dot--pop,
+  .ecd-dot--pop::after { animation: none; }
+  .ecd-dot--pop::after { opacity: 0; }
+}
+@keyframes ecd-dot-pop {
+  0%   { transform: scale(0.4); }
+  45%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+@keyframes ecd-dot-ring {
+  from { transform: scale(1); opacity: 0.45; }
+  to   { transform: scale(2.6); opacity: 0; }
 }

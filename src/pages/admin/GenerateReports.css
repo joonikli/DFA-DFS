@@ -290,14 +290,14 @@
 .reports__skeleton.is-loading .reports__skel-block {
   background: linear-gradient(90deg, var(--neutral-very-light-gray) 0%, var(--primary-lightest-purple) 50%, var(--neutral-very-light-gray) 100%);
   background-size: 200% 100%;
-  animation: shimmer 1s linear infinite;
+  animation: report-shimmer 1s linear infinite;
 }
 .reports__hint {
   margin-top: 8px;
   text-align: center;
   color: var(--neutral-darker-gray);
 }
-@keyframes shimmer {
+@keyframes report-shimmer {
   to {
     background-position: -200% 0;
   }

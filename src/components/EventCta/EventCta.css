@@ -3,6 +3,14 @@
 .event-cta .saved {
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
 }
+/* Registered: success green (same as the dashboard's Recommended "Registered" button),
+   kept green on hover/press instead of the primary purple. */
+.event-cta .btn.event-cta__registered,
+.event-cta .btn.event-cta__registered:hover,
+.event-cta .btn.event-cta__registered:active {
+  background: var(--green-dark-green);
+  color: var(--neutral-white);
+}
 .event-cta .saved:active,
 .event-cta .btn:not(:disabled):active {
   transform: scale(0.97);

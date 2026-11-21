@@ -101,12 +101,12 @@ export function CalendarCard() {
   return (
     <section className="card cal-card" data-card="calendar" id="calCard">
       <div className="cal">
-        <div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => nav(-1)}><Icon name="chev-r" size={22} /></button>
+        <div className="cal-head"><button className="icon-btn plain" aria-label="Previous month" onClick={() => nav(-1)}><Icon name="chev-r" size={24} /></button>
           <span className="calendar-title">
             <span aria-live="polite">{first.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</span>
             <CalendarKey><span><i className="dot needs" /> Needs volunteers</span><span><i className="dot" /> Staffed</span></CalendarKey>
           </span>
-          <button className="icon-btn plain" aria-label="Next month" onClick={() => nav(1)}><Icon name="chev-r" size={22} /></button></div>
+          <button className="icon-btn plain" aria-label="Next month" onClick={() => nav(1)}><Icon name="chev-r" size={24} /></button></div>
         <div className="cal-grid cal-dow">{DOW.map((d) => <span key={d}>{d}</span>)}</div>
         <div className="cal-grid">{cells}</div>
       </div>

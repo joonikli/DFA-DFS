@@ -4,9 +4,9 @@
 import { useSyncExternalStore } from 'react';
 
 export const EXEC = {
-  month: 'December showed a 22% rise in volunteer hours over November, reaching 262 hours — the highest month on record. The spike was driven primarily by holiday events and increased Mobile Services participation.',
-  quarter: 'Q4 logged 564 volunteer hours, 38% ahead of Q4 2025. Mobile Services and the Holiday Suit Drive account for most of the growth, and first-time volunteers filled a third of December shifts.',
-  year: '2026 closed out at 1,941 logged hours across 120 volunteers — up 46% on 2025. December was the year’s high at 262 hours, driven by holiday events and increased Mobile Services participation.',
+  month: 'May showed a 22% rise in volunteer hours over April, reaching 262 hours — the highest month on record. The spike was driven primarily by the spring suit drives and increased Mobile Services participation.',
+  quarter: 'This quarter has logged 477 volunteer hours in its first seven weeks — already more than all of Q1 (434). Mobile Services and Warehouse Wednesday account for most of the growth, and first-time volunteers filled a third of May shifts.',
+  year: '2026 so far: 911 logged hours across 120 volunteers — up 87% on the same months of 2025. May is the year’s high at 262 hours, driven by the spring suit drives and increased Mobile Services participation.',
 };
 
 // Every card is a widget on a 12-column grid. A view is an ordered list of [widget, span].
@@ -40,13 +40,13 @@ export const TPLS = [
   ['blank', 'Describe it yourself', 'Start from a blank document'],
 ];
 export const PERIOD_LABEL = { month: 'This month', quarter: 'This quarter', year: 'This year' };
-export const RANGE_LABEL = { year: 'This year', last: 'Last year', q4: 'Q4 2026' };
+export const RANGE_LABEL = { year: 'This year', last: 'Last year', q1: 'Q1 2026' };
 
 export const D = {
   views: Object.fromEntries(Object.entries(PRESETS).map(([k, v]) => [k, { ...v, layout: copyLayout(v.layout) }])),
   view: 'default', editing: false, snapshot: null,
-  range: 'year', partOpen: false, grantsOpen: false, cal: { y: 2026, m: 11, sel: null, flash: null }, execPeriod: 'year', execOpen: false, planOpen: false,
-  gen: { period: 'q4', tpl: 'funder', from: '2026-07-01', to: '2026-12-31' },
+  range: 'year', partOpen: false, grantsOpen: false, cal: { y: 2026, m: 4, sel: null, flash: null }, execPeriod: 'year', execOpen: false, planOpen: false,
+  gen: { period: 'q1', tpl: 'funder', from: '2026-01-01', to: '2026-03-31' },
   gridGen: 0, // bumped when the whole grid is repainted (Reset / Undo reset) so cards remount like vanilla's innerHTML repaint
   chartAnim: true, // whether a newly mounted chart draws in (false during a repaint)
 };

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon.jsx';
 import { reducedMotion } from '../lib/store.js';
+import { portalRoot } from '../lib/appScope.js';
 
 /* ---------------------------------------------------------------------------
    Popovers — usePop().toggle(anchorEl, <Content/>, { align, side, cls, onClose })
@@ -21,7 +22,7 @@ function PopLayer({ pops, onRequestClose }) {
     <div id="layer">
       {pops.map((p) => <PopBox key={p.key} p={p} onRequestClose={onRequestClose} />)}
     </div>,
-    document.body,
+    portalRoot(),
   );
 }
 
@@ -150,7 +151,7 @@ export function ToastProvider({ children }) {
         <div id="toasts" aria-live="polite">
           {toasts.map((t) => <ToastItem key={t.id} t={t} onDone={() => setToasts((ts) => ts.filter((x) => x.id !== t.id))} />)}
         </div>,
-        document.body,
+        portalRoot(),
       )}
     </ToastCtx.Provider>
   );
@@ -173,7 +174,7 @@ function showTip(t, instant) {
   tipEl._for = t;
   tipEl.dataset.state = 'closed';
   if (instant) tipEl.dataset.instant = '';
-  document.body.appendChild(tipEl);
+  portalRoot().appendChild(tipEl);
   const r = t.getBoundingClientRect();
   const w = tipEl.offsetWidth;
   let top = r.top - tipEl.offsetHeight - 8;
