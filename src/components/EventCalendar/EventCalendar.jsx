@@ -34,7 +34,7 @@ const DEFAULT_LEGEND = [
  * variant="dashboard" matches the "Upcoming events" calendar on the volunteer.html /
  * manager.html dashboards (CalendarCard): today in purple bold, black circle only for
  * the picked day, dots under the number, dot key behind the info icon (darker dot first).
- * Needs `today` to mark today and grey out earlier days.
+ * Needs `today` to mark today (the only day with a different number color).
  */
 export default function EventCalendar({ month, onMonthChange, dotFor, selected, onSelect, legend = DEFAULT_LEGEND, variant = 'default', today }) {
   // Day → last dot tone seen, and whether that tone arrived by a change (register / unregister)
@@ -60,7 +60,6 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
   while (cells.length % 7) cells.push(null)
 
   if (variant === 'dashboard') {
-    const todayStart = today && new Date(today.getFullYear(), today.getMonth(), today.getDate())
     const key = legend?.length ? [...legend].sort((a, b) => (a.tone === 'registered' ? -1 : 0) - (b.tone === 'registered' ? -1 : 0)) : []
     return (
       <div className="event-calendar event-calendar--dashboard">
@@ -98,19 +97,20 @@ export default function EventCalendar({ month, onMonthChange, dotFor, selected, 
             const pop = dotChanged(date, dot)
             const isSelected = selected && sameDay(date, selected)
             const isToday = today && sameDay(date, today)
-            const isPast = todayStart && date < todayStart
             return (
               <button
                 key={date.getDate()}
                 type="button"
-                className={`ecd-day text-title-3${isToday ? ' today' : ''}${isSelected ? ' sel' : ''}${isPast ? ' past' : ''}`}
+                className={`ecd-day text-title-3${isToday ? ' today' : ''}${isSelected ? ' sel' : ''}`}
                 aria-pressed={Boolean(isSelected)}
-                aria-label={`${MONTHS[m]} ${date.getDate()}${dot ? ', has events' : ''}`}
+                aria-label={`${MONTHS[m]} ${date.getDate()}${dot === 'registered' ? ', you’re signed up' : dot ? ', has events' : ''}`}
                 onClick={() => onSelect(date)}
               >
                 {date.getDate()}
                 {/* keyed by tone so a change remounts the dot and restarts its pulse */}
                 {dot && <i key={dot} className={`ecd-dot ecd-dot--${dot}${pop ? ' ecd-dot--pop' : ''}`} aria-hidden="true" />}
+                {/* hover tooltip, same look and wording as the home calendar (styles.css .tip) */}
+                {dot === 'registered' && <span className="ecd-tip" aria-hidden="true">You’re signed up</span>}
               </button>
             )
           })}

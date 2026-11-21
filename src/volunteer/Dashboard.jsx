@@ -138,7 +138,7 @@ export default function VolunteerDashboard() {
       {!dismissed && survey && <Banner leave={survey.done} onSurvey={goSurvey} onDismiss={dismissBanner} onGone={() => setDismissed(true)} />}
       <section className="card cal-card vp-cal" id="vpCal">
         <CalendarCard
-          cal={cal} registered={registered} recommended={RECOMMENDED} flash={null}
+          cal={cal} registered={registered} attended={volunteer.attended} flash={null}
           onNav={calNav} onDay={calDay} onClear={calClear} onFind={findEvents} onAddCal={addCal} onCancel={cancelShift}
         />
       </section>
