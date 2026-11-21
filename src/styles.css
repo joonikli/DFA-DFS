@@ -1411,7 +1411,8 @@ a { color: inherit; }
 /* Modal (announcement + survey detail) */
 .modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; }
 .modal-scrim { position: absolute; inset: 0; background: rgba(30,30,30,.32); transition: opacity var(--dur-pop) var(--ease-out); }
-.modal-panel { position: relative; width: min(560px, calc(100vw - 32px)); max-height: min(720px, calc(100vh - 48px)); background: var(--white); border-radius: 16px; box-shadow: 0 24px 64px -16px rgba(0,0,0,.35); display: flex; flex-direction: column; overflow: hidden; transition: opacity var(--dur-pop) var(--ease-out), transform var(--dur-pop) var(--ease-out); }
+/* zoom: popups portal outside the app frame, so they take its 0.9 scale (--page-zoom, AppShell.css) here */
+.modal-panel { zoom: 0.9; position: relative; width: min(560px, calc(100vw - 32px)); max-height: min(720px, calc(100vh - 48px)); background: var(--white); border-radius: 16px; box-shadow: 0 24px 64px -16px rgba(0,0,0,.35); display: flex; flex-direction: column; overflow: hidden; transition: opacity var(--dur-pop) var(--ease-out), transform var(--dur-pop) var(--ease-out); }
 .modal[data-state="closed"] .modal-scrim { opacity: 0; }
 .modal[data-state="closed"] .modal-panel { opacity: 0; transform: scale(.96); }
 .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 14px 20px; border-bottom: 1px solid var(--gray); }

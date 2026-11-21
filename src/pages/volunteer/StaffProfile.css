@@ -36,6 +36,7 @@
 .staff-profile .profile__bio {
   max-width: none;
   margin-bottom: 0;
+  line-height: normal; /* Figma: 16px text on ~19px lines */
 }
 
 /* stacked This Week / This Month / Later groups */

@@ -1,6 +1,6 @@
 // Volunteer-facing profile of a staff member (event manager), opened from "Managed by" on an
-// event page. Figma: Final › Profiles › Volunteer - Admin Profile (2324:48567). Type sizes and
-// spacing follow the volunteer Profile page (Profile.css) rather than the frame's larger scale.
+// event page. Figma: Final › Profiles › Volunteer - Admin Profile (2324:48567). Text is 16px
+// (text-body) to match the frame and the Events pages; layout comes from Profile.css.
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Handshake, Mail, MessageSquare, Phone } from 'lucide-react'
 import Avatar from '../../components/Avatar/Avatar.jsx'
@@ -88,7 +88,7 @@ export default function StaffProfile() {
                 {person.name}
                 <img className="staff-profile__verified" src="/assets/profiles/verified-admin.svg" width="27" height="24" alt="Verified staff" />
               </h1>
-              <p className="text-label-2 profile__sub">
+              <p className="text-body profile__sub">
                 {person.title} <span aria-hidden="true">|</span> {person.city}
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function StaffProfile() {
               <MessageSquare size={16} strokeWidth={2} aria-hidden="true" />
             </Button>
           </div>
-          <p className="text-label-2 profile__bio">{person.bio}</p>
+          <p className="text-body profile__bio">{person.bio}</p>
 
           <h2 className="text-heading-2 profile__events-title">{person.first}’s Events</h2>
           <TabNav label="Events sections" tabs={TABS} value={tab} onChange={(t) => setParams(t === 'upcoming' ? {} : { tab: t }, { replace: true })} />
@@ -117,12 +117,12 @@ export default function StaffProfile() {
         </div>
 
         <aside className="profile__side">
-          <p className="profile__joined text-label-2">
+          <p className="profile__joined text-body">
             <span>Joined</span> {person.joined}
           </p>
           <section className="profile__contact">
             <h2 className="text-heading-2">Contact</h2>
-            <ul className="text-label-2">
+            <ul className="text-body">
               <li>
                 <Mail size={20} strokeWidth={1.5} aria-hidden="true" />
                 <a href={`mailto:${person.email}`}>{person.email}</a>
