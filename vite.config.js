@@ -34,6 +34,7 @@ const CSS_SCOPES = [
   ['src/styles.css', ['manager', 'volunteer']],
   ['src/features/events/events.css', ['manager', 'volunteer']],
   ['src/features/events/EventPreview.css', null],
+  ['src/features/events/SurveyStatus.css', null],
   ['src/features/profiles/', ['manager', 'volunteer']],
   ['src/features/dashboard/', ['manager', 'volunteer']],
   ['src/features/messages/', ['manager', 'volunteer']],

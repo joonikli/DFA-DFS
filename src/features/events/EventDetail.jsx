@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Avatar, Icon } from '../../components/Icon.jsx';
 import { VOLS } from '../../data.js';
 import { EventAsset, EventDialog } from './EventEditor.jsx';
@@ -9,10 +9,26 @@ import EditButton from '../../components/EditButton/EditButton.jsx';
 
 export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage }) {
   const [expanded, setExpanded] = useState(false);
+  const [descriptionOverflows, setDescriptionOverflows] = useState(false);
+  const descriptionRef = useRef(null);
   const [survey, setSurvey] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState(false);
   const title = event.detailTitle || event.title;
+  const subtitle = event.type || event.title;
+  const description = event.longDescription ?? (event.description || 'No description has been added to this event.');
+  useLayoutEffect(() => { setExpanded(false); }, [description]);
+  useLayoutEffect(() => {
+    const element = descriptionRef.current;
+    if (!element || expanded) return;
+    let active = true;
+    const measure = () => { if (active) setDescriptionOverflows(element.scrollHeight > element.clientHeight + 1); };
+    measure();
+    document.fonts?.ready.then(measure);
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => { active = false; observer.disconnect(); };
+  }, [description, expanded]);
   const hasSurvey = Boolean(event.surveyDefinition || event.survey);
   const roster = (event.volunteerIds || Object.keys(VOLS).slice(0, event.registered)).filter((id) => VOLS[id]);
   const partialRoster = roster.length < event.registered;
@@ -26,10 +42,10 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
   return <div className={`ae-detail ${roster.length ? 'ae-detail-populated' : ''}`}>
     <nav className="ae-breadcrumb" aria-label="Breadcrumb"><button onClick={onBack}>Events</button><EventAsset name="survey-page-chevron" /><span aria-current="page">{title}</span></nav>
     <div className="ae-detail-layout"><div className="ae-detail-content">
-      <header className="ae-detail-heading"><div><h1>{title}</h1><p>{event.type || event.title}</p></div><EditButton onClick={() => onEdit(event)} /></header>
+      <header className="ae-detail-heading"><div><h1>{title}</h1>{subtitle !== title && <p>{subtitle}</p>}</div><EditButton onClick={() => onEdit(event)} /></header>
       <div className={`ae-detail-description ${expanded ? 'expanded' : ''}`}>
-        <p id="admin-event-description">{event.longDescription ?? (event.description || 'No description has been added to this event.')}</p>
-        <button className="ae-description-toggle" aria-label={expanded ? 'Collapse description' : 'Expand description'} aria-expanded={expanded} aria-controls="admin-event-description" onClick={() => setExpanded((value) => !value)}><EventAsset name="detail-description-chevron" /></button>
+        <p ref={descriptionRef} id="admin-event-description">{description}</p>
+        {(descriptionOverflows || expanded) && <button className="ae-description-toggle" aria-label={expanded ? 'Collapse description' : 'Expand description'} aria-expanded={expanded} aria-controls="admin-event-description" onClick={() => setExpanded((value) => !value)}><EventAsset name="detail-description-chevron" /></button>}
       </div>
       <div className="ae-stat-row">
         <div className="ae-stat"><span>Sign-up</span><p><b>{event.registered}</b><span>{roster.length ? 'Volunteers' : 'volunteers'}</span></p></div>
