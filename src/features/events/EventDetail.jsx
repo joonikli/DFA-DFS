@@ -30,13 +30,15 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
     return () => { active = false; observer.disconnect(); };
   }, [description, expanded]);
   const hasSurvey = Boolean(event.surveyDefinition || event.survey);
-  const roster = (event.volunteerIds || Object.keys(VOLS).slice(0, event.registered)).filter((id) => VOLS[id]);
+  const surveyStatus = (id) => !hasSurvey ? 'unassigned' : event.surveyMissingIds?.includes(id) ? 'missing' : event.surveyCompletedIds?.includes(id) ? 'complete' : 'pending';
+  const roster = (event.volunteerIds || Object.keys(VOLS).slice(0, event.registered))
+    .filter((id) => VOLS[id])
+    .sort((a, b) => Number(surveyStatus(b) === 'missing') - Number(surveyStatus(a) === 'missing'));
   const partialRoster = roster.length < event.registered;
   const missing = event.surveyMissingIds?.length || 0;
   // Surveys go out after the event: before then (or if it was cancelled) nothing can be missing
   const notYet = event.status === 'Upcoming' || event.status === 'Cancelled';
   const tags = (event.tagText || '').split(',').map((tag) => tag.trim()).filter(Boolean);
-  const surveyStatus = (id) => !hasSurvey ? 'unassigned' : event.surveyMissingIds?.includes(id) ? 'missing' : event.surveyCompletedIds?.includes(id) ? 'complete' : 'pending';
   const messageAll = () => partialRoster ? setConfirmMessage(true) : onMessage(roster, event);
   const clock = (time) => timeLabel(time).replace(' ', '').toLowerCase();
   return <div className={`ae-detail ${roster.length ? 'ae-detail-populated' : ''}`}>
