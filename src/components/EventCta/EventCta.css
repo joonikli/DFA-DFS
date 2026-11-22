@@ -15,3 +15,12 @@
 .event-cta .btn:not(:disabled):active {
   transform: scale(0.97);
 }
+
+/* Attended is a disabled status, using the Figma neutral colours in every state. */
+.event-cta .btn.event-cta__attended:disabled {
+  background: var(--neutral-gray);
+  color: var(--neutral-darker-gray);
+  cursor: default;
+  transform: none;
+  transition: none;
+}

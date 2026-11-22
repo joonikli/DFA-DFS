@@ -24,7 +24,7 @@ export default function EventCta({ status = 'open', saved = false, onToggleSaved
         </Button>
       )}
       {status === 'attended' && (
-        <Button size="sm" disabled style={{ cursor: 'default' }}>
+        <Button size="sm" className="event-cta__attended" disabled>
           Attended
         </Button>
       )}
