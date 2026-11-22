@@ -14,6 +14,7 @@ import EventDetail from './EventDetail.jsx';
 import EventGridCard from './EventGridCard.jsx';
 import { EVENT_TODAY, dateLabel, parseDate, timeLabel } from './eventData.js';
 import { useEventState } from './eventState.js';
+import { useDemo } from '../../store/DemoStore.jsx';
 import './events.css';
 
 const TABS = ['Upcoming', 'Drafts', 'Saved', 'Completed', 'Cancelled'];
@@ -108,6 +109,7 @@ function EmptyEvents({ tab, filtered, onClear }) {
 
 export default function Events() {
   const pop = usePop(), toast = useToast(), notBuilt = useNotBuilt();
+  const { admin, showToast } = useDemo();
   const { params } = useRoute();
   const page = useRef(null), list = useRef(null);
   useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
@@ -131,7 +133,9 @@ export default function Events() {
   const fitsPicks = (e) => (!picks.places.length || picks.places.includes(e.address)) && (!picks.tags.length || eventTags(e).some((tag) => picks.tags.includes(tag)));
   const filterOptions = { places: [...new Set(tabEvents.map((e) => e.address).filter(Boolean))].sort(), tags: [...new Set(tabEvents.flatMap(eventTags))].sort() };
   const visible = tabEvents.filter((e) => (!selected || selected === e.date) && fitsTime(e) && fitsPicks(e) && `${e.title} ${e.address} ${e.description}`.toLowerCase().includes(query.trim().toLowerCase()));
-  const groupItems = tab === 'Upcoming' ? [['My Events', visible.filter((e) => e.group === 'mine')], ['This Month', visible.filter((e) => e.group !== 'mine')]] : [[tab === 'Drafts' ? 'Draft Events' : `${tab} Events`, visible]];
+  const creationOrder = new Map(admin.createdEvents.map((event, index) => [event.id, index]));
+  const myEvents = visible.filter((e) => e.group === 'mine').sort((a, b) => (creationOrder.get(b.id) ?? -1) - (creationOrder.get(a.id) ?? -1));
+  const groupItems = tab === 'Upcoming' ? [['My Events', myEvents], ['This Month', visible.filter((e) => e.group !== 'mine')]] : [[tab === 'Drafts' ? 'Draft Events' : `${tab} Events`, visible]];
   const editDraft = (id) => {
     const item = drafts.find((entry) => entry.id === id);
     setEditor({ draftId: item.id, form: item.form, event: events.find((e) => e.id === item.sourceEventId) });
@@ -156,7 +160,12 @@ export default function Events() {
     setEvents((current) => existing ? current.map((e) => e.id === existing.id ? event : e) : [...current, event]);
     if (editor?.draftId) setDrafts((current) => current.filter((item) => item.id !== editor.draftId));
     setSelected(''); setTab(event.status); setMonth(parseDate(`${event.date.slice(0, 7)}-01`));
-    toast(existing ? 'Event updated' : 'Event created', { ic: 'check' });
+    if (existing) toast('Event updated', { ic: 'check' });
+    else {
+      clearFilters(); setQuery('');
+      showToast({ variant: 'success', parts: [['Event created!', true]], preview: `${event.title} is now in My Events.`, time: 'Now', category: 'Event' });
+      requestAnimationFrame(() => document.getElementById('main')?.scrollTo(0, 0));
+    }
   };
   const cancelEvent = (event) => {
     setEvents((current) => current.map((e) => e.id === event.id ? { ...e, status: 'Cancelled' } : e));
