@@ -11,7 +11,7 @@ import PillButton from '../../components/PillButton/PillButton.jsx'
 import StatusBadge from '../../components/StatusBadge/StatusBadge.jsx'
 import Banner from '../../components/Banner/Banner.jsx'
 import EventCalendar from '../../components/EventCalendar/EventCalendar.jsx'
-import { events, eventsById } from '../../mock/events.js'
+import { useAdminEvents } from '../../features/admin/useAdminEvents.js'
 import { TODAY } from '../../mock/today.js'
 import { sameDay } from '../../lib/dates.js'
 import { useDemo } from '../../store/DemoStore.jsx'
@@ -22,13 +22,15 @@ const UPCOMING_SHOWN = 3
 
 export default function VolunteerSurveys() {
   const { volunteer } = useDemo()
+  const events = useAdminEvents()
+  const eventsById = Object.fromEntries(events.map((event) => [event.id, event]))
   const { openSurvey, openSurveyResponse } = useEventFlows()
   const navigate = useNavigate()
   const [calMonth, setCalMonth] = useState(TODAY)
-  const attended = volunteer.attended.map((id) => eventsById[id]).sort((a, b) => b.start - a.start)
+  const attended = volunteer.attended.map((id) => eventsById[id]).filter((e) => e?.hasSurvey).sort((a, b) => b.start - a.start)
   const pending = attended.filter((e) => !volunteer.surveyResponses[e.id])
   const done = attended.filter((e) => volunteer.surveyResponses[e.id])
-  const upcoming = volunteer.registered.map((id) => eventsById[id]).filter((e) => e && e.start >= TODAY).sort((a, b) => a.start - b.start)
+  const upcoming = volunteer.registered.map((id) => eventsById[id]).filter((e) => e && e.start >= TODAY && e.status !== 'cancelled').sort((a, b) => a.start - b.start)
 
   // Attended events open on their own page (the Attended tab's view of it)
   const viewEvent = (e) => navigate(`/events/${e.id}?from=attended`)

@@ -13,15 +13,7 @@ export const EVENT_TODAY = isoDate(TODAY);
 export const EVENT_DESCRIPTION = 'Join us for a hands-on volunteer event to sort, label, and organize our donated goods! Volunteers will help check items for quality, sort them into categories such as clothing, household goods, and non-perishables, and shelve everything so it’s ready for distribution. No experience is needed, just a willingness to pitch in. Gloves, labels, and refreshments will be provided. Whether you can stay for an hour or the entire shift, your help will make sure donations reach the people who need them most, quickly and efficiently.';
 
 // Figma "Single Event" content for Donation Inventory Organizing (e13)
-const inventorySurvey = {
-  title: 'Donation Inventory Organizing Survey',
-  questions: [
-    { id: 'inventory-rating', title: 'How would you rate this event?', type: 'Multiple choice', options: ['Excellent', 'Good', 'Could be better'] },
-    { id: 'inventory-instructions', title: 'How clear were the instructions?', type: 'Multiple choice', options: ['Very clear', 'Somewhat clear', 'Not clear'] },
-    { id: 'inventory-feedback', title: 'What could we improve next time?', type: 'Free form', options: [''] },
-  ],
-};
-const FIGMA = { e13: { longDescription: EVENT_DESCRIPTION, survey: inventorySurvey.title, surveyDefinition: inventorySurvey } };
+const FIGMA = { e13: { longDescription: EVENT_DESCRIPTION } };
 
 // The main app's survey for each event, as the detail's "View survey" list
 const SURVEYS = {};
@@ -50,7 +42,7 @@ export function toScreenEvent(e) {
   const done = e.status === 'completed';
   const maureenMissing = e.surveyMissing.includes('v01');
   const missing = done ? [...(maureenMissing ? ['maureen'] : []), ...volunteerIds.filter((id) => id !== 'maureen').slice(0, Math.max(0, e.surveyMissing.length - (maureenMissing ? 1 : 0)))] : undefined;
-  const survey = SURVEYS[e.id];
+  const survey = e.surveyDefinition || SURVEYS[e.id];
   return {
     id: e.id,
     date: isoDate(e.start),
@@ -62,9 +54,10 @@ export function toScreenEvent(e) {
     type: e.title,
     address: e.location,
     description: e.description,
-    tags: e.tags.map((t) => t.tone),
+    tags: e.tags,
+    distance: e.distance,
     tagText: e.tags.map((t) => t.label).join(', '),
-    organizer: e.organizer === 'me' ? ME.name : e.organizer,
+    organizer: e.organizerLabel || (e.organizer === 'me' ? ME.name : e.organizer),
     registered,
     group: e.organizer === 'me' ? 'mine' : 'month',
     status: STATUS[e.status] || 'Upcoming',
@@ -72,7 +65,7 @@ export function toScreenEvent(e) {
     surveyMissingIds: missing,
     surveyCompletedIds: done ? volunteerIds.filter((id) => !missing.includes(id)) : undefined,
     survey: e.hasSurvey ? survey?.title || `${e.name || e.title} Survey` : undefined,
-    surveyDefinition: survey,
+    surveyDefinition: e.hasSurvey ? survey : undefined,
     ...FIGMA[e.id],
   };
 }

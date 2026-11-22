@@ -6,7 +6,7 @@ import Saved from '../Saved/Saved.jsx'
 import './EventCta.css'
 
 /**
- * @param {'open'|'registered'|'attended'} status
+ * @param {'open'|'registered'|'attended'|'cancelled'} status
  * @param {boolean} saved
  */
 export default function EventCta({ status = 'open', saved = false, onToggleSaved, onRegister, onUnregister }) {
@@ -23,9 +23,9 @@ export default function EventCta({ status = 'open', saved = false, onToggleSaved
           Registered
         </Button>
       )}
-      {status === 'attended' && (
+      {(status === 'attended' || status === 'cancelled') && (
         <Button size="sm" className="event-cta__attended" disabled>
-          Attended
+          {status === 'cancelled' ? 'Cancelled' : 'Attended'}
         </Button>
       )}
     </div>

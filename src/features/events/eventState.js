@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useDemo } from '../../store/DemoStore.jsx';
 import { useAdminEvents } from '../admin/useAdminEvents.js';
 import { toScreenEvent, toStoreEvent } from './eventData.js';
@@ -6,7 +6,7 @@ import { toScreenEvent, toStoreEvent } from './eventData.js';
 // State for the admin Events screen and admin-view profiles, same API as before:
 //   const [events, setEvents] = useEventState('events')   // the main app's admin events
 //   const [saved, setSaved] = useEventState('saved')       // Set of saved event ids
-//   const [drafts, setDrafts] = useEventState('drafts')    // screen-local
+//   const [drafts, setDrafts] = useEventState('drafts')    // persisted in the demo store
 // Events and saved come from the main app's store (src/store/DemoStore.jsx), so the admin
 // Surveys, both dashboards and the volunteer screens see the same events. Setting them sends
 // the change back: cancel / undo cancel, create, edit, save / unsave.
@@ -54,20 +54,18 @@ function useStoreSaved() {
   return [saved, setSaved];
 }
 
-// Drafts stay on this screen (they survive navigating away, not a reload)
-let drafts = [];
-const subscribers = new Set();
-const subscribe = (callback) => { subscribers.add(callback); return () => subscribers.delete(callback); };
-function useLocalDrafts() {
-  const value = useSyncExternalStore(subscribe, () => drafts);
+function useStoreDrafts() {
+  const { admin, adminSetDrafts } = useDemo();
+  const value = admin.drafts;
+  const current = useRef(value);
+  current.current = value;
   const setValue = useCallback((next) => {
-    drafts = typeof next === 'function' ? next(drafts) : next;
-    subscribers.forEach((callback) => callback());
-  }, []);
+    adminSetDrafts(typeof next === 'function' ? next(current.current) : next);
+  }, [adminSetDrafts]);
   return [value, setValue];
 }
 
-const HOOKS = { events: useStoreEvents, saved: useStoreSaved, drafts: useLocalDrafts };
+const HOOKS = { events: useStoreEvents, saved: useStoreSaved, drafts: useStoreDrafts };
 
 // `key` is fixed per call site, so the same hooks run on every render.
 export function useEventState(key) {

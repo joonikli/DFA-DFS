@@ -17,9 +17,9 @@ const MAIN_NAV = [
 
 export function NavItem({ to, label, Icon, end, badge }) {
   return (
-    <NavLink to={to} end={end} className={({ isActive }) => `nav-item text-body ${isActive ? 'nav-item--selected' : ''}`}>
+    <NavLink to={to} end={end} aria-label={label} title={label} className={({ isActive }) => `nav-item text-body ${isActive ? 'nav-item--selected' : ''}`}>
       <Icon size={24} strokeWidth={1.5} aria-hidden="true" />
-      {label}
+      <span className="nav-item__label">{label}</span>
       {badge > 0 && <span className="nav-item__badge" aria-label={`${badge} unread`}>{badge}</span>}
     </NavLink>
   )

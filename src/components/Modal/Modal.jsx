@@ -1,7 +1,7 @@
 // Popup shell shared by every Figma popup (event-registration-popup, Post-event popup,
 // event-survey-popup, Create a report …): white card, gray border, 16px radius.
 // Closes on Escape or backdrop click.
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import './Modal.css'
@@ -12,6 +12,32 @@ import './Modal.css'
  * @param {ReactNode} [subtitle]
  */
 export default function Modal({ open, onClose, title, subtitle, width = 750, padding = '24px 28px 32px', children, footer, showClose = true, transitionName, onEscape, label }) {
+  const panel = useRef(null)
+  useLayoutEffect(() => {
+    if (!open) return
+    const opener = document.activeElement
+    const dialog = panel.current
+    const controls = () => [...dialog.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex]:not([tabindex="-1"])')].filter((el) => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden')
+    const isTop = () => [...document.querySelectorAll('[role="dialog"][aria-modal="true"]')].at(-1) === dialog
+    const keepFocus = (e) => {
+      if (isTop() && !dialog.contains(e.target)) (controls()[0] || dialog).focus({ preventScroll: true })
+    }
+    const trapTab = (e) => {
+      if (e.key !== 'Tab' || !isTop()) return
+      const items = controls(), first = items[0], last = items.at(-1)
+      if (!first) { e.preventDefault(); dialog.focus(); }
+      else if (e.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    if (!dialog.contains(document.activeElement)) (controls()[0] || dialog).focus({ preventScroll: true })
+    document.addEventListener('focusin', keepFocus)
+    dialog.addEventListener('keydown', trapTab)
+    return () => {
+      document.removeEventListener('focusin', keepFocus)
+      dialog.removeEventListener('keydown', trapTab)
+      if (opener?.isConnected) opener.focus({ preventScroll: true })
+    }
+  }, [open])
   useEffect(() => {
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && !e.defaultPrevented && (onEscape || onClose)()
@@ -30,6 +56,8 @@ export default function Modal({ open, onClose, title, subtitle, width = 750, pad
     <div className="modal-backdrop" onMouseDown={onClose}>
       <div
         className="modal"
+        ref={panel}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={label || (typeof title === 'string' ? title : undefined)}

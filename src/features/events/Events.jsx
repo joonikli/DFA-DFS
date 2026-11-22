@@ -80,7 +80,7 @@ export function EventCard({ event, saved, onSave, onEditDraft, showRegistrationC
     {isDraft ? <button className="ae-card-open" aria-label={`Continue editing ${event.title}`} onClick={onEditDraft} /> : <a className="ae-card-open" href={`#events?event=${event.id}`} aria-label={`Open ${event.title}, ${dateLabel(event.date)}`} />}
     <div className="ae-card-date"><span>{date ? date.toLocaleDateString('en-US', { month: 'short' }) : 'Date'}</span><b>{date ? date.getDate() : '–'}</b>{date && <small>{date.toLocaleDateString('en-US', { weekday: 'short' })}</small>}</div>
     <div className="ae-card-body"><div className="ae-card-title"><h2>{event.title}</h2><div className="ae-card-actions">{event.status !== 'Upcoming' && <span className={`ae-status ${event.status.toLowerCase()}`}>{event.status}</span>}{isDraft ? <Icon name="pen" size={16} /> : <>{showRegistrationCount && <span className="ae-registered"><EventAsset name="list-frame" />{event.registered} Registered</span>}<span className="ae-card-save-actions">{notice}<button className={`ae-bookmark ${saved ? 'on' : ''}`} aria-label={`${saved ? 'Unsave' : 'Save'} ${event.title}, ${dateLabel(event.date)}`} aria-pressed={saved} data-tip={saved ? 'Remove from saved' : 'Save event'} onClick={() => onSave(event)}><EventAsset name={saved ? 'list-bookmark-saved' : 'list-bookmark2'} /></button></span></>}</div></div>
-      <div className="ae-card-meta">{event.time && <span className="ae-card-time"><Icon name="clock" size={16} sw={1.75} />{event.time}</span>}<span className="ae-card-location"><Icon name="pin" size={16} sw={1.75} /><span>{event.address ? `${event.address} · 0.5 mi from you` : 'Location to be added'}</span></span></div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{event.tags.map((color, i) => <span key={i} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
+      <div className="ae-card-meta">{event.time && <span className="ae-card-time"><Icon name="clock" size={16} sw={1.75} />{event.time}</span>}<span className="ae-card-location"><Icon name="pin" size={16} sw={1.75} /><span>{event.address ? `${event.address}${event.distance ? ` · ${event.distance}` : ''}` : 'Location to be added'}</span></span></div><p>{event.description || (isDraft ? 'Continue editing to finish your event.' : '')}</p><div className="ae-card-tags">{(event.tags || []).map((tag, i) => <span key={i} className={`ae-tag ${tag.tone}`}>{tag.label}</span>)}</div>
     </div>
   </article>;
 }
@@ -135,7 +135,15 @@ export default function Events() {
   const visible = tabEvents.filter((e) => (!selected || selected === e.date) && fitsTime(e) && fitsPicks(e) && `${e.title} ${e.address} ${e.description}`.toLowerCase().includes(query.trim().toLowerCase()));
   const creationOrder = new Map(admin.createdEvents.map((event, index) => [event.id, index]));
   const myEvents = visible.filter((e) => e.group === 'mine').sort((a, b) => (creationOrder.get(b.id) ?? -1) - (creationOrder.get(a.id) ?? -1));
-  const groupItems = tab === 'Upcoming' ? [['My Events', myEvents], ['This Month', visible.filter((e) => e.group !== 'mine')]] : [[tab === 'Drafts' ? 'Draft Events' : `${tab} Events`, visible]];
+  const monthKey = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+  const otherMonths = new Map();
+  visible.filter((e) => e.group !== 'mine').forEach((event) => {
+    const key = event.date.slice(0, 7);
+    if (!otherMonths.has(key)) otherMonths.set(key, []);
+    otherMonths.get(key).push(event);
+  });
+  const monthGroups = [...otherMonths].sort(([a], [b]) => a.localeCompare(b)).map(([key, items]) => [key === monthKey ? 'This Month' : parseDate(`${key}-01`).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), items.sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`))]);
+  const groupItems = tab === 'Upcoming' ? [['My Events', myEvents], ...monthGroups] : [[tab === 'Drafts' ? 'Draft Events' : `${tab} Events`, visible]];
   const editDraft = (id) => {
     const item = drafts.find((entry) => entry.id === id);
     setEditor({ draftId: item.id, form: item.form, event: events.find((e) => e.id === item.sourceEventId) });

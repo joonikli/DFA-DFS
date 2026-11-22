@@ -14,7 +14,7 @@ import EventCta from '../../components/EventCta/EventCta.jsx'
 import EventCalendar from '../../components/EventCalendar/EventCalendar.jsx'
 import Snapshot from '../../components/Snapshot/Snapshot.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
-import { events } from '../../mock/events.js'
+import { useAdminEvents } from '../../features/admin/useAdminEvents.js'
 import { TODAY } from '../../mock/today.js'
 import { MONTHS, daysBetween, formatShortDate, hoursBetween, sameDay } from '../../lib/dates.js'
 import { useDemo } from '../../store/DemoStore.jsx'
@@ -38,8 +38,8 @@ const MARKED_TABS = ['upcoming', 'saved', 'registered']
 // (Upcoming arrivals are tagged with where they came from: "Removed from saved / registered")
 const FLAGS = { saved: 'Newly saved', registered: 'Newly registered' }
 // Event ids in each of those tabs (same rules as byTab below, without search/day filters)
-function membersOf(volunteer) {
-  const future = events.filter((e) => e.start >= TODAY)
+function membersOf(volunteer, events) {
+  const future = events.filter((e) => e.start >= TODAY && e.status !== 'cancelled')
   const ids = (keep) => future.filter(keep).map((e) => e.id)
   return {
     upcoming: ids((e) => !volunteer.saved.includes(e.id) && !volunteer.registered.includes(e.id)),
@@ -79,7 +79,7 @@ function group(list, past) {
 }
 
 /** Hours attended per week-of-month for the Snapshot chart. */
-function activityFor(month, attendedIds) {
+function activityFor(month, attendedIds, events) {
   const y = month.getFullYear()
   const m = month.getMonth()
   const last = new Date(y, m + 1, 0).getDate()
@@ -100,6 +100,7 @@ function activityFor(month, attendedIds) {
 
 export default function VolunteerEvents() {
   const { volunteer } = useDemo()
+  const events = useAdminEvents()
   const { openRegistration, openCancelRegistration, openSurvey, toggleSave } = useEventFlows()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
@@ -124,7 +125,7 @@ export default function VolunteerEvents() {
   // Also the source of the popover's location / tag chips.
   const pool = useMemo(() => {
     if (selectedDay) return events.filter((e) => sameDay(e.start, selectedDay))
-    const isFuture = (e) => e.start >= TODAY
+    const isFuture = (e) => e.start >= TODAY && e.status !== 'cancelled'
     const byTab = {
       // Saving or registering moves an event out of Upcoming into its own tab.
       upcoming: (e) => isFuture(e) && !volunteer.saved.includes(e.id) && !volunteer.registered.includes(e.id),
@@ -133,7 +134,7 @@ export default function VolunteerEvents() {
       attended: (e) => volunteer.attended.includes(e.id),
     }
     return events.filter(byTab[tab])
-  }, [tab, selectedDay, volunteer])
+  }, [tab, selectedDay, volunteer, events])
 
   const groups = useMemo(() => {
     const list = pool.filter((e) => matchesQuery(e, query) && matchesFilters(e, filters))
@@ -180,7 +181,7 @@ export default function VolunteerEvents() {
      (it pulses again for each further arrival). Opening the tab clears the dot
      and tags those cards (FLAGS / "Removed from …") until the user switches tabs. An event that
      leaves the tab again before it's seen drops out of both. */
-  const members = useMemo(() => membersOf(volunteer), [volunteer])
+  const members = useMemo(() => membersOf(volunteer, events), [volunteer, events])
   const [unseen, setUnseen] = useState({ upcoming: [], saved: [], registered: [] })
   const [fresh, setFresh] = useState({ tab, ids: [] })
   const unseenRef = useRef(unseen)
@@ -288,7 +289,7 @@ export default function VolunteerEvents() {
     const status = statusOf(e)
     // Attended events without feedback open their post-event survey when clicked;
     // every other card opens the event's own page (VolunteerEventDetail).
-    const needsSurvey = status === 'attended' && !volunteer.surveyResponses[e.id]
+    const needsSurvey = status === 'attended' && e.hasSurvey && !volunteer.surveyResponses[e.id]
     const openEvent = () => navigate(`/events/${e.id}${selectedDay ? '' : `?from=${tab}`}`)
     return (
       <div
@@ -305,7 +306,7 @@ export default function VolunteerEvents() {
         onOpen={leaving ? undefined : needsSurvey ? () => openSurvey(e) : openEvent}
         cta={
           <EventCta
-            status={status}
+            status={e.status === 'cancelled' ? 'cancelled' : status}
             saved={volunteer.saved.includes(e.id)}
             onToggleSaved={() => toggleSave(e)}
             onRegister={() => openRegistration(e)}
@@ -441,7 +442,7 @@ export default function VolunteerEvents() {
                 ? 'Your activity this month'
                 : `Your activity in ${MONTHS[snapMonth.getMonth()]}`
             }
-            data={activityFor(snapMonth, volunteer.attended)}
+            data={activityFor(snapMonth, volunteer.attended, events)}
             onPrev={() => setSnapMonth((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
             onNext={() => setSnapMonth((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
             linkTo="/"

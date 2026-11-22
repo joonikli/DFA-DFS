@@ -49,7 +49,7 @@ export default function EventDetail({ event, onBack, onEdit, onCancel, onMessage
       </section>
     </div><aside className="ae-detail-aside" aria-label="Event details"><header><h2>Event Details</h2><EditButton onClick={() => onEdit(event)} /></header>
       <dl className="ae-detail-facts">
-        <div className="ae-detail-organizer"><dt><EventAsset name="detail-frame634" /><span className="sr">Organizer</span></dt><dd>{event.organizer} (Me)</dd></div>
+        <div className="ae-detail-organizer"><dt><EventAsset name="detail-frame634" /><span className="sr">Organizer</span></dt><dd>{event.organizer}{event.group === 'mine' ? ' (Me)' : ''}</dd></div>
         <div><dt><EventAsset name="detail-frame" /><span className="sr">Date</span></dt><dd>{dateLabel(event.date)}</dd></div>
         <div><dt><EventAsset name="detail-frame1" /><span className="sr">Time</span></dt><dd>{clock(event.start)} - {clock(event.end)}</dd></div>
         <div><dt><EventAsset name="detail-frame2" /><span className="sr">Location</span></dt><dd>{event.address}</dd></div>

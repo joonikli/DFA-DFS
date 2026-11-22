@@ -11,8 +11,7 @@ import EventCta from '../../components/EventCta/EventCta.jsx'
 import Tags from '../../components/Tags/Tags.jsx'
 import Button from '../../components/Button/Button.jsx'
 import Modal from '../../components/Modal/Modal.jsx'
-import { eventsById } from '../../mock/events.js'
-import { adminEventsById } from '../../mock/adminEvents.js'
+import { useAdminEvents } from '../../features/admin/useAdminEvents.js'
 import { TODAY } from '../../mock/today.js'
 import { MONTHS } from '../../lib/dates.js'
 import { staff, staffIdFor } from '../../mock/staff.js'
@@ -59,13 +58,14 @@ export default function VolunteerEventDetail() {
   const { id } = useParams()
   const [params] = useSearchParams()
   const { volunteer } = useDemo()
+  const events = useAdminEvents()
   const { openRegistration, openCancelRegistration, toggleSave, openSurvey } = useEventFlows()
   const [expanded, setExpanded] = useState(false)
   const [photosOpen, setPhotosOpen] = useState(false)
   const [surveyDismissedFor, setSurveyDismissedFor] = useState(null)
 
-  const event = eventsById[id]
-  const admin = adminEventsById[id]
+  const event = events.find((event) => event.id === id)
+  const admin = event
   if (!event) return <Navigate to="/events" replace />
 
   const saved = volunteer.saved.includes(event.id)
@@ -83,21 +83,21 @@ export default function VolunteerEventDetail() {
   // Admin-facing name ("Donation Inventory Organizing") with the program as the subtitle.
   // Events with no name of their own (title = program) show their date and time instead.
   const name = admin?.name || event.title
+  const program = event.type || event.title
   const subtitle =
-    name !== event.title
-      ? event.title
+    name !== program
+      ? program
       : `${weekday(start)}, ${MONTHS[start.getMonth()]} ${start.getDate()} · ${clock(start)} - ${clock(end)}`
 
   // Counts include the volunteer's own registration / save
   const index = Number(event.id.slice(1)) || 0
-  const signedUp = admin?.signups.includes('v01')
-  const registeredCount = (admin?.signups.length ?? 0) + (registered && !signedUp ? 1 : 0) - (!registered && signedUp ? 1 : 0)
+  const registeredCount = admin?.signups.length ?? 0
   const savedCount = BASE_SAVED[index % BASE_SAVED.length] + (saved ? 1 : 0)
   const sharedCount = BASE_SHARED[index % BASE_SHARED.length]
   const manager = admin && staff[staffIdFor(admin.organizer)]
 
   // Attended frame (2532:41578): "Post-event popup" card above Key Contacts until the survey is sent
-  const showSurveyCard = status === 'attended' && !volunteer.surveyResponses[event.id] && surveyDismissedFor !== event.id
+  const showSurveyCard = status === 'attended' && event.hasSurvey && !volunteer.surveyResponses[event.id] && surveyDismissedFor !== event.id
 
   return (
     <div className="ved">
@@ -126,7 +126,7 @@ export default function VolunteerEventDetail() {
                   <p className="ved__subtitle text-subheading">{subtitle}</p>
                 </div>
                 <EventCta
-                  status={status}
+                  status={event.status === 'cancelled' ? 'cancelled' : status}
                   saved={saved}
                   onToggleSaved={() => toggleSave(event)}
                   onRegister={() => openRegistration(event)}

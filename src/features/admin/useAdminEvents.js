@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { adminEvents } from '../../mock/adminEvents.js'
 import { useDemo } from '../../store/DemoStore.jsx'
+import { inventorySurvey, surveyForEvent } from '../../mock/surveys.js'
+import { adminSurveys } from '../../mock/adminSurveys.js'
 
 const MAUREEN = 'v01' // the volunteer persona in src/mock/volunteers.js
 
@@ -20,11 +22,17 @@ function applyEdit(e, edit) {
     ...e,
     name: edit.detailTitle || edit.title || e.name,
     title: edit.title ?? e.title,
+    type: edit.type ?? e.type ?? e.title,
     location: edit.address ?? e.location,
+    distance: edit.address !== undefined && edit.address !== e.location ? '' : e.distance,
     description: edit.description ?? e.description,
+    longDescription: edit.longDescription ?? e.longDescription,
+    organizerLabel: edit.organizer ?? e.organizerLabel,
+    tags: edit.tagText !== undefined ? edit.tagText.split(',').map((label) => label.trim()).filter(Boolean).map((label) => ({ label, tone: e.tags.find((tag) => tag.label.toLowerCase() === label.toLowerCase())?.tone || 'purple' })) : e.tags,
     start: date && edit.start ? at(date, edit.start) : e.start,
     end: date && edit.end ? at(date, edit.end) : e.end,
     hasSurvey: edit.survey !== undefined ? Boolean(edit.survey) : e.hasSurvey,
+    surveyDefinition: edit.surveyDefinition !== undefined ? edit.surveyDefinition : e.surveyDefinition,
   }
 }
 
@@ -38,10 +46,13 @@ export function useAdminEvents() {
   return useMemo(
     () =>
       [...adminEvents, ...admin.createdEvents].map((seed) => {
-        const e = applyEdit(seed, admin.eventEdits?.[seed.id])
+        const survey = adminSurveys.find((s) => s.eventId === seed.id)
+        const baseSurvey = survey || surveyForEvent(seed)
+        const definition = seed.id === 'e13' ? inventorySurvey : { title: baseSurvey.title, questions: baseSurvey.questions.map((q) => ({ ...q, title: q.prompt, type: q.type === 'choice' || q.type === 'rating' ? 'Multiple choice' : 'Free form', options: q.type === 'rating' ? ['1', '2', '3', '4', '5'] : q.options || [''] })) }
+        const e = applyEdit({ ...seed, surveyDefinition: definition }, admin.eventEdits?.[seed.id])
         const joined = volunteer.registered.includes(e.id) || volunteer.attended.includes(e.id)
         const signups = joined ? [MAUREEN, ...e.signups.filter((id) => id !== MAUREEN)] : e.signups.filter((id) => id !== MAUREEN)
-        const surveyMissing =
+        const surveyMissing = !e.hasSurvey ? [] :
           e.status === 'completed' && joined && !volunteer.surveyResponses[e.id]
             ? [...new Set([MAUREEN, ...e.surveyMissing])]
             : e.surveyMissing.filter((id) => id !== MAUREEN)

@@ -16,7 +16,8 @@ import EventCard, { EventCardEmpty } from '../components/EventCard/EventCard.jsx
 import EventCta from '../components/EventCta/EventCta.jsx'
 import { FieldLabel, TextField } from '../components/Field/Field.jsx'
 import { useEventFlows } from '../features/events/EventFlows.jsx'
-import { events, eventsById, volunteerHistory } from '../mock/events.js'
+import { volunteerHistory } from '../mock/events.js'
+import { useAdminEvents } from '../features/admin/useAdminEvents.js'
 import { TODAY } from '../mock/today.js'
 import { hoursBetween } from '../lib/dates.js'
 import { PERSONAS, useDemo } from '../store/DemoStore.jsx'
@@ -118,6 +119,7 @@ function EditProfileModal({ person, onClose }) {
 export default function Profile() {
   const [params, setParams] = useSearchParams()
   const { volunteer, profiles } = useDemo()
+  const events = useAdminEvents()
   const { openRegistration, openCancelRegistration, toggleSave } = useEventFlows()
   const [editing, setEditing] = useState(false)
 
@@ -127,8 +129,8 @@ export default function Profile() {
 
   // ---- events + stats ----
   const { upcoming, past, stats } = useMemo(() => {
-    const up = events.filter((e) => e.start >= TODAY && volunteer.registered.includes(e.id))
-    const att = volunteer.attended.map((x) => eventsById[x]).sort((a, b) => b.start - a.start)
+    const up = events.filter((e) => e.start >= TODAY && e.status !== 'cancelled' && volunteer.registered.includes(e.id))
+    const att = events.filter((e) => volunteer.attended.includes(e.id)).sort((a, b) => b.start - a.start)
     const total = att.length + volunteerHistory.eventsBefore
     return {
       upcoming: up,
@@ -139,7 +141,7 @@ export default function Profile() {
         rate: Math.round((total / (total + volunteerHistory.missedEvents)) * 100),
       },
     }
-  }, [volunteer])
+  }, [volunteer, events])
 
   const cardFor = (e) => {
     const status = volunteer.attended.includes(e.id) ? 'attended' : volunteer.registered.includes(e.id) ? 'registered' : 'open'

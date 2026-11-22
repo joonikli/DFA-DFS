@@ -1,0 +1,47 @@
+/* Events keep their desktop design; on small screens the same navigation becomes an icon rail. */
+@media (max-width: 760px) {
+  .app-shell:has(.ae-page, .volunteer-events, .ved) .sidebar { width: 64px; }
+  .app-shell:has(.ae-page, .volunteer-events, .ved) .sidebar__logo { width: 48px; padding-left: 5px; }
+  .app-shell:has(.ae-page, .volunteer-events, .ved) .nav-item { position: relative; width: 44px; justify-content: center; padding: 10px; }
+  .app-shell:has(.ae-page, .volunteer-events, .ved) .nav-item__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .app-shell:has(.ae-page, .volunteer-events, .ved) .nav-item__badge { position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; padding: 0 3px; font-size: 10px; line-height: 16px; }
+  .app-shell:has(.volunteer-events, .ved) .app-shell__content { padding: 24px 16px 32px; }
+  .app-shell .app-shell__content .ae-page .ae-workspace { padding: 24px 16px 32px; }
+  .app-shell .app-shell__content .ae-page .ae-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .app-shell .app-shell__content .ae-page .ae-rail { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .ae-page .ae-toolbar { height: auto; flex-wrap: wrap; }
+  .app-shell .app-shell__content .ae-toolbar .ae-search { flex: 1 1 100%; width: 100%; }
+  .ae-page .ae-toolbar .ae-create { margin-left: auto; }
+  .ae-page .ae-cards.grid { grid-template-columns: minmax(0, 1fr); }
+  .ae-page .cal.ae-calendar { width: 100%; }
+  .ae-page .ae-heading { margin-bottom: 24px; }
+  .ae-page .ae-event-card { padding: 16px 12px; }
+  .ae-page .ae-card-title { flex-direction: column; gap: 8px; }
+  .ae-page .ae-card-actions { flex-wrap: wrap; gap: 8px; }
+  .ae-page .ae-registered { white-space: normal; }
+  .ae-page .ae-card-meta > span { min-width: 0; }
+  .ae-page .ae-detail { padding: 24px 16px 32px; }
+  .ae-page .ae-detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .ae-page .ae-roster-row, .ae-page .ae-roster-heading { flex-wrap: wrap; }
+  .ae-page .ae-breadcrumb { flex-wrap: wrap; }
+  .volunteer-events__toolbar { flex-wrap: wrap; }
+  .volunteer-events__toolbar > .search-bar { flex: 1 1 100%; }
+  .volunteer-events__aside { grid-template-columns: minmax(0, 1fr); }
+  .volunteer-events .event-card--list { flex-wrap: wrap; gap: 12px; padding: 16px 12px; }
+  .volunteer-events .event-card__time { width: 40px; }
+  .volunteer-events .event-card__content { min-width: 0; }
+  .volunteer-events .event-card__top { flex-direction: column; }
+  .volunteer-events .event-card__title h3 { white-space: normal; overflow-wrap: anywhere; }
+  .volunteer-events .event-cta { flex-wrap: wrap; }
+  .volunteer-events .event-header__cards--grid { grid-template-columns: minmax(0, 1fr); }
+  .ved .ved__heading { flex-wrap: wrap; }
+  .ved .ved__crumbs { flex-wrap: wrap; }
+  .ved .ved__main, .ved .ved__aside { width: 100%; flex-basis: auto; }
+  .ved .ved__cards { flex-direction: column; }
+  .ved .ved__card { padding: 20px; }
+  .ved .ved__facts li { gap: 12px; overflow-wrap: anywhere; }
+  .ved .ved__titles h1 { overflow-wrap: anywhere; }
+  .ved-photos__stack { max-width: 100%; height: auto; aspect-ratio: 356 / 250; }
+  .ved-photos__stack img { width: calc(100% - 16px); height: auto; aspect-ratio: 341 / 227; }
+  .ved-photos__nav { gap: 12px; }
+}

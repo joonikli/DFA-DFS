@@ -163,6 +163,10 @@
 .ae-attached-survey b { font-size: 16px; font-weight: 500; }
 .ae-attached-survey-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; flex-shrink: 0; }
 .ae-attached-survey .survey-attachment__remove { position: static; flex-shrink: 0; }
+.ae-tag.blue { background: var(--blue-light-blue); color: var(--blue-dark-blue); }
+.ae-tag.purple { background: var(--primary-lightest-purple); color: var(--primary-purple); }
+.ae-tag.lime, .ae-tag.green { background: var(--green-light-green); color: var(--green-dark-green); }
+.ae-tag.yellow { background: var(--yellow-light-yellow); color: var(--yellow-dark-yellow); }
 /* Final / Events - create survey. */
 .ae-dialog.ae-survey-dialog { width: min(845px, calc(100vw - 32px)); }
 .modal-panel:has(.ae-survey-dialog) { border: 1px solid var(--gray); border-radius: 16px; box-shadow: 0 3px 4.3px var(--gray); overflow: hidden; }

@@ -17,6 +17,7 @@ import { MONTHS } from '../../lib/dates.js'
 import { PERSONAS, useDemo } from '../../store/DemoStore.jsx'
 import './EventFlows.css'
 import RouterSurveyPopup from '../../components/SurveyPopup/RouterSurveyPopup.jsx'
+import { useAdminEvents } from '../admin/useAdminEvents.js'
 
 const FlowContext = createContext(null)
 export const useEventFlows = () => useContext(FlowContext)
@@ -49,8 +50,13 @@ function RegistrationPopup({ event, editing = false, onClose }) {
 
   function submit(e) {
     e.preventDefault()
+    if (event.status === 'cancelled') { setError('This event has been cancelled.'); return }
     if (!form.from || !form.to || form.from >= form.to) {
       setError('Choose a start time that is before your end time.')
+      return
+    }
+    if (form.from < toTimeInput(event.start) || form.to > toTimeInput(event.end)) {
+      setError('Choose times within the event’s start and end times.')
       return
     }
     if (editing) {
@@ -63,7 +69,7 @@ function RegistrationPopup({ event, editing = false, onClose }) {
         category: 'Event',
       })
     } else {
-      register(event.id, form)
+      register(event.id, form, event)
       showToast({
         variant: 'success',
         parts: [['Registered!', true]],
@@ -117,11 +123,11 @@ function RegistrationPopup({ event, editing = false, onClose }) {
             What time will you be available out of <b>{range}</b>? You can change this at any time.
           </FieldLabel>
           <div className="flow-form__times">
-            <TimeField value={form.from} onChange={set('from')} aria-label="Available from" required />
+            <TimeField value={form.from} onChange={set('from')} min={toTimeInput(event.start)} max={toTimeInput(event.end)} aria-label="Available from" required />
             <span className="flow-form__dash" aria-hidden="true" />
-            <TimeField value={form.to} onChange={set('to')} aria-label="Available until" required />
+            <TimeField value={form.to} onChange={set('to')} min={toTimeInput(event.start)} max={toTimeInput(event.end)} aria-label="Available until" required />
           </div>
-          {error && <p className="flow-form__error text-label-2">{error}</p>}
+          {error && <p className="flow-form__error text-label-2" role="alert">{error}</p>}
         </div>
 
         <div className="flow-form__field">
@@ -140,7 +146,7 @@ function RegistrationPopup({ event, editing = false, onClose }) {
           <Button color="tertiary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">{editing ? 'Save changes' : 'Register'}</Button>
+          <Button type="submit" disabled={event.status === 'cancelled'}>{editing ? 'Save changes' : 'Register'}</Button>
         </div>
       </form>
     </Modal>
@@ -329,8 +335,8 @@ function PostEventPopup({ event, onClose, onTakeSurvey }) {
 /* ---------- Read-only view of a submitted survey ("View survey" on the dashboard) ---------- */
 function SurveyResponsePopup({ event, onClose }) {
   const { volunteer } = useDemo()
-  const survey = surveyForEvent(event)
   const answers = volunteer.surveyResponses[event.id] || {}
+  const survey = answers._survey || surveyForEvent(event)
   const show = (q) => {
     const a = answers[q.id]
     if (!a || a.answer == null || a.answer === '') return <span className="flow-response__empty">No answer</span>
@@ -374,7 +380,9 @@ function Toaster() {
 }
 
 export function EventFlowsProvider({ children }) {
-  const [flow, setFlow] = useState(null) // { kind: 'register'|'edit'|'cancel'|'unsave'|'survey'|'thanks'|'response', event }
+  const [selection, setFlow] = useState(null) // { kind: 'register'|'edit'|'cancel'|'unsave'|'survey'|'thanks'|'response', event }
+  const events = useAdminEvents()
+  const flow = selection && { ...selection, event: events.find((event) => event.id === selection.event.id) || selection.event }
   const close = () => setFlow(null)
   const { volunteer, toggleSaved, showToast } = useDemo()
   const savedRef = useRef(volunteer.saved)

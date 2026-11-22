@@ -34,7 +34,7 @@ export default function SlidingTabs({ value, onChange, items, label, panelId, cl
       const title = typeof item === 'string' ? item : item.label;
       const active = key === value;
       const mark = !active ? marks[key] || 0 : 0;
-      return <button key={key} type="button" role="tab" aria-selected={active} aria-controls={panelId} className={`tab-nav__tab${active ? ' tab-nav__tab--active on' : ''}`} onClick={() => onChange(key)}>
+      return <button key={key} type="button" role="tab" aria-selected={active} aria-controls={panelId} className={`tab-nav__tab${active ? ' tab-nav__tab--active on' : ''}`} onFocus={(e) => e.currentTarget.scrollIntoView({ block: 'nearest', inline: 'nearest' })} onClick={() => onChange(key)}>
         <span className="tab-nav__label">{mark > 0 && <span key={mark} className="tab-nav__dot" aria-hidden="true" />}{title}{badges[key]}</span>{mark > 0 && <span className="tab-nav__sr">, new events added</span>}
       </button>;
     })}

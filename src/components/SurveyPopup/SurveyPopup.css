@@ -16,7 +16,7 @@
   --svp-ease: cubic-bezier(.23, 1, .32, 1);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
-.svp { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 24px; }
+.svp { position: fixed; inset: 0; z-index: 120; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 24px; }
 .svp *, .svp *::before, .svp *::after, .svp-inline *, .svp-inline *::before, .svp-inline *::after { box-sizing: border-box; }
 /* Figma scrim: Neutral/Black at 50% */
 .svp-scrim { position: absolute; inset: 0; background: rgba(58, 57, 58, .5); transition: opacity 200ms var(--svp-ease); }

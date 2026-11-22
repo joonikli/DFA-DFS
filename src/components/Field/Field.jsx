@@ -48,7 +48,7 @@ function timeOptions(step, current, min = '00:00', max = '23:59') {
     const t = `${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`
     if (t >= min && t <= max) list.push(t)
   }
-  if (current && !list.includes(current)) list.push(current)
+  if (current && current >= min && current <= max && !list.includes(current)) list.push(current)
   return list.sort()
 }
 /** Typed time → "HH:MM" within min / max, or null. Accepts "6pm", "6:30 pm", "630p", "18:30", "1830".

@@ -4,18 +4,20 @@ import { seedNotifications } from '../mock/notifications.js'
 import { initialAdminState } from '../mock/adminEvents.js'
 import { seedMessages } from '../mock/messages.js'
 import { formatShortDate } from '../lib/dates.js'
+import { surveyForEvent } from '../mock/surveys.js'
 
 // In-memory demo state, mirrored to localStorage so a refresh keeps the demo
 // where you left it. "Reset demo data" in the avatar menu restores the seed.
 // Bump the key whenever the state shape changes.
 const STORAGE_KEY = 'dfs-prototype-v4'
+const snapshotResponses = (responses) => Object.fromEntries(Object.entries(responses).map(([id, answers]) => [id, answers._survey || !eventsById[id] ? answers : { ...answers, _survey: surveyForEvent(eventsById[id]) }]))
 
 const seed = {
   role: 'volunteer', // 'volunteer' | 'admin'
   volunteer: {
     ...initialVolunteerState,
     registrations: {}, // eventId → { from, to, contact, notes, notify }
-    surveyResponses: initialSurveyResponses, // eventId → { questionId: { answer, other? } }
+    surveyResponses: snapshotResponses(initialSurveyResponses), // eventId → answers + the submitted survey definition
     postEventSeenFor: null, // eventId whose "Thank you" popup was already shown
     dismissedAnnouncements: [],
   },
@@ -35,6 +37,26 @@ const seed = {
 
 // Dates don't survive JSON; revive the ones on admin-created events.
 const reviveEvent = (e) => ({ ...e, start: new Date(e.start), end: new Date(e.end) })
+// Older draft writers stored flat events. Keep those editable alongside the editor's form drafts.
+function reviveDraft(draft) {
+  if (draft.form) return draft
+  const date = new Date(draft.start), end = new Date(draft.end)
+  const pad = (n) => String(n).padStart(2, '0')
+  const time = (d) => Number.isFinite(d.getTime()) ? `${pad(d.getHours())}:${pad(d.getMinutes())}` : ''
+  return { id: draft.id, sourceEventId: draft.sourceEventId, form: {
+    title: draft.name || draft.title || '',
+    date: draft.date || (Number.isFinite(date.getTime()) ? `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` : ''),
+    start: /^\d{2}:\d{2}$/.test(draft.start) ? draft.start : time(date),
+    end: /^\d{2}:\d{2}$/.test(draft.end) ? draft.end : time(end),
+    address: draft.address || draft.location || '',
+    organizer: draft.organizer === 'me' ? PERSONAS.admin.fullName : draft.organizer,
+    type: draft.type || draft.title || '',
+    tags: typeof draft.tags === 'string' ? draft.tags : (draft.tags || []).map((tag) => tag.label || tag).join(', '),
+    description: draft.longDescription || draft.description || '',
+    survey: draft.survey || draft.surveyDefinition?.title || '',
+    surveyDefinition: draft.surveyDefinition,
+  } }
+}
 
 // Links from the manager app (e.g. the dashboard's grants card) open the admin view with ?as=admin
 const roleFromUrl = () => {
@@ -54,9 +76,9 @@ function loadSaved() {
     const saved = JSON.parse(raw)
     const admin = { ...seed.admin, ...saved.admin }
     admin.createdEvents = admin.createdEvents.map(reviveEvent)
-    admin.drafts = admin.drafts.map(reviveEvent)
+    admin.drafts = admin.drafts.map(reviveDraft)
     admin.createdGrants = (admin.createdGrants ?? []).map((g) => ({ ...g, due: new Date(g.due), applied: g.applied && new Date(g.applied) }))
-    return { ...seed, ...saved, admin }
+    return { ...seed, ...saved, admin, volunteer: { ...seed.volunteer, ...saved.volunteer, surveyResponses: snapshotResponses(saved.volunteer?.surveyResponses || initialSurveyResponses) } }
   } catch {
     return seed
   }
@@ -79,7 +101,8 @@ function reducer(state, action) {
     case 'toggleSaved':
       return vol(state, { saved: toggle(state.volunteer.saved, action.id) })
     case 'register': {
-      const e = eventsById[action.id]
+      const e = action.event || eventsById[action.id]
+      if (!e || e.status === 'cancelled' || state.admin.cancelled.includes(action.id)) return state
       const next = vol(state, {
         registered: [...new Set([...state.volunteer.registered, action.id])],
         registrations: { ...state.volunteer.registrations, [action.id]: action.details },
@@ -99,7 +122,7 @@ function reducer(state, action) {
     case 'unregister':
       return vol(state, { registered: state.volunteer.registered.filter((x) => x !== action.id) })
     case 'submitSurvey':
-      return vol(state, { surveyResponses: { ...state.volunteer.surveyResponses, [action.id]: action.answers } })
+      return vol(state, { surveyResponses: { ...state.volunteer.surveyResponses, [action.id]: action.answers._survey || !eventsById[action.id] ? action.answers : { ...action.answers, _survey: surveyForEvent(eventsById[action.id]) } } })
     case 'seenPostEvent':
       return vol(state, { postEventSeenFor: action.id })
     case 'dismissAnnouncement':
@@ -129,6 +152,8 @@ function reducer(state, action) {
         ...state,
         admin: { ...state.admin, drafts: [...state.admin.drafts.filter((d) => d.id !== action.event.id), action.event] },
       }
+    case 'adminSetDrafts':
+      return { ...state, admin: { ...state.admin, drafts: action.drafts } }
     case 'adminCancelEvent':
       return { ...state, admin: { ...state.admin, cancelled: toggle(state.admin.cancelled, action.id) } }
     case 'adminEditEvent': {
@@ -195,7 +220,7 @@ export function DemoProvider({ children }) {
       setRole: (role) => dispatch({ type: 'setRole', role }),
       updateMessages: (fn) => dispatch({ type: 'messages', fn }),
       toggleSaved: (id) => dispatch({ type: 'toggleSaved', id }),
-      register: (id, details) => dispatch({ type: 'register', id, details }),
+      register: (id, details, event) => dispatch({ type: 'register', id, details, event }),
       updateRegistration: (id, details) => dispatch({ type: 'updateRegistration', id, details }),
       unregister: (id) => dispatch({ type: 'unregister', id }),
       submitSurvey: (id, answers) => dispatch({ type: 'submitSurvey', id, answers }),
@@ -205,6 +230,7 @@ export function DemoProvider({ children }) {
       adminToggleSaved: (id) => dispatch({ type: 'adminToggleSaved', id }),
       adminCreateEvent: (event) => dispatch({ type: 'adminCreateEvent', event }),
       adminSaveDraft: (event) => dispatch({ type: 'adminSaveDraft', event }),
+      adminSetDrafts: (drafts) => dispatch({ type: 'adminSetDrafts', drafts }),
       adminCancelEvent: (id) => dispatch({ type: 'adminCancelEvent', id }),
       adminEditEvent: (id, patch) => dispatch({ type: 'adminEditEvent', id, patch }),
       adminCreateSurvey: (survey) => dispatch({ type: 'adminCreateSurvey', survey }),

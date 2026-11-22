@@ -1,6 +1,15 @@
 // Post-event surveys a volunteer fills out (Figma: Final › Volunteer - Post-event).
 // Question types: rating | text | choice | checklist  (see components/SurveyQuestion)
 
+export const inventorySurvey = {
+  title: 'Donation Inventory Organizing Survey',
+  questions: [
+    { id: 'inventory-rating', title: 'How would you rate this event?', type: 'Multiple choice', options: ['Excellent', 'Good', 'Could be better'] },
+    { id: 'inventory-instructions', title: 'How clear were the instructions?', type: 'Multiple choice', options: ['Very clear', 'Somewhat clear', 'Not clear'] },
+    { id: 'inventory-feedback', title: 'What could we improve next time?', type: 'Free form', options: [''] },
+  ],
+};
+
 const quickSurvey = (title, subtitle) => ({
   title,
   subtitle,
@@ -39,5 +48,9 @@ const byProgram = {
 }
 
 export function surveyForEvent(event) {
+  if (event.surveyDefinition) {
+    const survey = event.surveyDefinition
+    return { ...survey, subtitle: survey.subtitle ?? event.description, questions: survey.questions.map((q, index) => ({ ...q, prompt: q.title ?? q.prompt, required: q.required ?? index === 0, type: q.type === 'Multiple choice' ? 'choice' : q.type === 'Free form' ? 'text' : q.type })) }
+  }
   return byProgram[event.program] ?? quickSurvey(`${event.title} Survey`, event.description)
 }

@@ -14,7 +14,7 @@ export default function RouterSurveyPopup({ event, onClose }) {
       date={`${pad(event.start.getMonth() + 1)}/${pad(event.start.getDate())}`}
       onClose={onClose}
       onSubmit={(answers) => {
-        submitSurvey(event.id, answers);
+        submitSurvey(event.id, { ...answers, _survey: surveyForEvent(event) });
         showToast({
           variant: 'success',
           parts: [['Thanks!', true], [' Your feedback for ', false], [event.title, true], [' was sent.', false]],

@@ -11,6 +11,6 @@ export default function EventGridCard({ event, saved, onSave, onEditDraft, notic
     <p className="ae-grid-description">{event.description || (isDraft ? 'Continue editing to finish your event.' : 'No description has been added to this event.')}</p>
     {!isDraft && <div className="ae-grid-registration"><EventAsset name="grid-users" /><span>{event.registered} Registered</span></div>}
     <div className="ae-grid-details"><p className="ae-grid-organizer"><span>Organized by </span><b>{event.organizer || 'Organizer to be added'}</b></p><p className="ae-grid-location"><EventAsset name="grid-location" /><span>{event.address || 'Location to be added'}</span></p></div>
-    <div className="ae-card-tags">{event.tags.map((color, index) => <span key={index} className={`ae-tag ${color}`}>anylanguage</span>)}</div>
+    <div className="ae-card-tags">{(event.tags || []).map((tag, index) => <span key={index} className={`ae-tag ${tag.tone}`}>{tag.label}</span>)}</div>
   </article>;
 }
