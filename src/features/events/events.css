@@ -35,6 +35,20 @@
 .ae-create.btn { margin-left: 13px; height: 38px; padding: 0 14px; gap: 8px; font-size: 16px; font-weight: 400; }
 /* Spacing matches the volunteer Events list: 20px below the toolbar and between sections, 10px under each label, 8px between cards */
 .ae-groups { padding-top: 20px; display: flex; flex-direction: column; gap: 20px; }
+/* Match volunteer Events: keep the heading, tabs and toolbar in place while
+   the list and calendar rail scroll independently on desktop. */
+@media (min-width: 1301px) {
+  .ae-page:has(> .ae-workspace) { min-height: 0; }
+  .ae-workspace { display: flex; flex-direction: column; height: max(561px, calc((100vh - 68px) / var(--page-zoom, 1))); }
+  .ae-heading, .ae-workspace > .ae-tabs { flex-shrink: 0; }
+  .ae-layout { flex: 1 1 0; min-height: 0; grid-template-rows: minmax(0, 1fr); }
+  .ae-list { display: flex; flex-direction: column; min-height: 0; }
+  .ae-toolbar, .ae-active-filters { flex-shrink: 0; }
+  .ae-groups { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; margin: 0 -8px -8px; padding: 20px 8px 24px; }
+  .ae-group { flex-shrink: 0; }
+  .ae-layout > .ae-rail { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; margin: -4px -8px -8px; padding: 4px 8px 8px; }
+  .ae-groups::-webkit-scrollbar, .ae-rail::-webkit-scrollbar { display: none; }
+}
 .ae-group > header { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; min-height: 23px; margin-bottom: 10px; color: var(--darker-gray); font-size: 16px; line-height: normal; }
 .ae-group > header h2 { font: inherit; }
 .ae-cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }

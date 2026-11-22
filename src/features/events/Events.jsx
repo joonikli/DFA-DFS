@@ -111,7 +111,7 @@ export default function Events() {
   const pop = usePop(), toast = useToast(), notBuilt = useNotBuilt();
   const { admin, showToast } = useDemo();
   const { params } = useRoute();
-  const page = useRef(null), list = useRef(null);
+  const page = useRef(null), list = useRef(null), groups = useRef(null);
   useFitZoom(page, { designWidth: 1488, minWidth: 1000, fit: false });
   const [events, setEvents] = useEventState('events'), [saved, setSaved] = useEventState('saved');
   const [tab, setTab] = useState('Upcoming'), [query, setQuery] = useState(''), [selected, setSelected] = useState(''), [time, setTime] = useState(NO_TIME);
@@ -126,6 +126,7 @@ export default function Events() {
   const popRef = useRef(pop); popRef.current = pop;
   useEffect(() => () => { popRef.current.close(null, true); hideTip(); }, []);
   useEffect(() => { document.getElementById('main')?.scrollTo(0, 0); }, [active?.id]);
+  useEffect(() => { groups.current?.scrollTo(0, 0); }, [tab, admin.createdEvents.length]);
   const draftEvents = drafts.map((item) => ({ ...item.form, id: item.id, title: item.form.title.trim() || 'Untitled event', time: item.form.start && item.form.end ? `${timeLabel(item.form.start)}-${timeLabel(item.form.end)}`.toLowerCase() : 'Time to be added', status: 'Draft', tags: [] }));
   const tabEvents = tab === 'Drafts' ? draftEvents : events.filter((e) => tab === 'Saved' ? saved.has(e.id) : e.status === tab);
   // Events without a start / end yet (drafts) can't match a time window
@@ -196,7 +197,7 @@ export default function Events() {
         {filtersOn && <div className="ae-active-filters">{selected && <button className="ae-active-filter" onClick={() => selectDate('')}>{dateLabel(selected)}<Icon name="x" size={14} /><span className="sr">Clear date filter</span></button>}{timeOn && <button className="ae-active-filter" onClick={() => setTime(NO_TIME)}>{timeFilterLabel(time)}<Icon name="x" size={14} /><span className="sr">Clear time filter</span></button>}
           {picks.places.map((address) => <button key={address} className="ae-active-filter" onClick={() => setPicks((current) => ({ ...current, places: toggleItem(current.places, address) }))}>{placeName(address)}<Icon name="x" size={14} /><span className="sr">Clear location filter</span></button>)}
           {picks.tags.map((tag) => <button key={tag} className="ae-active-filter" onClick={() => setPicks((current) => ({ ...current, tags: toggleItem(current.tags, tag) }))}>{tag}<Icon name="x" size={14} /><span className="sr">Clear tag filter</span></button>)}</div>}
-        <div className="ae-groups">{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} layout={view} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(filtersOn || query.trim())} onClear={() => { clearFilters(); setQuery(''); }} />}</div>
+        <div className="ae-groups" ref={groups}>{groupItems.filter(([, items]) => items.length).map(([label, items]) => <section className="ae-group" key={label}><header><h2>{label}</h2><span>{items.length} {items.length === 1 ? 'Event' : 'Events'}</span></header><div className={`ae-cards ${view}`}>{items.map((event) => <EventCard key={event.id} event={event} saved={saved.has(event.id)} onSave={saveToggle} layout={view} onEditDraft={tab === 'Drafts' ? () => editDraft(event.id) : undefined} />)}</div></section>)}{!visible.length && <EmptyEvents tab={tab} filtered={Boolean(filtersOn || query.trim())} onClear={() => { clearFilters(); setQuery(''); }} />}</div>
       </section><aside className="ae-rail"><Calendar month={month} onMonth={(direction) => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + direction, 1))} selected={selected} onSelect={selectDate} events={events} saved={saved} /><Tasks tasks={tasks} onOpen={setTask} /></aside></div>
     </div>}
     {editor && <EventEditor event={editor.event} draft={editor.form} defaultDate={selected || EVENT_TODAY} onSave={saveEvent} onClosed={() => setEditor(null)} startSurvey={editor.startSurvey} />}
