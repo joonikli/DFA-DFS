@@ -161,6 +161,8 @@
 .ae-attached-survey > span > span { display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
 .ae-attached-survey small { color: var(--darker-gray); }
 .ae-attached-survey b { font-size: 16px; font-weight: 500; }
+.ae-attached-survey-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; flex-shrink: 0; }
+.ae-attached-survey .survey-attachment__remove { position: static; flex-shrink: 0; }
 /* Final / Events - create survey. */
 .ae-dialog.ae-survey-dialog { width: min(845px, calc(100vw - 32px)); }
 .modal-panel:has(.ae-survey-dialog) { border: 1px solid var(--gray); border-radius: 16px; box-shadow: 0 3px 4.3px var(--gray); overflow: hidden; }

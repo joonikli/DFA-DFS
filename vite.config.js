@@ -23,6 +23,7 @@ const CSS_SCOPES = [
   ['src/components/CalendarKey/', null],
   ['src/components/SurveyPopup/', null],
   ['src/components/EditButton/', null],
+  ['src/components/SurveyRemoveButton.css', null],
   ['src/components/Button/', ['a', 'manager']],
   ['src/components/SearchBar/', ['a', 'manager']],
   ['src/components/Filter/', ['a', 'manager']],
